@@ -36,6 +36,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sln", "sln", "{AB054034-9AA
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blazor.Cookies", "Blazor.Cookies\Blazor.Cookies.csproj", "{AABDA75E-BD9F-4F8F-8C20-D5AF837144A3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -70,6 +72,10 @@ Global
 		{117F8E5A-B3AB-4C0C-824C-656F0DD2AB15}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{117F8E5A-B3AB-4C0C-824C-656F0DD2AB15}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{117F8E5A-B3AB-4C0C-824C-656F0DD2AB15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AABDA75E-BD9F-4F8F-8C20-D5AF837144A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AABDA75E-BD9F-4F8F-8C20-D5AF837144A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AABDA75E-BD9F-4F8F-8C20-D5AF837144A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AABDA75E-BD9F-4F8F-8C20-D5AF837144A3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
