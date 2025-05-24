@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using System.Web;
 
 namespace BitzArt.Blazor.Cookies;
 
@@ -11,10 +10,7 @@ internal static class JsCommand
 
         builder.Append("document.cookie = \"");
 
-        var keyEncoded = HttpUtility.UrlEncode(cookie.Key);
-        var valueEncoded = HttpUtility.UrlEncode(cookie.Value);
-
-        builder.Append($"{keyEncoded}={valueEncoded}; ");
+        builder.Append($"{cookie.Key}={cookie.Value}; ");
         builder.Append($"expires={cookie.Expiration:R}; ");
         builder.Append("path=/");
 
