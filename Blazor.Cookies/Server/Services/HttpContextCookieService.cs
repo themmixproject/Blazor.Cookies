@@ -46,16 +46,22 @@ namespace Blazor.Cookies.Server.Services
 
             return Task.CompletedTask;
         }
-        public Task SetAsync(Cookie cookie, SameSiteMode sameSiteMode, CancellationToken cancellationToken)
-        {
+        public Task SetAsync(
+            Cookie cookie,
+            SameSiteMode sameSiteMode,
+            CancellationToken cancellationToken = default
+        ) {
             ValidateCookie(cookie);
             RemoveCookieIfExistsFromHeader(cookie.Name);
             AppendCookieToHttpContext(cookie, sameSiteMode);
 
             return Task.CompletedTask;
         }
-        public Task SetAsync(string name, string value, CancellationToken cancellationToken)
-        {
+        public Task SetAsync(
+            string name,
+            string value,
+            CancellationToken cancellationToken = default
+        ) {
             Cookie cookie = new Cookie(name, value);
             ValidateCookie(cookie);
             RemoveCookieIfExistsFromHeader(cookie.Name);
@@ -63,8 +69,12 @@ namespace Blazor.Cookies.Server.Services
 
             return Task.CompletedTask;
         }
-        public Task SetAsync(string name, string value, DateTime expires, CancellationToken cancellationToken)
-        {
+        public Task SetAsync(
+            string name,
+            string value,
+            DateTime expires,
+            CancellationToken cancellationToken = default
+        ) {
             Cookie cookie = new Cookie
             {
                 Name = name,
@@ -77,8 +87,13 @@ namespace Blazor.Cookies.Server.Services
 
             return Task.CompletedTask;
         }
-        public Task SetAsync(string name, string value, DateTime expires, SameSiteMode sameSiteMode, CancellationToken cancellationToken)
-        {
+        public Task SetAsync(
+            string name,
+            string value,
+            DateTime expires,
+            SameSiteMode sameSiteMode,
+            CancellationToken cancellationToken = default
+        ) {
             Cookie cookie = new Cookie
             {
                 Name = name,
