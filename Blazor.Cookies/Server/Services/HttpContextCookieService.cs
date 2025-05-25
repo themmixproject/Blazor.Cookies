@@ -117,17 +117,23 @@ namespace Blazor.Cookies.Server.Services
 
         private void AppendCookieToHttpContext(Cookie cookie)
         {
-            _httpContext.Response.Cookies.Append(cookie.Name, cookie.Value, new CookieOptions
-            {
-                Expires = cookie.Expires,
-                Path = "/",
-                HttpOnly = cookie.HttpOnly,
-                Secure = cookie.Secure,
-                SameSite = SameSiteMode.Unspecified
-            });
+            _httpContext.Response.Cookies.Append(
+                cookie.Name,
+                cookie.Value,
+                new CookieOptions
+                {
+                    Expires = cookie.Expires,
+                    Path = "/",
+                    HttpOnly = cookie.HttpOnly,
+                    Secure = cookie.Secure,
+                    SameSite = SameSiteMode.Unspecified
+                }
+            );
         }
-        private void AppendCookieToHttpContext(Cookie cookie, SameSiteMode sameSiteMode)
-        {
+        private void AppendCookieToHttpContext(
+            Cookie cookie,
+            SameSiteMode sameSiteMode
+        ) {
             _httpContext.Response.Cookies.Append(cookie.Name, cookie.Value, new CookieOptions
             {
                 Expires = cookie.Expires,
