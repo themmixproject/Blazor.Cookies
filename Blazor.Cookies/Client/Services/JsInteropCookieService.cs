@@ -32,37 +32,115 @@ namespace Blazor.Cookies.Client.Services
             return cookies.FirstOrDefault(c => c.Name == name);
         }
         
-        public async Task SetAsync(Cookie cookie, SameSiteMode sameSite, CancellationToken cancellationToken = default)
-        {
+        public async Task SetAsync(
+            Cookie cookie,
+            CancellationToken cancellationToken = default
+        ) {
+            ValidateCookie(cookie);
+            await ExecuteSetCookieJavaScriptInteropAsync(cookie);
+        }
+        public async Task SetAsync(
+            Cookie cookie,
+            SameSiteMode sameSite,
+            CancellationToken cancellationToken = default
+        ) {
             ValidateCookie(cookie);
             await ExecuteSetCookieJavaScriptInteropAsync(cookie, sameSite);
+        }
+        public async Task SetAsync(
+            string name,
+            string value, 
+            CancellationToken cancellationToken = default
+        ) {
+            Cookie cookie = new Cookie(name, value);
+            ValidateCookie(cookie);
+            await ExecuteSetCookieJavaScriptInteropAsync(cookie);
+        }
+        public async Task SetAsync(
+            string name,
+            string value,
+            DateTime expires,
+            CancellationToken cancellationToken = default
+        ) {
+            Cookie cookie = new Cookie
+            {
+                Name = name,
+                Value = value,
+                Expires = expires,
+            };
+            ValidateCookie(cookie);
+            await ExecuteSetCookieJavaScriptInteropAsync(cookie);
+        }
+        public async Task SetAsync(
+            string name,
+            string value,
+            DateTime expires,
+            SameSiteMode sameSiteMode,
+            CancellationToken cancellationToken = default
+        ) {
+            Cookie cookie = new Cookie
+            {
+                Name = name,
+                Value = value,
+                Expires = expires,
+            };
+            ValidateCookie(cookie);
+            await ExecuteSetCookieJavaScriptInteropAsync(cookie, sameSiteMode);
         }
 
         private void ValidateCookie(Cookie cookie)
         {
-            if (cookie.HttpOnly) { throw new InvalidOperationException(HttpOnlyFlagExceptionMessage); }
-            if (cookie.Secure) { throw new InvalidOperationException(SecureFlagExceptionMessage); }
-            if (!string.IsNullOrWhiteSpace(cookie.Name)) { throw new Exception("Name is required when setting a cookie."); }
+            if (cookie.HttpOnly) {
+                throw new InvalidOperationException(HttpOnlyFlagExceptionMessage);
+            }
+            if (cookie.Secure) {
+                throw new InvalidOperationException(SecureFlagExceptionMessage);
+            }
         }
 
-        private async Task ExecuteSetCookieJavaScriptInteropAsync(Cookie cookie, SameSiteMode? sameSite)
+        private async Task ExecuteSetCookieJavaScriptInteropAsync(
+            Cookie cookie,
+            SameSiteMode? sameSite
+        ) {
+            string command =
+                $"document.cookie = '{cookie.Name}={cookie.Value}; " +
+                $"expires={cookie.Expires};" +
+                $"path=/";
+
+            if (sameSite != null) { command += $"; SameSite={sameSite.ToString()}"; }
+
+            await JSRuntime.InvokeVoidAsync("eval", command);
+        }
+
+        private async Task ExecuteSetCookieJavaScriptInteropAsync(Cookie cookie)
         {
             string command =
                 $"document.cookie = '{cookie.Name}={cookie.Value}; " +
                 $"expires={cookie.Expires};" +
                 $"path=/";
 
-            if (sameSite != null) { command += $"; SameSite={sameSite.ToString()}";  }
-
             await JSRuntime.InvokeVoidAsync("eval", command);
         }
 
-        private async Task RemoveAsync(string name, CancellationToken cancellationToken)
-        {
+        public async Task RemoveAsync(
+            string name,
+            CancellationToken cancellationToken
+        ) {
             if (string.IsNullOrWhiteSpace(name)) { throw new Exception("Name is required when removing a cookie."); }
 
             string command = $"document.cookie = '{name}=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/'";
             await JSRuntime.InvokeVoidAsync("eval", command);
+        }
+
+        public async Task RemoveAllAsync(CancellationToken cancellationToken)
+        {
+            string command =
+                "document.cookie.split(';').forEach(function(cookie){" +
+                "const eqPos = cookie.indexOf('=');" +
+                "const name = eqPos > -1 ? cookie.substring(0, eqPos) : cookie;" +
+                "document.cookie = name + '=;expires=Thu, 01, Jan 1970 00:00:01 GMT';" +
+                "});";
+            await JSRuntime.InvokeVoidAsync(command);
         }
     }
 }
