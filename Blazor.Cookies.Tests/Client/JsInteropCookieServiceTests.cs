@@ -8,11 +8,11 @@ namespace Blazor.Cookies.Tests.Client
 {
     public class JsInteropCookieServiceTests
     {
-        private JsInteropCookieService CreateGetAllAsyncCookieService(string returnValue)
+        private JsInteropCookieService CreateMockCookieService(string jsInteropReturnValue)
         {
             var jsRuntime = new Mock<IJSRuntime>();
             jsRuntime.Setup(x => x.InvokeAsync<string>("eval", It.IsAny<object[]>()))
-                .ReturnsAsync(returnValue);
+                .ReturnsAsync(jsInteropReturnValue);
             return new JsInteropCookieService(jsRuntime.Object);
         }
 
@@ -31,7 +31,7 @@ namespace Blazor.Cookies.Tests.Client
                 new Cookie("theme", "dark"),
                 new Cookie("cartItems", "5")
             };
-            ICookieService cookieService = CreateGetAllAsyncCookieService(
+            ICookieService cookieService = CreateMockCookieService(
                 ToJsCookieString(cookies)
             );
             
@@ -44,7 +44,7 @@ namespace Blazor.Cookies.Tests.Client
         public async Task GetAllAsync_WithEmptyCookies__ReturnsIEnumerable()
         {
             List<Cookie> cookies = new List<Cookie>();
-            ICookieService cookieService = CreateGetAllAsyncCookieService(
+            ICookieService cookieService = CreateMockCookieService(
                 ToJsCookieString(cookies)
             );
 
@@ -57,7 +57,7 @@ namespace Blazor.Cookies.Tests.Client
         public async Task GetAllAsync_WithNullCookies_ReturnsIEnumerable()
         {
             List<Cookie>? cookies = null;
-            ICookieService cookieService = CreateGetAllAsyncCookieService(null);
+            ICookieService cookieService = CreateMockCookieService(null);
 
             var resultCookies = await cookieService.GetAllAsync();
             Assert.Empty(resultCookies);
