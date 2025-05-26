@@ -8,32 +8,19 @@ namespace Blazor.Cookies.Tests.Client
 {
     public class JsInteropCookieServiceTests
     {
-        private JsInteropCookieService CreateMockCookieService(string jsInteropReturnValue)
+        private static string ToJsCookieString(IEnumerable<Cookie>? cookies)
         {
-            var jsRuntime = new Mock<IJSRuntime>();
-            jsRuntime.Setup(x => x.InvokeAsync<string>("eval", It.IsAny<object[]>()))
-                .ReturnsAsync(jsInteropReturnValue);
-            return new JsInteropCookieService(jsRuntime.Object);
-        }
+            if (cookies == null) { return string.Empty; }
+            if (cookies.Count() == 0) { return string.Empty; }
 
-        private static string ToJsCookieString(IEnumerable<Cookie> cookies)
-        {
             return string.Join("; ", cookies.Select(c => $"{c.Name}={c.Value}"));
         }
 
-        private static async Task<IEnumerable<Cookie>?> GetAllAsyncFromCookieService(IEnumerable<Cookie>? cookies)
+        private static async Task<IEnumerable<Cookie>> GetAllAsyncFromCookieService(IEnumerable<Cookie> cookies)
         {
             var jsRuntime = new Mock<IJSRuntime>();
-            if (cookies == null)
-            {
-                jsRuntime.Setup(x => x.InvokeAsync<string?>("eval", It.IsAny<object[]>()))
-                         .ReturnsAsync((string?)null);
-            }
-            else
-            {
-                jsRuntime.Setup(x => x.InvokeAsync<string?>("eval", It.IsAny<object[]>()))
-                    .ReturnsAsync(ToJsCookieString(cookies));
-            }
+            jsRuntime.Setup(x => x.InvokeAsync<string?>("eval", It.IsAny<object[]>()))
+                .ReturnsAsync(ToJsCookieString(cookies));
 
             JsInteropCookieService cookieService = new JsInteropCookieService(jsRuntime.Object);
             return await cookieService.GetAllAsync();
@@ -49,11 +36,8 @@ namespace Blazor.Cookies.Tests.Client
                 new Cookie("theme", "dark"),
                 new Cookie("cartItems", "5")
             };
-            ICookieService cookieService = CreateMockCookieService(
-                ToJsCookieString(cookies)
-            );
-            
-            var resultCookies = await cookieService.GetAllAsync();
+
+            var resultCookies = await GetAllAsyncFromCookieService(cookies);
             Assert.NotEmpty(resultCookies);
             Assert.IsAssignableFrom<IEnumerable<Cookie>>(resultCookies);
             Assert.Equal(cookies, resultCookies);
@@ -65,11 +49,8 @@ namespace Blazor.Cookies.Tests.Client
             {
                 new Cookie("sessionId", "ei34jdh")
             };
-            ICookieService cookieService = CreateMockCookieService(
-                ToJsCookieString(cookies)
-            );
 
-            var resultCookies = await cookieService.GetAllAsync();
+            var resultCookies = await GetAllAsyncFromCookieService(cookies);
             Assert.NotEmpty(resultCookies);
             Assert.IsAssignableFrom<IEnumerable<Cookie>>(resultCookies);
             Assert.Equal(cookies, resultCookies);
@@ -81,11 +62,8 @@ namespace Blazor.Cookies.Tests.Client
             {
                 new Cookie("sessionId", "ei34jdh")
             };
-            ICookieService cookieService = CreateMockCookieService(
-                ToJsCookieString(cookies)
-            );
 
-            var resultCookies = await cookieService.GetAllAsync();
+            var resultCookies = await GetAllAsyncFromCookieService(cookies);
             Assert.NotEmpty(resultCookies);
             Assert.IsAssignableFrom<IEnumerable<Cookie>>(resultCookies);
             Assert.Equal(cookies, resultCookies);
@@ -100,11 +78,8 @@ namespace Blazor.Cookies.Tests.Client
                 new Cookie("theme", ""),
                 new Cookie("cartItems", "")
             };
-            ICookieService cookieService = CreateMockCookieService(
-                ToJsCookieString(cookies)
-            );
 
-            var resultCookies = await cookieService.GetAllAsync();
+            var resultCookies = await GetAllAsyncFromCookieService(cookies);
             Assert.NotEmpty(resultCookies);
             Assert.IsAssignableFrom<IEnumerable<Cookie>>(resultCookies);
             Assert.Equal(cookies, resultCookies);
@@ -113,11 +88,8 @@ namespace Blazor.Cookies.Tests.Client
         public async Task GetAllAsync_WithEmptyCookies__ShouldReturnCookieIEnumerable()
         {
             List<Cookie> cookies = new List<Cookie>();
-            ICookieService cookieService = CreateMockCookieService(
-                ToJsCookieString(cookies)
-            );
 
-            var resultCookies = await cookieService.GetAllAsync();
+            var resultCookies = await GetAllAsyncFromCookieService(cookies);
             Assert.Empty(resultCookies);
             Assert.IsAssignableFrom<IEnumerable<Cookie>>(resultCookies);
             Assert.Equal(cookies, resultCookies);
@@ -125,10 +97,7 @@ namespace Blazor.Cookies.Tests.Client
         [Fact]
         public async Task GetAllAsync_WithNullCookies_ShouldReturnCookieIEnumerable()
         {
-            List<Cookie>? cookies = null;
-            ICookieService cookieService = CreateMockCookieService(null);
-
-            var resultCookies = await cookieService.GetAllAsync();
+            var resultCookies = await GetAllAsyncFromCookieService(null);
             Assert.Empty(resultCookies);
             Assert.IsAssignableFrom<IEnumerable<Cookie>>(resultCookies);
         }
