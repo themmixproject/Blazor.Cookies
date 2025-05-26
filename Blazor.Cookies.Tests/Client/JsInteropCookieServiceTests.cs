@@ -138,5 +138,35 @@ namespace Blazor.Cookies.Tests.Client
             Assert.NotNull(cartItemsCookie);
             Assert.Equal(cookies.First(c => c.Name == "cartItems"), cartItemsCookie);
         }
+        [Fact]
+        public async Task GetAsync_WithEmptyValueCookies_ShouldReturnCookie()
+        {
+            List<Cookie> cookies = new List<Cookie>
+            {
+                new Cookie("sessionId", ""),
+                new Cookie("userId", ""),
+                new Cookie("theme", ""),
+                new Cookie("cartItems", "")
+            };
+
+            var jsRuntime = GetMockJSRuntime(cookies);
+            JsInteropCookieService cookieService = new JsInteropCookieService(jsRuntime);
+
+            var sessionIdCookie = await cookieService.GetAsync("sessionId");
+            Assert.NotNull(sessionIdCookie);
+            Assert.Equal(cookies.First(c => c.Name == "sessionId"), sessionIdCookie);
+
+            var userIdCookie = await cookieService.GetAsync("userId");
+            Assert.NotNull(userIdCookie);
+            Assert.Equal(cookies.First(c => c.Name == "userId"), userIdCookie);
+
+            var themeCookie = await cookieService.GetAsync("theme");
+            Assert.NotNull(userIdCookie);
+            Assert.Equal(cookies.First(c => c.Name == "theme"), themeCookie);
+
+            var cartItemsCookie = await cookieService.GetAsync("cartItems");
+            Assert.NotNull(cartItemsCookie);
+            Assert.Equal(cookies.First(c => c.Name == "cartItems"), cartItemsCookie);
+        }
     }
 }
