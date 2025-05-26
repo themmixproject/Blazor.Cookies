@@ -20,6 +20,24 @@ namespace Blazor.Cookies.Tests.Client
         {
             return string.Join("; ", cookies.Select(c => $"{c.Name}={c.Value}"));
         }
+
+        private static async Task<IEnumerable<Cookie>?> GetAllAsyncFromCookieService(IEnumerable<Cookie>? cookies)
+        {
+            var jsRuntime = new Mock<IJSRuntime>();
+            if (cookies == null)
+            {
+                jsRuntime.Setup(x => x.InvokeAsync<string?>("eval", It.IsAny<object[]>()))
+                         .ReturnsAsync((string?)null);
+            }
+            else
+            {
+                jsRuntime.Setup(x => x.InvokeAsync<string?>("eval", It.IsAny<object[]>()))
+                    .ReturnsAsync(ToJsCookieString(cookies));
+            }
+
+            JsInteropCookieService cookieService = new JsInteropCookieService(jsRuntime.Object);
+            return await cookieService.GetAllAsync();
+        }
       
         [Fact]
         public async Task GetAllAsync_WithCookies_ShouldReturnCookieIEnumerable()
