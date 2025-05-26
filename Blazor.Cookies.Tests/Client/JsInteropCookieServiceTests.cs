@@ -18,12 +18,18 @@ namespace Blazor.Cookies.Tests.Client
 
         private static async Task<IEnumerable<Cookie>> GetAllAsyncFromCookieService(IEnumerable<Cookie> cookies)
         {
-            var jsRuntime = new Mock<IJSRuntime>();
-            jsRuntime.Setup(x => x.InvokeAsync<string?>("eval", It.IsAny<object[]>()))
-                .ReturnsAsync(ToJsCookieString(cookies));
+            var jsRuntime = GetMockJSRuntime(cookies);
 
-            JsInteropCookieService cookieService = new JsInteropCookieService(jsRuntime.Object);
+            JsInteropCookieService cookieService = new JsInteropCookieService(jsRuntime);
             return await cookieService.GetAllAsync();
+        }
+        private static IJSRuntime GetMockJSRuntime(IEnumerable<Cookie> cookies)
+        {
+            Mock<IJSRuntime> jsRuntime = new Mock<IJSRuntime>();
+            jsRuntime.Setup(jsRuntime => jsRuntime.InvokeAsync<string?>("eval", It.IsAny<object[]>()))
+                .ReturnsAsync(ToJsCookieString(cookies));
+      
+            return jsRuntime.Object;
         }
       
         [Fact]
