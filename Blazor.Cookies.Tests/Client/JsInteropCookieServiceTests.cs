@@ -41,6 +41,38 @@ namespace Blazor.Cookies.Tests.Client
             Assert.Equal(cookies, resultCookies);
         }
         [Fact]
+        public async Task GetAllAsync_WithCookie_ShouldReturnCookieIEnumerable()
+        {
+            List<Cookie> cookies = new List<Cookie>
+            {
+                new Cookie("sessionId", "ei34jdh")
+            };
+            ICookieService cookieService = CreateMockCookieService(
+                ToJsCookieString(cookies)
+            );
+
+            var resultCookies = await cookieService.GetAllAsync();
+            Assert.NotEmpty(resultCookies);
+            Assert.IsAssignableFrom<IEnumerable<Cookie>>(resultCookies);
+            Assert.Equal(cookies, resultCookies);
+        }
+        [Fact]
+        public async Task GetAllAsync_WithEmptyCookie_ShouldReturnCookieIEnumerable()
+        {
+            List<Cookie> cookies = new List<Cookie>
+            {
+                new Cookie("sessionId", "ei34jdh")
+            };
+            ICookieService cookieService = CreateMockCookieService(
+                ToJsCookieString(cookies)
+            );
+
+            var resultCookies = await cookieService.GetAllAsync();
+            Assert.NotEmpty(resultCookies);
+            Assert.IsAssignableFrom<IEnumerable<Cookie>>(resultCookies);
+            Assert.Equal(cookies, resultCookies);
+        }
+        [Fact]
         public async Task GetAllAsync_WithEmptyValueCookies_ShouldReturnCookieIEnumerable()
         {
             List<Cookie> cookies = new List<Cookie>
