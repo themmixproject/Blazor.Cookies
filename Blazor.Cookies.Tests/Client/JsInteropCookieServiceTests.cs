@@ -168,5 +168,20 @@ namespace Blazor.Cookies.Tests.Client
             Assert.NotNull(cartItemsCookie);
             Assert.Equal(cookies.First(c => c.Name == "cartItems"), cartItemsCookie);
         }
+        [Fact]
+        public async Task GetAsync_WithSingleCookie_ShouldReturnCookie()
+        {
+            List<Cookie> cookies = new List<Cookie>
+            {
+                new Cookie("sessionId", "ei34jdh")
+            };
+
+            var jsRuntime = GetMockJSRuntime(cookies);
+            JsInteropCookieService cookieService = new JsInteropCookieService(jsRuntime);
+
+            var sessionIdCookie = await cookieService.GetAsync("sessionId");
+            Assert.NotNull(sessionIdCookie);
+            Assert.Equal(cookies.First(c => c.Name == "sessionId"), sessionIdCookie);
+        }
     }
 }
