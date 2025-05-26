@@ -28,7 +28,7 @@ namespace Blazor.Cookies.Tests.Client
             Mock<IJSRuntime> jsRuntime = new Mock<IJSRuntime>();
             jsRuntime.Setup(jsRuntime => jsRuntime.InvokeAsync<string?>("eval", It.IsAny<object[]>()))
                 .ReturnsAsync(ToJsCookieString(cookies));
-      
+
             return jsRuntime.Object;
         }
       
@@ -106,6 +106,37 @@ namespace Blazor.Cookies.Tests.Client
             var resultCookies = await GetAllAsyncFromCookieService(null);
             Assert.Empty(resultCookies);
             Assert.IsAssignableFrom<IEnumerable<Cookie>>(resultCookies);
+        }
+
+        [Fact]
+        public async Task GetAsync_WithCookies_ShouldReturnCookie()
+        {
+            List<Cookie> cookies = new List<Cookie>
+            {
+                new Cookie("sessionId", "ei34jdh"),
+                new Cookie("userId", "xyz789"),
+                new Cookie("theme", "dark"),
+                new Cookie("cartItems", "5")
+            };
+
+            var jsRuntime = GetMockJSRuntime(cookies);
+            JsInteropCookieService cookieService = new JsInteropCookieService(jsRuntime);
+            
+            var sessionIdCookie = await cookieService.GetAsync("sessionId");
+            Assert.NotNull(sessionIdCookie);
+            Assert.Equal(cookies.First(c => c.Name == "sessionId"), sessionIdCookie);
+
+            var userIdCookie = await cookieService.GetAsync("userId");
+            Assert.NotNull(userIdCookie);
+            Assert.Equal(cookies.First(c => c.Name == "userId"), userIdCookie);
+
+            var themeCookie = await cookieService.GetAsync("theme");
+            Assert.NotNull(userIdCookie);
+            Assert.Equal(cookies.First(c => c.Name == "theme"), themeCookie);
+
+            var cartItemsCookie = await cookieService.GetAsync("cartItems");
+            Assert.NotNull(cartItemsCookie);
+            Assert.Equal(cookies.First(c => c.Name == "cartItems"), cartItemsCookie);
         }
     }
 }
