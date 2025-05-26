@@ -60,7 +60,7 @@ namespace Blazor.Cookies.Tests.Client
         {
             List<Cookie> cookies = new List<Cookie>
             {
-                new Cookie("sessionId", "ei34jdh")
+                new Cookie("sessionId", "")
             };
 
             var resultCookies = await GetAllAsyncFromCookieService(cookies);
