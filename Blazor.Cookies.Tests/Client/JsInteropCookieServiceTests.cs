@@ -21,7 +21,7 @@ namespace Blazor.Cookies.Tests.Client
             return new JsInteropCookieService(jsRuntime.Object);
         }
 
-        public static string ToJsCookieString(List<Cookie> cookies)
+        public static string ToJsCookieString(IEnumerable<Cookie> cookies)
         {
             return string.Join("; ", cookies.Select(c => $"{c.Name}={c.Value}"));
         }
