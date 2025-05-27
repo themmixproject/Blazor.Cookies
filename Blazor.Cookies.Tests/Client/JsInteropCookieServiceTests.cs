@@ -314,5 +314,23 @@ namespace Blazor.Cookies.Tests.Client
             Assert.NotNull(cookie);
             Assert.Equal(cookie, resultCookie);
         }
+
+        [Fact]
+        public async Task RemoveAsync_ShouldCallInvokeVoidAsync()
+        {
+            Cookie cookie = new Cookie("sessionId", "ei34jdh");
+
+            var jsRuntime = new Mock<IJSRuntime>();
+            jsRuntime.Setup(jsRuntime => jsRuntime.InvokeAsync<IJSVoidResult>("eval", It.IsAny<object[]>()))
+                .Returns(new ValueTask<IJSVoidResult>());
+            JsInteropCookieService jsInteropCookieService = new JsInteropCookieService(jsRuntime.Object);
+
+            await jsInteropCookieService.RemoveAsync(cookie.Name);
+            jsRuntime.Verify(jsRuntime =>
+            jsRuntime.InvokeAsync<IJSVoidResult>(
+                "eval",
+                It.Is<string>(s => s.Contains($"document.cookie = '{cookie.Name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/'")))
+            , Times.Once);
+        }
     }
 }
