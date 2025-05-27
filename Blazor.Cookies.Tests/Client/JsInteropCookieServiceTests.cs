@@ -297,7 +297,8 @@ namespace Blazor.Cookies.Tests.Client
             {
                 Name = "sessionId",
                 Value = "ei34jdh",
-                Expires = DateTime.UtcNow.AddDays(1)            };
+                Expires = DateTime.UtcNow.AddDays(1)
+            };
             JsInteropCookieService jsInteropCookieService = CreateMockSetAsyncCookieService(
                 new List<Cookie> { cookie }
             );
