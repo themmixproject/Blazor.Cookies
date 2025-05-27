@@ -220,5 +220,16 @@ namespace Blazor.Cookies.Tests.Client
             var sessionIdCookie = await cookieService.GetAsync("sessionId");
             Assert.Null(sessionIdCookie);
         }
+
+        private JsInteropCookieService CreateMockSetAsyncCookieService(IEnumerable<Cookie>? cookies)
+        {
+            Mock<IJSRuntime> mockJSRuntime = new Mock<IJSRuntime>();
+            mockJSRuntime.Setup(jsRuntime => jsRuntime.InvokeAsync<IJSVoidResult>("eval", It.IsAny<object[]>()))
+                .Returns(new ValueTask<IJSVoidResult>());
+            mockJSRuntime.Setup(jsRuntime => jsRuntime.InvokeAsync<string?>("eval", It.IsAny<object[]>()))
+                .ReturnsAsync(ToJsCookieString(cookies));
+
+            return new JsInteropCookieService(mockJSRuntime.Object);
+        }
     }
 }
