@@ -6,7 +6,7 @@ using System.Net;
 namespace Blazor.Cookies.Server.Services
 {
 
-    internal class HttpContextCookieService : ICookieService
+    public class HttpContextCookieService : ICookieService
     {
         private readonly HttpContext _httpContext;
         private readonly Dictionary<string, Cookie> _requestCookies;
@@ -38,8 +38,10 @@ namespace Blazor.Cookies.Server.Services
             return Task.FromResult<Cookie?>(null);
         }
 
-        public Task SetAsync(Cookie cookie, CancellationToken cancellationToken)
-        {
+        public Task SetAsync(
+            Cookie cookie,
+            CancellationToken cancellationToken = default
+        ) {
             ValidateCookie(cookie);
             RemoveCookieIfExistsFromHeader(cookie.Name);
             AppendCookieToHttpContext(cookie);
