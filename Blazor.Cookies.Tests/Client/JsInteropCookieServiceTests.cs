@@ -1,6 +1,7 @@
 ﻿using Blazor.Cookies.Client.Services;
 using Blazor.Cookies.Interfaces;
 using Microsoft.JSInterop;
+using Microsoft.JSInterop.Infrastructure;
 using Moq;
 using System.Net;
 
@@ -230,6 +231,21 @@ namespace Blazor.Cookies.Tests.Client
                 .ReturnsAsync(ToJsCookieString(cookies));
 
             return new JsInteropCookieService(mockJSRuntime.Object);
+        }
+
+        [Fact]
+        public async Task SetAsync_WithCookieOverload_ShouldReturnCookie()
+        {
+            Cookie cookie = new Cookie("sessionId", "ei34jdh");
+            JsInteropCookieService jsInteropCookieService = CreateMockSetAsyncCookieService(
+                new List<Cookie> { cookie }
+            );
+
+            await jsInteropCookieService.SetAsync(cookie);
+
+            var resultCookie = await jsInteropCookieService.GetAsync(cookie.Name);
+            Assert.NotNull(cookie);
+            Assert.Equal(cookie, resultCookie);
         }
     }
 }
