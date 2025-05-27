@@ -9,32 +9,13 @@ namespace Blazor.Cookies.Tests.Server
         [Fact]
         public async Task GetAllAsync_WithCookies_ShouldReturnCookieIEnumerable()
         {
+            DateTime cookieExpire = DateTime.UtcNow.AddDays(1);
             List<Cookie> cookies = new List<Cookie>
             {
-                new Cookie
-                {
-                    Name = "sessionId",
-                    Value = "ei34jdh",
-                    Expires = DateTime.UtcNow.AddDays(1),
-                },
-                new Cookie
-                {
-                    Name = "userId",
-                    Value = "xyz789",
-                    Expires = DateTime.UtcNow.AddDays(1)
-                },
-                new Cookie
-                {
-                    Name = "theme",
-                    Value = "dark",
-                    Expires = DateTime.UtcNow.AddDays(1)
-                },
-                new Cookie
-                {
-                    Name = "cartItems",
-                    Value = "5",
-                    Expires = DateTime.UtcNow.AddDays(1)
-                }
+                new Cookie { Name = "sessionId", Value = "ei34jdh", Expires = cookieExpire },
+                new Cookie { Name = "userId", Value = "xyz789", Expires = cookieExpire },
+                new Cookie { Name = "theme", Value = "dark", Expires = cookieExpire },
+                new Cookie { Name = "cartItems", Value = "5", Expires = cookieExpire }
             };
 
             HttpContextAccessor httpContextAccessor = new HttpContextAccessor();
@@ -58,32 +39,13 @@ namespace Blazor.Cookies.Tests.Server
         [Fact]
         public async Task GetAllAsync_WithEmptyValueCookies_ShouldReturnCookieIEnumerable()
         {
+            DateTime cookieExpire = DateTime.UtcNow.AddDays(1);
             List<Cookie> cookies = new List<Cookie>
             {
-                new Cookie
-                {
-                    Name = "sessionId",
-                    Value = "",
-                    Expires = DateTime.UtcNow.AddDays(1),
-                },
-                new Cookie
-                {
-                    Name = "userId",
-                    Value = "",
-                    Expires = DateTime.UtcNow.AddDays(1)
-                },
-                new Cookie
-                {
-                    Name = "theme",
-                    Value = "",
-                    Expires = DateTime.UtcNow.AddDays(1)
-                },
-                new Cookie
-                {
-                    Name = "cartItems",
-                    Value = "",
-                    Expires = DateTime.UtcNow.AddDays(1)
-                }
+                new Cookie { Name = "sessionId", Value = "", Expires = cookieExpire },
+                new Cookie { Name = "userId", Value = "", Expires = cookieExpire },
+                new Cookie { Name = "theme", Value = "", Expires = cookieExpire },
+                new Cookie { Name = "cartItems", Value = "", Expires = cookieExpire }
             };
 
             HttpContextAccessor httpContextAccessor = new HttpContextAccessor();
