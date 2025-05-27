@@ -140,7 +140,7 @@ namespace Blazor.Cookies.Client.Services
                 "const name = eqPos > -1 ? cookie.substring(0, eqPos) : cookie;" +
                 "document.cookie = name + '=;expires=Thu, 01, Jan 1970 00:00:01 GMT';" +
                 "});";
-            await JSRuntime.InvokeVoidAsync(command);
+            await JSRuntime.InvokeVoidAsync("eval", command);
         }
     }
 }
