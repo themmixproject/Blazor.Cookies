@@ -6,6 +6,16 @@ namespace Blazor.Cookies.Tests.Server
 {
     public class HttpContextCookieServiceTests
     {
+        private (HttpContext, HttpContextCookieService) CreateTestDependencies()
+        {
+            HttpContextAccessor httpContextAccessor = new HttpContextAccessor();
+            HttpContext httpContext = new DefaultHttpContext();
+            httpContextAccessor.HttpContext = httpContext;
+            HttpContextCookieService httpContextCookieService = new HttpContextCookieService(httpContextAccessor);
+            
+            return (httpContext, httpContextCookieService);
+        }
+
         [Fact]
         public async Task GetAllAsync_WithCookies_ShouldReturnCookieIEnumerable()
         {
@@ -18,14 +28,11 @@ namespace Blazor.Cookies.Tests.Server
                 new Cookie { Name = "cartItems", Value = "5", Expires = cookieExpire }
             };
 
-            HttpContextAccessor httpContextAccessor = new HttpContextAccessor();
-            HttpContext httpContext = new DefaultHttpContext();
-            httpContextAccessor.HttpContext = httpContext;
-            HttpContextCookieService httpContextCookieService = new HttpContextCookieService(httpContextAccessor);
+            (var httpContext, var cookieService) = CreateTestDependencies();
 
             foreach(Cookie cookie in cookies)
             {
-                await httpContextCookieService.SetAsync(cookie);
+                await cookieService.SetAsync(cookie);
             }
 
             var resultCookiesValues = httpContext.Response.Headers.SetCookie;
@@ -48,14 +55,10 @@ namespace Blazor.Cookies.Tests.Server
                 new Cookie { Name = "cartItems", Value = "", Expires = cookieExpire }
             };
 
-            HttpContextAccessor httpContextAccessor = new HttpContextAccessor();
-            HttpContext httpContext = new DefaultHttpContext();
-            httpContextAccessor.HttpContext = httpContext;
-            HttpContextCookieService httpContextCookieService = new HttpContextCookieService(httpContextAccessor);
+            (var httpContext, var cookieService) = CreateTestDependencies();
 
-            foreach (Cookie cookie in cookies)
-            {
-                await httpContextCookieService.SetAsync(cookie);
+            foreach (Cookie cookie in cookies) {
+                await cookieService.SetAsync(cookie);
             }
 
             var resultCookiesValues = httpContext.Response.Headers.SetCookie;
