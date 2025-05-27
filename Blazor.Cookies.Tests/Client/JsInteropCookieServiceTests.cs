@@ -1,5 +1,6 @@
 ﻿using Blazor.Cookies.Client.Services;
 using Blazor.Cookies.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.JSInterop;
 using Microsoft.JSInterop.Infrastructure;
 using Moq;
@@ -242,6 +243,71 @@ namespace Blazor.Cookies.Tests.Client
             );
 
             await jsInteropCookieService.SetAsync(cookie);
+
+            var resultCookie = await jsInteropCookieService.GetAsync(cookie.Name);
+            Assert.NotNull(cookie);
+            Assert.Equal(cookie, resultCookie);
+        }
+        [Fact]
+        public async Task SetAsync_WithCookieSameSiteOverload_ShouldReturnCookie()
+        {
+            Cookie cookie = new Cookie("sessionId", "ei34jdh");
+            JsInteropCookieService jsInteropCookieService = CreateMockSetAsyncCookieService(
+                new List<Cookie> { cookie }
+            );
+
+            await jsInteropCookieService.SetAsync(cookie, SameSiteMode.Strict);
+
+            var resultCookie = await jsInteropCookieService.GetAsync(cookie.Name);
+            Assert.NotNull(cookie);
+            Assert.Equal(cookie, resultCookie);
+        }
+        [Fact]
+        public async Task SetAsync_WithCookieNameValueOverload_ShouldReturnCookie()
+        {
+            Cookie cookie = new Cookie("sessionId", "ei34jdh");
+            JsInteropCookieService jsInteropCookieService = CreateMockSetAsyncCookieService(
+                new List<Cookie> { cookie }
+            );
+
+            await jsInteropCookieService.SetAsync(cookie.Name, cookie.Value);
+
+            var resultCookie = await jsInteropCookieService.GetAsync(cookie.Name);
+            Assert.NotNull(cookie);
+            Assert.Equal(cookie, resultCookie);
+        }
+        [Fact]
+        public async Task SetAsync_WithCookieNameValueExpiresOverload_ShouldReturnCookie()
+        {
+            Cookie cookie = new Cookie("sessionId", "ei34jdh");
+            JsInteropCookieService jsInteropCookieService = CreateMockSetAsyncCookieService(
+                new List<Cookie> { cookie }
+            );
+
+            await jsInteropCookieService.SetAsync(cookie.Name, cookie.Value);
+
+            var resultCookie = await jsInteropCookieService.GetAsync(cookie.Name);
+            Assert.NotNull(cookie);
+            Assert.Equal(cookie, resultCookie);
+        }
+        [Fact]
+        public async Task SetAsync_WithCookieNameValueExpiresSameSiteOverload_ShouldReturnCookie()
+        {
+            Cookie cookie = new Cookie
+            {
+                Name = "sessionId",
+                Value = "ei34jdh",
+                Expires = DateTime.UtcNow.AddDays(1)            };
+            JsInteropCookieService jsInteropCookieService = CreateMockSetAsyncCookieService(
+                new List<Cookie> { cookie }
+            );
+
+            await jsInteropCookieService.SetAsync(
+                cookie.Name,
+                cookie.Value,
+                cookie.Expires,
+                SameSiteMode.Strict
+            );
 
             var resultCookie = await jsInteropCookieService.GetAsync(cookie.Name);
             Assert.NotNull(cookie);
