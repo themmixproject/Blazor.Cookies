@@ -64,10 +64,8 @@ namespace Blazor.Cookies.Server.Services
             string value,
             CancellationToken cancellationToken = default
         ) {
-            Cookie cookie = new Cookie(name, value);
-            ValidateCookie(cookie);
-            RemoveCookieIfExistsFromHeader(cookie.Name);
-            AppendCookieToHttpContext(cookie);
+            RemoveCookieIfExistsFromHeader(name);
+            _httpContext.Response.Cookies.Append(name, value);
 
             return Task.CompletedTask;
         }
