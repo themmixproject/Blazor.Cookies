@@ -6,13 +6,17 @@ namespace Blazor.Cookies.Tests.Server
 {
     public class HttpContextCookieServiceTests
     {
+        // HttpContextCookieService.GetAsync method will not be tested due to
+        // the dependency on HttpContext.Request.Cookies which can only be
+        // read.
+
         private (HttpContext, HttpContextCookieService) CreateTestDependencies()
         {
             HttpContextAccessor httpContextAccessor = new HttpContextAccessor();
             HttpContext httpContext = new DefaultHttpContext();
             httpContextAccessor.HttpContext = httpContext;
             HttpContextCookieService httpContextCookieService = new HttpContextCookieService(httpContextAccessor);
-            
+
             return (httpContext, httpContextCookieService);
         }
 
