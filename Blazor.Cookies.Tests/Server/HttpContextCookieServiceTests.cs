@@ -130,5 +130,18 @@ namespace Blazor.Cookies.Tests.Server
                 Assert.Contains(cookie, responseCookie);
             }
         }
+        [Fact] public async Task SetAsync_WithCookieOverload_ShouldReturnCookie()
+        {
+            (var httpContext, var cookieService) = CreateTestDependencies();
+            
+            DateTime cookieExpire = DateTime.UtcNow.AddDays(1);
+            Cookie cookie = new Cookie { Name = "sessionId", Value = "ei34jdh", Expires = cookieExpire };
+            await cookieService.SetAsync(cookie);
+
+            var responseCookie = httpContext.Response.Headers.SetCookie[0]!;
+            var cookieString = $"{cookie.Name}={cookie.Value}; expires={cookie.Expires:R}; path=/";
+            Assert.NotEmpty(responseCookie);
+            Assert.Contains(cookieString, responseCookie);
+        }
     }
 }
