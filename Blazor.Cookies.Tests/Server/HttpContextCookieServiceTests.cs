@@ -34,7 +34,7 @@ namespace Blazor.Cookies.Tests.Server
 
             (var httpContext, var cookieService) = CreateTestDependencies();
 
-            foreach(Cookie cookie in cookies)
+            foreach (Cookie cookie in cookies)
             {
                 await cookieService.SetAsync(cookie);
             }
@@ -61,7 +61,8 @@ namespace Blazor.Cookies.Tests.Server
 
             (var httpContext, var cookieService) = CreateTestDependencies();
 
-            foreach (Cookie cookie in cookies) {
+            foreach (Cookie cookie in cookies)
+            {
                 await cookieService.SetAsync(cookie);
             }
 
@@ -88,7 +89,7 @@ namespace Blazor.Cookies.Tests.Server
                 new Cookie { Name = "cartItems", Value = "5", Expires = cookieExpire }
             };
 
-            foreach(Cookie cookie in cookies)
+            foreach (Cookie cookie in cookies)
             {
                 await cookieService.SetAsync(cookie);
             }
@@ -130,10 +131,11 @@ namespace Blazor.Cookies.Tests.Server
                 Assert.Contains(cookie, responseCookie);
             }
         }
-        [Fact] public async Task SetAsync_WithCookieOverload_ShouldReturnCookie()
+        [Fact]
+        public async Task SetAsync_WithCookieOverload_ShouldReturnCookie()
         {
             (var httpContext, var cookieService) = CreateTestDependencies();
-            
+
             DateTime cookieExpire = DateTime.UtcNow.AddDays(1);
             Cookie cookie = new Cookie { Name = "sessionId", Value = "ei34jdh", Expires = cookieExpire };
             await cookieService.SetAsync(cookie);
@@ -219,16 +221,17 @@ namespace Blazor.Cookies.Tests.Server
                 await cookieService.SetAsync(cookie);
             }
 
-            var responseCookiesCount = httpContext.Response.Headers.SetCookie.Count;
-            for(int i = 0; i < responseCookiesCount; i++)
+            for (int i = 0; i < cookies.Count; i++)
             {
-                Cookie cookie = cookies[i];
+                var cookie = cookies[i];
+
                 await cookieService.RemoveAsync(cookie.Name);
 
-                Assert.DoesNotContain<string>($"{cookie.Name}={cookie.Value}", httpContext.Response.Headers.SetCookie);   
+                var responseCookies = httpContext.Response.Headers.SetCookie;
+                Assert.DoesNotContain<string>($"{cookie.Name}={cookie.Value}", responseCookies);
             }
 
-            Assert.Empty(httpContext.Response.Headers.SetCookie!);
+            Assert.Equal(0, httpContext.Response.Headers.SetCookie.Count);
         }
     }
 }
