@@ -146,18 +146,16 @@ namespace Blazor.Cookies.Server.Services
 
         private void RemoveCookieIfExistsFromHeader(string name)
         {
-            List<string?> cookieValues = ResponseHeaders
-                .SingleOrDefault(header => header.Key == "Set-Cookie")
-                .Value
-                .ToList<string?>();
+            List<string?> responseCookies = ResponseHeaders.SetCookie.ToList();
 
-            foreach (string? cookieValue in cookieValues)
+            for (int i = 0; i < responseCookies.Count; i++)
             {
-                if (string.IsNullOrEmpty(cookieValue)) { continue; }
-                if (!cookieValue.StartsWith($"{name}=")) { continue; }
+                var responseCookie = responseCookies[i];
+                if (string.IsNullOrWhiteSpace(responseCookie)) { continue; }
+                if (!responseCookie.StartsWith($"{name}=")) { continue; }
 
-                cookieValues.Remove(cookieValue);
-                ResponseHeaders.SetCookie = new(cookieValues.ToArray());
+                responseCookies.RemoveAt(i);
+                ResponseHeaders.SetCookie = responseCookies.ToArray();
             }
         }
 
