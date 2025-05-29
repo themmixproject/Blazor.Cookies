@@ -163,8 +163,12 @@ namespace Blazor.Cookies.Server.Services
 
         public Task RemoveAsync(string name, CancellationToken cancellationToken)
         {
+            // deletes cookie from response request
+            RemoveCookieIfExistsFromHeader(name);
+
             if (_requestCookies.Remove(name))
             {
+                // deletes cookie from client
                 _httpContext.Response.Cookies.Delete(name);
             }
 
