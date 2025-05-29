@@ -34,7 +34,7 @@ namespace Blazor.Cookies.Tests.Server
 
             (var httpContext, var cookieService) = CreateTestDependencies();
 
-            foreach(Cookie cookie in cookies)
+            foreach (Cookie cookie in cookies)
             {
                 await cookieService.SetAsync(cookie);
             }
@@ -61,7 +61,8 @@ namespace Blazor.Cookies.Tests.Server
 
             (var httpContext, var cookieService) = CreateTestDependencies();
 
-            foreach (Cookie cookie in cookies) {
+            foreach (Cookie cookie in cookies)
+            {
                 await cookieService.SetAsync(cookie);
             }
 
@@ -88,7 +89,7 @@ namespace Blazor.Cookies.Tests.Server
                 new Cookie { Name = "cartItems", Value = "5", Expires = cookieExpire }
             };
 
-            foreach(Cookie cookie in cookies)
+            foreach (Cookie cookie in cookies)
             {
                 await cookieService.SetAsync(cookie);
             }
@@ -130,7 +131,8 @@ namespace Blazor.Cookies.Tests.Server
                 Assert.Contains(cookie, responseCookie);
             }
         }
-        [Fact] public async Task SetAsync_WithCookieOverload_ShouldReturnCookie()
+        [Fact]
+        public async Task SetAsync_WithCookieOverload_ShouldReturnCookie()
         {
             (var httpContext, var cookieService) = CreateTestDependencies();
             
