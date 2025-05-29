@@ -102,7 +102,7 @@ namespace Blazor.Cookies.Server.Services
             };
             ValidateCookie(cookie);
             RemoveCookieIfExistsFromHeader(cookie.Name);
-            AppendCookieToHttpContext(cookie);
+            AppendCookieToHttpContext(cookie, sameSiteMode);
 
             return Task.CompletedTask;
         }
