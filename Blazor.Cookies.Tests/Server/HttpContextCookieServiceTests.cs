@@ -199,5 +199,36 @@ namespace Blazor.Cookies.Tests.Server
             Assert.NotEmpty(responseCookie);
             Assert.Contains(cookieString, responseCookie);
         }
+
+        [Fact]
+        public async Task RemoveAsync_WithCookies()
+        {
+            (var httpContext, var cookieService) = CreateTestDependencies();
+
+            DateTime cookieExpire = DateTime.UtcNow.AddDays(1);
+            List<Cookie> cookies = new List<Cookie>
+            {
+                new Cookie { Name = "sessionId", Value = "ei34jdh", Expires = cookieExpire },
+                new Cookie { Name = "userId", Value = "xyz789", Expires = cookieExpire },
+                new Cookie { Name = "theme", Value = "dark", Expires = cookieExpire },
+                new Cookie { Name = "cartItems", Value = "5", Expires = cookieExpire }
+            };
+
+            foreach (Cookie cookie in cookies)
+            {
+                await cookieService.SetAsync(cookie);
+            }
+
+            var responseCookiesCount = httpContext.Response.Headers.SetCookie.Count;
+            for(int i = 0; i < responseCookiesCount; i++)
+            {
+                Cookie cookie = cookies[i];
+                await cookieService.RemoveAsync(cookie.Name);
+
+                Assert.DoesNotContain<string>($"{cookie.Name}={cookie.Value}", httpContext.Response.Headers.SetCookie);   
+            }
+
+            Assert.Empty(httpContext.Response.Headers.SetCookie!);
+        }
     }
 }
