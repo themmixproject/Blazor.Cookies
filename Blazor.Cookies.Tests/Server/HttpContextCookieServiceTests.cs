@@ -210,10 +210,10 @@ namespace Blazor.Cookies.Tests.Server
             DateTime cookieExpire = DateTime.UtcNow.AddDays(1);
             List<Cookie> cookies = new List<Cookie>
             {
-                new Cookie { Name = "sessionId", Value = "", Expires = cookieExpire },
-                new Cookie { Name = "userId", Value = "", Expires = cookieExpire },
-                new Cookie { Name = "theme", Value = "", Expires = cookieExpire },
-                new Cookie { Name = "cartItems", Value = "", Expires = cookieExpire }
+                new Cookie { Name = "sessionId", Value = "ei34jdh", Expires = cookieExpire },
+                new Cookie { Name = "userId", Value = "xyz789", Expires = cookieExpire },
+                new Cookie { Name = "theme", Value = "dark", Expires = cookieExpire },
+                new Cookie { Name = "cartItems", Value = "5", Expires = cookieExpire }
             };
 
             foreach (Cookie cookie in cookies)
@@ -226,10 +226,12 @@ namespace Blazor.Cookies.Tests.Server
                 var cookie = cookies[i];
 
                 await cookieService.RemoveAsync(cookie.Name);
-                
+
                 var responseCookies = httpContext.Response.Headers.SetCookie;
-                Assert.Contains<string>($"{cookie.Name}={cookie.Value}", responseCookies);
+                Assert.DoesNotContain<string>($"{cookie.Name}={cookie.Value}", responseCookies);
             }
+
+            Assert.Equal(0, httpContext.Response.Headers.SetCookie.Count);
         }
     }
 }
