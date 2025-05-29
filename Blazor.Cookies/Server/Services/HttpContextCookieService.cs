@@ -161,7 +161,7 @@ namespace Blazor.Cookies.Server.Services
             }
         }
 
-        public Task RemoveAsync(string name, CancellationToken cancellationToken)
+        public Task RemoveAsync(string name, CancellationToken cancellationToken = default)
         {
             if (_requestCookies.Remove(name))
             {
@@ -171,7 +171,7 @@ namespace Blazor.Cookies.Server.Services
             return Task.CompletedTask;
         }
 
-        public Task RemoveAllAsync(CancellationToken cancellationToken)
+        public Task RemoveAllAsync(CancellationToken cancellationToken = default)
         {
             foreach(var cookie in _requestCookies)
             {
