@@ -41,7 +41,8 @@ namespace Blazor.Cookies.Server.Services
         public Task SetAsync(
             Cookie cookie,
             CancellationToken cancellationToken = default
-        ) {
+        )
+        {
             ValidateCookie(cookie);
             RemoveCookieIfExistsFromHeader(cookie.Name);
             AppendCookieToHttpContext(cookie);
@@ -52,7 +53,8 @@ namespace Blazor.Cookies.Server.Services
             Cookie cookie,
             SameSiteMode sameSiteMode,
             CancellationToken cancellationToken = default
-        ) {
+        )
+        {
             ValidateCookie(cookie);
             RemoveCookieIfExistsFromHeader(cookie.Name);
             AppendCookieToHttpContext(cookie, sameSiteMode);
@@ -63,7 +65,8 @@ namespace Blazor.Cookies.Server.Services
             string name,
             string value,
             CancellationToken cancellationToken = default
-        ) {
+        )
+        {
             RemoveCookieIfExistsFromHeader(name);
             _httpContext.Response.Cookies.Append(name, value);
 
@@ -74,7 +77,8 @@ namespace Blazor.Cookies.Server.Services
             string value,
             DateTime expires,
             CancellationToken cancellationToken = default
-        ) {
+        )
+        {
             Cookie cookie = new Cookie
             {
                 Name = name,
@@ -93,7 +97,8 @@ namespace Blazor.Cookies.Server.Services
             DateTime expires,
             SameSiteMode sameSiteMode,
             CancellationToken cancellationToken = default
-        ) {
+        )
+        {
             Cookie cookie = new Cookie
             {
                 Name = name,
@@ -133,7 +138,8 @@ namespace Blazor.Cookies.Server.Services
         private void AppendCookieToHttpContext(
             Cookie cookie,
             SameSiteMode sameSiteMode
-        ) {
+        )
+        {
             _httpContext.Response.Cookies.Append(cookie.Name, cookie.Value, new CookieOptions
             {
                 Expires = cookie.Expires,
@@ -173,15 +179,19 @@ namespace Blazor.Cookies.Server.Services
             return Task.CompletedTask;
         }
 
-        public Task RemoveAllAsync(CancellationToken cancellationToken = default)
+        public Task RemoveAllAsync(CancellationToken cancellationToken)
         {
-            foreach(var cookie in _requestCookies)
+            foreach (var cookie in _httpContext.Request.Cookies.Keys)
             {
-                _httpContext.Response.Cookies.Delete(cookie.Key);
+                _httpContext.Response.Cookies.Delete(cookie);
             }
-            _requestCookies.Clear();
+            foreach (var cookie in _httpContext.Request.Cookies.Keys)
+            {
+                _httpContext.Response.Cookies.Delete(cookie);
+            }
 
             return Task.CompletedTask;
         }
+
     }
 }
