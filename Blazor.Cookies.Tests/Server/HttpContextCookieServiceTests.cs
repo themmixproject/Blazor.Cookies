@@ -135,7 +135,7 @@ namespace Blazor.Cookies.Tests.Server
         public async Task SetAsync_WithCookieOverload_ShouldReturnCookie()
         {
             (var httpContext, var cookieService) = CreateTestDependencies();
-            
+
             DateTime cookieExpire = DateTime.UtcNow.AddDays(1);
             Cookie cookie = new Cookie { Name = "sessionId", Value = "ei34jdh", Expires = cookieExpire };
             await cookieService.SetAsync(cookie);
@@ -200,6 +200,36 @@ namespace Blazor.Cookies.Tests.Server
             var cookieString = $"{cookie.Name}={cookie.Value}; expires={cookie.Expires:R}; path=/; samesite={sameSiteStringValue}";
             Assert.NotEmpty(responseCookie);
             Assert.Contains(cookieString, responseCookie);
+        }
+
+        [Fact]
+        public async Task RemoveAsync_WithCookies()
+        {
+            (var httpContext, var cookieService) = CreateTestDependencies();
+
+            DateTime cookieExpire = DateTime.UtcNow.AddDays(1);
+            List<Cookie> cookies = new List<Cookie>
+            {
+                new Cookie { Name = "sessionId", Value = "", Expires = cookieExpire },
+                new Cookie { Name = "userId", Value = "", Expires = cookieExpire },
+                new Cookie { Name = "theme", Value = "", Expires = cookieExpire },
+                new Cookie { Name = "cartItems", Value = "", Expires = cookieExpire }
+            };
+
+            foreach (Cookie cookie in cookies)
+            {
+                await cookieService.SetAsync(cookie);
+            }
+
+            for (int i = 0; i < cookies.Count; i++)
+            {
+                var cookie = cookies[i];
+
+                await cookieService.RemoveAsync(cookie.Name);
+                
+                var responseCookies = httpContext.Response.Headers.SetCookie;
+                Assert.Contains<string>($"{cookie.Name}={cookie.Value}", responseCookies);
+            }
         }
     }
 }
