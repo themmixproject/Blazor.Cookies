@@ -184,5 +184,20 @@ namespace Blazor.Cookies.Tests.Server
             Assert.NotEmpty(responseCookie);
             Assert.Contains(cookieString, responseCookie);
         }
+        [Fact]
+        public async Task SetAsync_NameValueExpiresSameSiteModeOverload_ShouldReturnCookie()
+        {
+            (var httpContext, var cookieService) = CreateTestDependencies();
+            DateTime cookieExpire = DateTime.UtcNow.AddDays(1);
+            SameSiteMode cookieSameSiteMode = SameSiteMode.Strict;
+            Cookie cookie = new Cookie { Name = "sessionId", Value = "ei34jdh", Expires = cookieExpire };
+            await cookieService.SetAsync(cookie.Name, cookie.Value, cookie.Expires, cookieSameSiteMode);
+
+            var responseCookie = httpContext.Response.Headers.SetCookie[0]!;
+            var sameSiteStringValue = cookieSameSiteMode.ToString().ToLower();
+            var cookieString = $"{cookie.Name}={cookie.Value}; expires={cookie.Expires:R}; path=/; samesite={sameSiteStringValue}";
+            Assert.NotEmpty(responseCookie);
+            Assert.Contains(cookieString, responseCookie);
+        }
     }
 }
