@@ -179,15 +179,17 @@ namespace Blazor.Cookies.Server.Services
             return Task.CompletedTask;
         }
 
-        public Task RemoveAllAsync(CancellationToken cancellationToken)
+        public Task RemoveAllAsync(CancellationToken cancellationToken = default)
         {
             foreach (var cookie in _httpContext.Request.Cookies.Keys)
             {
                 _httpContext.Response.Cookies.Delete(cookie);
             }
-            foreach (var cookie in _httpContext.Request.Cookies.Keys)
+
+            foreach(var cookie in _httpContext.Response.Headers.SetCookie)
             {
-                _httpContext.Response.Cookies.Delete(cookie);
+                string cookieKey = cookie.Split("=")[0];
+                RemoveCookieIfExistsFromHeader(cookieKey);
             }
 
             return Task.CompletedTask;
