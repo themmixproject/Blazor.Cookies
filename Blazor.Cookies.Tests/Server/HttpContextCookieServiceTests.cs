@@ -257,5 +257,28 @@ namespace Blazor.Cookies.Tests.Server
 
             Assert.Equal(0, httpContext.Response.Headers.SetCookie.Count);
         }
+        [Fact]
+        public async Task RemoveAllAsync_WithEmptyValueCookies()
+        {
+            (var httpContext, var cookieService) = CreateTestDependencies();
+
+            DateTime cookieExpire = DateTime.UtcNow.AddDays(1);
+            List<Cookie> cookies = new List<Cookie>
+            {
+                new Cookie { Name = "sessionId", Value = "", Expires = cookieExpire },
+                new Cookie { Name = "userId", Value = "", Expires = cookieExpire },
+                new Cookie { Name = "theme", Value = "", Expires = cookieExpire },
+                new Cookie { Name = "cartItems", Value = "", Expires = cookieExpire }
+            };
+
+            foreach (Cookie cookie in cookies)
+            {
+                await cookieService.SetAsync(cookie);
+            }
+
+            await cookieService.RemoveAllAsync();
+
+            Assert.Equal(0, httpContext.Response.Headers.SetCookie.Count);
+        }
     }
 }
