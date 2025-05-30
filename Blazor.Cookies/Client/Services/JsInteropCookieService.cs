@@ -124,23 +124,12 @@ namespace Blazor.Cookies.Client.Services
 
         public async Task RemoveAsync(
             string name,
-            CancellationToken cancellationToken
+            CancellationToken cancellationToken = default
         ) {
             if (string.IsNullOrWhiteSpace(name)) { throw new Exception("Name is required when removing a cookie."); }
 
             string command = $"document.cookie = '{name}=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/'";
             await JSRuntime.InvokeVoidAsync("eval", command);
-        }
-
-        public async Task RemoveAllAsync(CancellationToken cancellationToken)
-        {
-            string command =
-                "document.cookie.split(';').forEach(function(cookie){" +
-                "const eqPos = cookie.indexOf('=');" +
-                "const name = eqPos > -1 ? cookie.substring(0, eqPos) : cookie;" +
-                "document.cookie = name + '=;expires=Thu, 01, Jan 1970 00:00:01 GMT';" +
-                "});";
-            await JSRuntime.InvokeVoidAsync(command);
         }
     }
 }

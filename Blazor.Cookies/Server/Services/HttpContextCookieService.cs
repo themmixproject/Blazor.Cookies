@@ -6,7 +6,7 @@ using System.Net;
 namespace Blazor.Cookies.Server.Services
 {
 
-    internal class HttpContextCookieService : ICookieService
+    public class HttpContextCookieService : ICookieService
     {
         private readonly HttpContext _httpContext;
         private readonly Dictionary<string, Cookie> _requestCookies;
@@ -38,7 +38,10 @@ namespace Blazor.Cookies.Server.Services
             return Task.FromResult<Cookie?>(null);
         }
 
-        public Task SetAsync(Cookie cookie, CancellationToken cancellationToken)
+        public Task SetAsync(
+            Cookie cookie,
+            CancellationToken cancellationToken = default
+        )
         {
             ValidateCookie(cookie);
             RemoveCookieIfExistsFromHeader(cookie.Name);
@@ -46,7 +49,11 @@ namespace Blazor.Cookies.Server.Services
 
             return Task.CompletedTask;
         }
-        public Task SetAsync(Cookie cookie, SameSiteMode sameSiteMode, CancellationToken cancellationToken)
+        public Task SetAsync(
+            Cookie cookie,
+            SameSiteMode sameSiteMode,
+            CancellationToken cancellationToken = default
+        )
         {
             ValidateCookie(cookie);
             RemoveCookieIfExistsFromHeader(cookie.Name);
@@ -54,16 +61,23 @@ namespace Blazor.Cookies.Server.Services
 
             return Task.CompletedTask;
         }
-        public Task SetAsync(string name, string value, CancellationToken cancellationToken)
+        public Task SetAsync(
+            string name,
+            string value,
+            CancellationToken cancellationToken = default
+        )
         {
-            Cookie cookie = new Cookie(name, value);
-            ValidateCookie(cookie);
-            RemoveCookieIfExistsFromHeader(cookie.Name);
-            AppendCookieToHttpContext(cookie);
+            RemoveCookieIfExistsFromHeader(name);
+            _httpContext.Response.Cookies.Append(name, value);
 
             return Task.CompletedTask;
         }
-        public Task SetAsync(string name, string value, DateTime expires, CancellationToken cancellationToken)
+        public Task SetAsync(
+            string name,
+            string value,
+            DateTime expires,
+            CancellationToken cancellationToken = default
+        )
         {
             Cookie cookie = new Cookie
             {
@@ -77,7 +91,13 @@ namespace Blazor.Cookies.Server.Services
 
             return Task.CompletedTask;
         }
-        public Task SetAsync(string name, string value, DateTime expires, SameSiteMode sameSiteMode, CancellationToken cancellationToken)
+        public Task SetAsync(
+            string name,
+            string value,
+            DateTime expires,
+            SameSiteMode sameSiteMode,
+            CancellationToken cancellationToken = default
+        )
         {
             Cookie cookie = new Cookie
             {
@@ -87,7 +107,7 @@ namespace Blazor.Cookies.Server.Services
             };
             ValidateCookie(cookie);
             RemoveCookieIfExistsFromHeader(cookie.Name);
-            AppendCookieToHttpContext(cookie);
+            AppendCookieToHttpContext(cookie, sameSiteMode);
 
             return Task.CompletedTask;
         }
@@ -102,16 +122,23 @@ namespace Blazor.Cookies.Server.Services
 
         private void AppendCookieToHttpContext(Cookie cookie)
         {
-            _httpContext.Response.Cookies.Append(cookie.Name, cookie.Value, new CookieOptions
-            {
-                Expires = cookie.Expires,
-                Path = "/",
-                HttpOnly = cookie.HttpOnly,
-                Secure = cookie.Secure,
-                SameSite = SameSiteMode.Unspecified
-            });
+            _httpContext.Response.Cookies.Append(
+                cookie.Name,
+                cookie.Value,
+                new CookieOptions
+                {
+                    Expires = cookie.Expires,
+                    Path = "/",
+                    HttpOnly = cookie.HttpOnly,
+                    Secure = cookie.Secure,
+                    SameSite = SameSiteMode.Unspecified
+                }
+            );
         }
-        private void AppendCookieToHttpContext(Cookie cookie, SameSiteMode sameSiteMode)
+        private void AppendCookieToHttpContext(
+            Cookie cookie,
+            SameSiteMode sameSiteMode
+        )
         {
             _httpContext.Response.Cookies.Append(cookie.Name, cookie.Value, new CookieOptions
             {
@@ -125,38 +152,29 @@ namespace Blazor.Cookies.Server.Services
 
         private void RemoveCookieIfExistsFromHeader(string name)
         {
-            List<string?> cookieValues = ResponseHeaders
-                .SingleOrDefault(header => header.Key == "Set-Cookie")
-                .Value
-                .ToList<string?>();
+            List<string?> responseCookies = ResponseHeaders.SetCookie.ToList();
 
-            foreach (string? cookieValue in cookieValues)
+            for (int i = 0; i < responseCookies.Count; i++)
             {
-                if (string.IsNullOrEmpty(cookieValue)) { continue; }
-                if (!cookieValue.StartsWith($"{name}=")) { continue; }
+                var responseCookie = responseCookies[i];
+                if (string.IsNullOrWhiteSpace(responseCookie)) { continue; }
+                if (!responseCookie.StartsWith($"{name}=")) { continue; }
 
-                cookieValues.Remove(cookieValue);
-                ResponseHeaders.SetCookie = new(cookieValues.ToArray());
+                responseCookies.RemoveAt(i);
+                ResponseHeaders.SetCookie = responseCookies.ToArray();
             }
         }
 
-        public Task RemoveAsync(string name, CancellationToken cancellationToken)
+        public Task RemoveAsync(string name, CancellationToken cancellationToken = default)
         {
+            // deletes cookie from response request
+            RemoveCookieIfExistsFromHeader(name);
+
             if (_requestCookies.Remove(name))
             {
+                // deletes cookie from client
                 _httpContext.Response.Cookies.Delete(name);
             }
-
-            return Task.CompletedTask;
-        }
-
-        public Task RemoveAllAsync(CancellationToken cancellationToken)
-        {
-            foreach(var cookie in _requestCookies)
-            {
-                _httpContext.Response.Cookies.Delete(cookie.Key);
-            }
-            _requestCookies.Clear();
 
             return Task.CompletedTask;
         }
