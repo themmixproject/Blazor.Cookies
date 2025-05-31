@@ -1,4 +1,4 @@
-using Blazor.Cookies.Client.Extensions;
+using Blazor.Cookies.Server.Extensions;
 using BitzArt.Blazor.Cookies.SampleApp.Components;
 
 namespace BitzArt.Blazor.Cookies.SampleApp
