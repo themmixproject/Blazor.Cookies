@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.Net;
-using System.Text.Json;
-
+﻿using System.Net;
+using Microsoft.AspNetCore.Http;
 namespace Blazor.Cookies.Interfaces
 {
     /// <summary>
