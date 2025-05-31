@@ -12,7 +12,7 @@ namespace Blazor.Cookies.Client.Extensions
             return services;
         }
 
-        public static IServiceCollection AddCookiesService(this IServiceCollection services, ServiceLifetime lifetime)
+        public static IServiceCollection AddCookieService(this IServiceCollection services, ServiceLifetime lifetime)
         {
             services.Add(
                 new ServiceDescriptor(
