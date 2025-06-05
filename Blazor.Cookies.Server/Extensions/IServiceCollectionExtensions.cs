@@ -8,7 +8,7 @@ namespace Blazor.Cookies.Server.Extensions
 {
     public static class IServiceCollectionExtensions
     {
-        public static IServiceCollection AddCookiesService(this IServiceCollection services)
+        public static IServiceCollection AddCookieService(this IServiceCollection services)
         {
             services.AddHttpContextAccessor();
             services.AddScoped<JsInteropCookieService>();

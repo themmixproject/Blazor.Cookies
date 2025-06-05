@@ -108,6 +108,7 @@ namespace Blazor.Cookies.Client.Services
                 $"path=/";
 
             if (sameSite != null) { command += $"; SameSite={sameSite.ToString()}"; }
+            command += "'";
 
             await JSRuntime.InvokeVoidAsync("eval", command);
         }

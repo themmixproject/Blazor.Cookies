@@ -1,3 +1,4 @@
+using Blazor.Cookies.Client.Extensions;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 namespace BitzArt.Blazor.Cookies.SampleApp.Client
@@ -8,7 +9,7 @@ namespace BitzArt.Blazor.Cookies.SampleApp.Client
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-            builder.AddBlazorCookies();
+            builder.Services.AddCookieService();
 
             await builder.Build().RunAsync();
         }

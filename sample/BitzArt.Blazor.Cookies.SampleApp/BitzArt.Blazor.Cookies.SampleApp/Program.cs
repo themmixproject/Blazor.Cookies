@@ -1,3 +1,4 @@
+using Blazor.Cookies.Server.Extensions;
 using BitzArt.Blazor.Cookies.SampleApp.Components;
 
 namespace BitzArt.Blazor.Cookies.SampleApp
@@ -13,7 +14,7 @@ namespace BitzArt.Blazor.Cookies.SampleApp
                 .AddInteractiveServerComponents()
                 .AddInteractiveWebAssemblyComponents();
 
-            builder.AddBlazorCookies();
+            builder.Services.AddCookieService();
             builder.Services.AddHttpContextAccessor();
 
             var app = builder.Build();
