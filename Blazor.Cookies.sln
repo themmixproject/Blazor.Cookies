@@ -40,10 +40,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blazor.Cookies", "Blazor.Co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blazor.Cookies.Tests", "Blazor.Cookies.Tests\Blazor.Cookies.Tests.csproj", "{3333DDAE-E3CF-4369-85A2-1724985675C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blazor.Cookies.Server", "Blazor.Cookies.Server\Blazor.Cookies.Server.csproj", "{EF1B17E6-7879-4357-AA84-011C265CFDCF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blazor.Cookies.Client", "Blazor.Cookies.Client\Blazor.Cookies.Client.csproj", "{DB95BF17-66DD-412B-8935-743C23AB59D3}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -162,30 +158,6 @@ Global
 		{3333DDAE-E3CF-4369-85A2-1724985675C5}.Release|x64.Build.0 = Release|Any CPU
 		{3333DDAE-E3CF-4369-85A2-1724985675C5}.Release|x86.ActiveCfg = Release|Any CPU
 		{3333DDAE-E3CF-4369-85A2-1724985675C5}.Release|x86.Build.0 = Release|Any CPU
-		{EF1B17E6-7879-4357-AA84-011C265CFDCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EF1B17E6-7879-4357-AA84-011C265CFDCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EF1B17E6-7879-4357-AA84-011C265CFDCF}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{EF1B17E6-7879-4357-AA84-011C265CFDCF}.Debug|x64.Build.0 = Debug|Any CPU
-		{EF1B17E6-7879-4357-AA84-011C265CFDCF}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{EF1B17E6-7879-4357-AA84-011C265CFDCF}.Debug|x86.Build.0 = Debug|Any CPU
-		{EF1B17E6-7879-4357-AA84-011C265CFDCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EF1B17E6-7879-4357-AA84-011C265CFDCF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EF1B17E6-7879-4357-AA84-011C265CFDCF}.Release|x64.ActiveCfg = Release|Any CPU
-		{EF1B17E6-7879-4357-AA84-011C265CFDCF}.Release|x64.Build.0 = Release|Any CPU
-		{EF1B17E6-7879-4357-AA84-011C265CFDCF}.Release|x86.ActiveCfg = Release|Any CPU
-		{EF1B17E6-7879-4357-AA84-011C265CFDCF}.Release|x86.Build.0 = Release|Any CPU
-		{DB95BF17-66DD-412B-8935-743C23AB59D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DB95BF17-66DD-412B-8935-743C23AB59D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DB95BF17-66DD-412B-8935-743C23AB59D3}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{DB95BF17-66DD-412B-8935-743C23AB59D3}.Debug|x64.Build.0 = Debug|Any CPU
-		{DB95BF17-66DD-412B-8935-743C23AB59D3}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{DB95BF17-66DD-412B-8935-743C23AB59D3}.Debug|x86.Build.0 = Debug|Any CPU
-		{DB95BF17-66DD-412B-8935-743C23AB59D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DB95BF17-66DD-412B-8935-743C23AB59D3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DB95BF17-66DD-412B-8935-743C23AB59D3}.Release|x64.ActiveCfg = Release|Any CPU
-		{DB95BF17-66DD-412B-8935-743C23AB59D3}.Release|x64.Build.0 = Release|Any CPU
-		{DB95BF17-66DD-412B-8935-743C23AB59D3}.Release|x86.ActiveCfg = Release|Any CPU
-		{DB95BF17-66DD-412B-8935-743C23AB59D3}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

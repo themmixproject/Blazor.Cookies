@@ -13,7 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Blazor.Cookies.Client\Blazor.Cookies.Client.csproj" />
     <ProjectReference Include="..\..\..\Blazor.Cookies\Blazor.Cookies.csproj" />
   </ItemGroup>
 
