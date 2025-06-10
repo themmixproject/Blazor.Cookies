@@ -1,5 +1,6 @@
 ﻿using Blazor.Cookies.Server.Services;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Headers;
 using System.Net;
 
 namespace Blazor.Cookies.Tests.Server
@@ -39,7 +40,7 @@ namespace Blazor.Cookies.Tests.Server
                 await cookieService.SetAsync(cookie);
             }
 
-            var resultCookiesValues = httpContext.Response.Headers.SetCookie;
+            var resultCookiesValues = httpContext.Response.Headers[HeaderNames.SetCookie];
             string resultCookies = resultCookiesValues.ToString();
             Assert.NotEmpty(resultCookies);
             for (int i = 0; i < cookies.Count; i++)
@@ -66,7 +67,7 @@ namespace Blazor.Cookies.Tests.Server
                 await cookieService.SetAsync(cookie);
             }
 
-            var resultCookiesValues = httpContext.Response.Headers.SetCookie;
+            var resultCookiesValues = httpContext.Response.Headers[HeaderNames.SetCookie];
             string resultCookies = resultCookiesValues.ToString();
             Assert.NotEmpty(resultCookies);
             for (int i = 0; i < cookies.Count; i++)
@@ -94,7 +95,7 @@ namespace Blazor.Cookies.Tests.Server
                 await cookieService.SetAsync(cookie);
             }
 
-            var responseCookies = httpContext.Response.Headers.SetCookie;
+            var responseCookies = httpContext.Response.Headers[HeaderNames.SetCookie];
             for (int i = 0; i < responseCookies.Count; i++)
             {
                 string responseCookie = responseCookies[i]!;
@@ -122,7 +123,7 @@ namespace Blazor.Cookies.Tests.Server
                 await cookieService.SetAsync(cookie);
             }
 
-            var responseCookies = httpContext.Response.Headers.SetCookie;
+            var responseCookies = httpContext.Response.Headers[HeaderNames.SetCookie];
             for (int i = 0; i < responseCookies.Count; i++)
             {
                 string responseCookie = responseCookies[i]!;
@@ -140,7 +141,7 @@ namespace Blazor.Cookies.Tests.Server
             Cookie cookie = new Cookie { Name = "sessionId", Value = "ei34jdh", Expires = cookieExpire };
             await cookieService.SetAsync(cookie);
 
-            var responseCookie = httpContext.Response.Headers.SetCookie[0]!;
+            var responseCookie = httpContext.Response.Headers[HeaderNames.SetCookie][0]!;
             var cookieString = $"{cookie.Name}={cookie.Value}; expires={cookie.Expires:R}; path=/";
             Assert.NotEmpty(responseCookie);
             Assert.Contains(cookieString, responseCookie);
@@ -154,7 +155,7 @@ namespace Blazor.Cookies.Tests.Server
             Cookie cookie = new Cookie { Name = "sessionId", Value = "ei34jdh", Expires = cookieExpire };
             await cookieService.SetAsync(cookie, SameSiteMode.Strict);
 
-            var responseCookie = httpContext.Response.Headers.SetCookie[0]!;
+            var responseCookie = httpContext.Response.Headers[HeaderNames.SetCookie][0]!;
             var cookieString = $"{cookie.Name}={cookie.Value}; expires={cookie.Expires:R}; path=/; samesite=strict";
             Assert.NotEmpty(responseCookie);
             Assert.Contains(cookieString, responseCookie);
@@ -168,7 +169,7 @@ namespace Blazor.Cookies.Tests.Server
             Cookie cookie = new Cookie { Name = "sessionId", Value = "ei34jdh", Expires = cookieExpire };
             await cookieService.SetAsync(cookie.Name, cookie.Value);
 
-            var responseCookie = httpContext.Response.Headers.SetCookie[0]!;
+            var responseCookie = httpContext.Response.Headers[HeaderNames.SetCookie][0]!;
             var cookieString = $"{cookie.Name}={cookie.Value}";
             Assert.NotEmpty(responseCookie);
             Assert.Contains(cookieString, responseCookie);
@@ -181,7 +182,7 @@ namespace Blazor.Cookies.Tests.Server
             Cookie cookie = new Cookie { Name = "sessionId", Value = "ei34jdh", Expires = cookieExpire };
             await cookieService.SetAsync(cookie.Name, cookie.Value, cookie.Expires);
 
-            var responseCookie = httpContext.Response.Headers.SetCookie[0]!;
+            var responseCookie = httpContext.Response.Headers[HeaderNames.SetCookie][0]!;
             var cookieString = $"{cookie.Name}={cookie.Value}; expires={cookie.Expires:R}";
             Assert.NotEmpty(responseCookie);
             Assert.Contains(cookieString, responseCookie);
@@ -195,7 +196,7 @@ namespace Blazor.Cookies.Tests.Server
             Cookie cookie = new Cookie { Name = "sessionId", Value = "ei34jdh", Expires = cookieExpire };
             await cookieService.SetAsync(cookie.Name, cookie.Value, cookie.Expires, cookieSameSiteMode);
 
-            var responseCookie = httpContext.Response.Headers.SetCookie[0]!;
+            var responseCookie = httpContext.Response.Headers[HeaderNames.SetCookie][0]!;
             var sameSiteStringValue = cookieSameSiteMode.ToString().ToLower();
             var cookieString = $"{cookie.Name}={cookie.Value}; expires={cookie.Expires:R}; path=/; samesite={sameSiteStringValue}";
             Assert.NotEmpty(responseCookie);
@@ -227,11 +228,11 @@ namespace Blazor.Cookies.Tests.Server
 
                 await cookieService.RemoveAsync(cookie.Name);
 
-                var responseCookies = httpContext.Response.Headers.SetCookie;
+                var responseCookies = httpContext.Response.Headers[HeaderNames.SetCookie];
                 Assert.DoesNotContain<string>($"{cookie.Name}={cookie.Value}", responseCookies);
             }
 
-            Assert.Equal(0, httpContext.Response.Headers.SetCookie.Count);
+            Assert.Equal(0, httpContext.Response.Headers[HeaderNames.SetCookie].Count);
         }
     }
 }

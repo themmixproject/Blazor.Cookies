@@ -1,5 +1,6 @@
 ﻿using Blazor.Cookies.Interfaces;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Headers;
 using System.Net;
 
 namespace Blazor.Cookies.Server.Services
@@ -151,7 +152,7 @@ namespace Blazor.Cookies.Server.Services
 
         private void RemoveCookieIfExistsFromHeader(string name)
         {
-            List<string?> responseCookies = ResponseHeaders.SetCookie.ToList();
+            List<string?> responseCookies = ResponseHeaders[HeaderNames.SetCookie].ToList();
 
             for (int i = 0; i < responseCookies.Count; i++)
             {
@@ -160,7 +161,7 @@ namespace Blazor.Cookies.Server.Services
                 if (!responseCookie.StartsWith($"{name}=")) { continue; }
 
                 responseCookies.RemoveAt(i);
-                ResponseHeaders.SetCookie = responseCookies.ToArray();
+                ResponseHeaders[HeaderNames.SetCookie] = responseCookies.ToArray();
             }
         }
 
