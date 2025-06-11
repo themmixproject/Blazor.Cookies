@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Blazor.Cookies\Blazor.Cookies.csproj" />
-    <ProjectReference Include="..\BitzArt.Blazor.Cookies.SampleApp.Client\BitzArt.Blazor.Cookies.SampleApp.Client.csproj" />
+    <ProjectReference Include="..\..\src\Blazor.Cookies\Blazor.Cookies.csproj" />
+    <ProjectReference Include="..\Blazor.Cookies.SampleApp.Client\Blazor.Cookies.SampleApp.Client.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.16" />
   </ItemGroup>
 

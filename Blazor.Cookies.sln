@@ -5,13 +5,13 @@ VisualStudioVersion = 17.8.34525.116
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F0AC2847-ADDF-4D66-B1FA-2D6B34F206CF}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{2E5D89F5-108F-4E1D-B9D7-D86A531130CE}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample-app", "sample-app", "{2E5D89F5-108F-4E1D-B9D7-D86A531130CE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BitzArt.Blazor.Cookies.SampleApp", "sample\BitzArt.Blazor.Cookies.SampleApp\BitzArt.Blazor.Cookies.SampleApp\BitzArt.Blazor.Cookies.SampleApp.csproj", "{F7D5FB57-A0A9-4C95-917C-2122244107CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blazor.Cookies.SampleApp", "sample-app\Blazor.Cookies.SampleApp\Blazor.Cookies.SampleApp.csproj", "{F7D5FB57-A0A9-4C95-917C-2122244107CF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BitzArt.Blazor.Cookies.SampleApp.Client", "sample\BitzArt.Blazor.Cookies.SampleApp\BitzArt.Blazor.Cookies.SampleApp.Client\BitzArt.Blazor.Cookies.SampleApp.Client.csproj", "{440A5264-6418-489D-9DFB-E434029AC8C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blazor.Cookies.SampleApp.Client", "sample-app\Blazor.Cookies.SampleApp.Client\Blazor.Cookies.SampleApp.Client.csproj", "{440A5264-6418-489D-9DFB-E434029AC8C9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{53C2EA4F-8EA8-41FE-A091-D85B0314B1F7}"
 EndProject
@@ -19,11 +19,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\Publish.yml = .github\workflows\Publish.yml
 		.github\workflows\Tests.yml = .github\workflows\Tests.yml
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sln", "sln", "{AB054034-9AA3-4FEB-90BC-19B33CAAADCC}"
-	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blazor.Cookies", "src\Blazor.Cookies\Blazor.Cookies.csproj", "{AABDA75E-BD9F-4F8F-8C20-D5AF837144A3}"

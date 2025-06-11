@@ -1,7 +1,7 @@
 using Blazor.Cookies.Server.Extensions;
-using BitzArt.Blazor.Cookies.SampleApp.Components;
+using Blazor.Cookies.SampleApp.Components;
 
-namespace BitzArt.Blazor.Cookies.SampleApp
+namespace Blazor.Cookies.SampleApp
 {
     public class Program
     {

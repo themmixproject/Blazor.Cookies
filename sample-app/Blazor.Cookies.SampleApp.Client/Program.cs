@@ -1,7 +1,7 @@
 using Blazor.Cookies.Client.Extensions;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
-namespace BitzArt.Blazor.Cookies.SampleApp.Client
+namespace Blazor.Cookies.SampleApp.Client
 {
     internal class Program
     {

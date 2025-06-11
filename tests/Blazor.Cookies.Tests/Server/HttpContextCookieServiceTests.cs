@@ -1,6 +1,6 @@
 ﻿using Blazor.Cookies.Server.Services;
+using Blazor.Cookies.Patches;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Headers;
 using System.Net;
 
 namespace Blazor.Cookies.Tests.Server
