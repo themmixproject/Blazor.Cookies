@@ -53,4 +53,4 @@ builder.AddBlazorCookies();
 
 ## License
 
-[![License](https://img.shields.io/badge/mit-%230072C6?style=for-the-badge)](https://github.com/BitzArt/Blazor.Cookies/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/mit-%230072C6?style=for-the-badge)](https://github.com/themmixproject/Blazor.Cookies/blob/main/LICENSE)
