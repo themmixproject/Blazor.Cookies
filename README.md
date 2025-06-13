@@ -10,10 +10,10 @@ You can use cookies in your Blazor applications as a way to store user's unique 
 
 | Blazor Rendermode       | Support |
 |-------------------------|:-------:|
-| Static SSR              | ✔️     |
-| Interactive Server      | ✔️     |
-| Interactive WebAssembly | ✔️     |
-| Interactive Auto        | ✔️     |
+| Static SSR              | ✔      |
+| Interactive Server      | ✔      |
+| Interactive WebAssembly | ✔      |
+| Interactive Auto        | ✔      |
 
 ### Installation
 
