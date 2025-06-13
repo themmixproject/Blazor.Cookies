@@ -2,7 +2,12 @@
 
 **MMIX.Blazor.Cookies** is a heavily modified version of **Bitzart's Blazor.Cookies** package with more emphasis on compability with AspDotnet. MMIX.Blazor.Cookies is a nuget package that makes working with cookies in Blazor easier. 
 
-You can use cookies in your Blazor applications as a way to store user's unique information, such as preferences, settings, or session / authentication data.
+**Credits to the original developers**
+- [Yui Durov](https://github.com/YuriyDurov "Yui Durov")
+- [Vladimir Seldemirov](https://github.com/ligowsky "Vladimir Seldemirov")
+- [Gaël James](https://github.com/gaelj)
+
+------------
 
 - Built for dotnet 8+
 - Supports all Blazor United render modes
