@@ -1,14 +1,6 @@
-![Tests](https://github.com/BitzArt/Blazor.Cookies/actions/workflows/Tests.yml/badge.svg)
-
-[![NuGet version](https://img.shields.io/nuget/v/BitzArt.Blazor.Cookies.svg)](https://www.nuget.org/packages/BitzArt.Blazor.Cookies/)
-[![NuGet downloads](https://img.shields.io/nuget/dt/BitzArt.Blazor.Cookies.svg)](https://www.nuget.org/packages/BitzArt.Blazor.Cookies/)
-
 ## Overview
 
-**BitzArt.Blazor.Cookies** is a nuget package that simplifies working with browser cookies in Blazor applications.
-
-> 🍪
-> We also have an [authentication package](https://github.com/BitzArt/Blazor.Auth) for Blazor that simplifies implementing custom JWT-based authentication & authorization in your Blazor applications while using this package under the hood.
+**MMIX.Blazor.Cookies** is a heavily modified version of **Bitzart's Blazor.Cookies** package with more emphasis on compability with AspDotnet. MMIX.Blazor.Cookies is a nuget package that makes working with cookies in Blazor easier. 
 
 You can use cookies in your Blazor applications as a way to store user's unique information, such as preferences, settings, or session / authentication data.
 
