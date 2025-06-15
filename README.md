@@ -20,7 +20,7 @@
 | Interactive WebAssembly | ✔      |
 | Interactive Auto        | ✔      |
 
-### Installation
+<!-- ### Installation
 
 - Install the following package in your Blazor Server project:
 
@@ -44,7 +44,7 @@ dotnet add package BitzArt.Blazor.Cookies.Client
 
 ```csharp
 builder.AddBlazorCookies();
-```
+``` -->
 
 ### Usage
 
