@@ -1,6 +1,6 @@
 ## Overview
 
-**MMIX.Blazor.Cookies** is a heavily modified version of **Bitzart's Blazor.Cookies** package with more emphasis on compability with AspDotnet. MMIX.Blazor.Cookies is a nuget package that makes working with cookies in Blazor easier. 
+**MMIX.MMIX.Blazor.Cookies** is a heavily modified version of **Bitzart's MMIX.Blazor.Cookies** package with more emphasis on compability with AspDotnet. MMIX.MMIX.Blazor.Cookies is a nuget package that makes working with cookies in Blazor easier. 
 
 **Credits to the original developers**
 - [Yui Durov](https://github.com/YuriyDurov "Yui Durov")
@@ -25,7 +25,7 @@
 - Install the following package in your Blazor Server project:
 
 ```
-dotnet add package BitzArt.Blazor.Cookies.Server
+dotnet add package BitzArt.MMIX.Blazor.Cookies.Server
 ```
 
 - Add this line to your Server project `program.cs`:
@@ -37,7 +37,7 @@ builder.AddBlazorCookies();
 - Install the following package in your Blazor Client project:
 
 ```
-dotnet add package BitzArt.Blazor.Cookies.Client
+dotnet add package BitzArt.MMIX.Blazor.Cookies.Client
 ```
 
 - Add this line to your Client project `program.cs`:
@@ -53,4 +53,4 @@ builder.AddBlazorCookies();
 
 ## License
 
-[![License](https://img.shields.io/badge/mit-%230072C6?style=for-the-badge)](https://github.com/themmixproject/Blazor.Cookies/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/mit-%230072C6?style=for-the-badge)](https://github.com/themmixproject/MMIX.Blazor.Cookies/blob/main/LICENSE)

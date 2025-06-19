@@ -1,9 +1,9 @@
-﻿using Blazor.Cookies.Server.Services;
-using Blazor.Cookies.Patches;
+﻿using MMIX.Blazor.Cookies.Server.Services;
+using MMIX.Blazor.Cookies.Patches;
 using Microsoft.AspNetCore.Http;
 using System.Net;
 
-namespace Blazor.Cookies.Tests.Server;
+namespace MMIX.Blazor.Cookies.Tests.Server;
 public class HttpContextCookieServiceTests
 {
     // HttpContextCookieService.GetAsync method will not be tested due to

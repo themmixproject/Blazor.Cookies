@@ -1,10 +1,10 @@
-﻿using Blazor.Cookies.Client.Services;
-using Blazor.Cookies.Interfaces;
-using Blazor.Cookies.Server.Services;
+﻿using MMIX.Blazor.Cookies.Client.Services;
+using MMIX.Blazor.Cookies.Interfaces;
+using MMIX.Blazor.Cookies.Server.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Blazor.Cookies.Server.Extensions;
+namespace MMIX.Blazor.Cookies.Server.Extensions;
 public static class IServiceCollectionExtensions
 {
     public static IServiceCollection AddCookieService(this IServiceCollection services)

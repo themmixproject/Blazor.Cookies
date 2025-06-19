@@ -1,12 +1,12 @@
-﻿using Blazor.Cookies.Client.Services;
-using Blazor.Cookies.Interfaces;
+﻿using MMIX.Blazor.Cookies.Client.Services;
+using MMIX.Blazor.Cookies.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.JSInterop;
 using Microsoft.JSInterop.Infrastructure;
 using Moq;
 using System.Net;
 
-namespace Blazor.Cookies.Tests.Client;
+namespace MMIX.Blazor.Cookies.Tests.Client;
 public class JsInteropCookieServiceTests
 {
     private static string ToJsCookieString(IEnumerable<Cookie>? cookies)

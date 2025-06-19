@@ -1,9 +1,9 @@
-﻿using Blazor.Cookies.Interfaces;
-using Blazor.Cookies.Patches;
+﻿using MMIX.Blazor.Cookies.Interfaces;
+using MMIX.Blazor.Cookies.Patches;
 using Microsoft.AspNetCore.Http;
 using System.Net;
 
-namespace Blazor.Cookies.Server.Services;
+namespace MMIX.Blazor.Cookies.Server.Services;
 public class HttpContextCookieService : ICookieService
 {
     private readonly HttpContext _httpContext;

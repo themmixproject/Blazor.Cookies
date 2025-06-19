@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using Microsoft.AspNetCore.Http;
 
-namespace Blazor.Cookies.Interfaces;
+namespace MMIX.Blazor.Cookies.Interfaces;
 
 /// <summary>
 /// Allows interacting with browser cookies.

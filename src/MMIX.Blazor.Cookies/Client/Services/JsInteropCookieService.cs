@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.JSInterop;
 using System.Net;
-using Blazor.Cookies.Interfaces;
+using MMIX.Blazor.Cookies.Interfaces;
 
-namespace Blazor.Cookies.Client.Services
+namespace MMIX.Blazor.Cookies.Client.Services
 {
     public class JsInteropCookieService(IJSRuntime JSRuntime) : ICookieService
     {

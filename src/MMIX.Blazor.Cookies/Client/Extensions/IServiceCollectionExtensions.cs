@@ -1,8 +1,8 @@
-﻿using Blazor.Cookies.Client.Services;
-using Blazor.Cookies.Interfaces;
+﻿using MMIX.Blazor.Cookies.Client.Services;
+using MMIX.Blazor.Cookies.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Blazor.Cookies.Client.Extensions
+namespace MMIX.Blazor.Cookies.Client.Extensions
 {
     public static class IServiceCollectionExtensions
     {
