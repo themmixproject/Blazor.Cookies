@@ -1,16 +1,13 @@
-![Tests](https://github.com/BitzArt/Blazor.Cookies/actions/workflows/Tests.yml/badge.svg)
-
-[![NuGet version](https://img.shields.io/nuget/v/BitzArt.Blazor.Cookies.svg)](https://www.nuget.org/packages/BitzArt.Blazor.Cookies/)
-[![NuGet downloads](https://img.shields.io/nuget/dt/BitzArt.Blazor.Cookies.svg)](https://www.nuget.org/packages/BitzArt.Blazor.Cookies/)
-
 ## Overview
 
-**BitzArt.Blazor.Cookies** is a nuget package that simplifies working with browser cookies in Blazor applications.
+**MMIX.Blazor.Cookies** is a heavily modified version of **Bitzart's Blazor.Cookies** package with more emphasis on compability with AspDotnet. MMIX.Blazor.Cookies is a nuget package that makes working with cookies in Blazor easier. 
 
-> 🍪
-> We also have an [authentication package](https://github.com/BitzArt/Blazor.Auth) for Blazor that simplifies implementing custom JWT-based authentication & authorization in your Blazor applications while using this package under the hood.
+**Credits to the original developers**
+- [Yui Durov](https://github.com/YuriyDurov "Yui Durov")
+- [Vladimir Seldemirov](https://github.com/ligowsky "Vladimir Seldemirov")
+- [Gaël James](https://github.com/gaelj)
 
-You can use cookies in your Blazor applications as a way to store user's unique information, such as preferences, settings, or session / authentication data.
+------------
 
 - Built for dotnet 8+
 - Supports all Blazor United render modes
@@ -18,12 +15,12 @@ You can use cookies in your Blazor applications as a way to store user's unique 
 
 | Blazor Rendermode       | Support |
 |-------------------------|:-------:|
-| Static SSR              | ✔️     |
-| Interactive Server      | ✔️     |
-| Interactive WebAssembly | ✔️     |
-| Interactive Auto        | ✔️     |
+| Static SSR              | ✔      |
+| Interactive Server      | ✔      |
+| Interactive WebAssembly | ✔      |
+| Interactive Auto        | ✔      |
 
-### Installation
+<!-- ### Installation
 
 - Install the following package in your Blazor Server project:
 
@@ -47,7 +44,7 @@ dotnet add package BitzArt.Blazor.Cookies.Client
 
 ```csharp
 builder.AddBlazorCookies();
-```
+``` -->
 
 ### Usage
 
@@ -56,4 +53,4 @@ builder.AddBlazorCookies();
 
 ## License
 
-[![License](https://img.shields.io/badge/mit-%230072C6?style=for-the-badge)](https://github.com/BitzArt/Blazor.Cookies/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/mit-%230072C6?style=for-the-badge)](https://github.com/themmixproject/Blazor.Cookies/blob/main/LICENSE)
