@@ -8,7 +8,7 @@ namespace Blazor.Cookies.Patches;
 /// </summary>
 // MODIFICATION POLICY: This list is not intended to be exhaustive, it primarily contains values used by the framework itself.
 // Please do not open PRs without first opening an issue to discuss a specific item.
-public static class HeaderNames
+internal static class HeaderNames
 {
     private const string PseudoHeaderNamesObsoletionMessage = "This is obsolete and will be removed in a future version. Header dictionaries do not contain this key.";
 
