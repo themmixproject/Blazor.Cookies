@@ -10,8 +10,6 @@ namespace MMIX.Blazor.Cookies.Patches;
 // Please do not open PRs without first opening an issue to discuss a specific item.
 internal static class HeaderNames
 {
-    private const string PseudoHeaderNamesObsoletionMessage = "This is obsolete and will be removed in a future version. Header dictionaries do not contain this key.";
-
     // Use readonly statics rather than constants so ReferenceEquals works
 
     /// <summary>Gets the <c>Accept</c> HTTP header name.</summary>
