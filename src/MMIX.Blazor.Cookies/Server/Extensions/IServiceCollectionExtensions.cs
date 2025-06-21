@@ -1,8 +1,6 @@
-﻿using MMIX.Blazor.Cookies.Client.Services;
-using MMIX.Blazor.Cookies.Interfaces;
-using MMIX.Blazor.Cookies.Server.Services;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using MMIX.Blazor.Cookies.Client;
 
 namespace MMIX.Blazor.Cookies.Server.Extensions;
 public static class IServiceCollectionExtensions

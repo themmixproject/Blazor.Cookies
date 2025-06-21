@@ -1,6 +1,4 @@
-﻿using MMIX.Blazor.Cookies.Client.Services;
-using MMIX.Blazor.Cookies.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace MMIX.Blazor.Cookies.Client.Extensions
 {
