@@ -3,7 +3,7 @@ using MMIX.Blazor.Cookies.Patches;
 using Microsoft.AspNetCore.Http;
 using System.Net;
 
-namespace MMIX.Blazor.Cookies.Server.Services;
+namespace MMIX.Blazor.Cookies.Server;
 public class HttpContextCookieService : ICookieService
 {
     private readonly HttpContext _httpContext;

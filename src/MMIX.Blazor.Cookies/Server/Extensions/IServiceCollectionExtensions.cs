@@ -1,6 +1,5 @@
 ﻿using MMIX.Blazor.Cookies.Client.Services;
 using MMIX.Blazor.Cookies.Interfaces;
-using MMIX.Blazor.Cookies.Server.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
