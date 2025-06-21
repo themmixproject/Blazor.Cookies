@@ -11,7 +11,7 @@ MMIX.Blazor.Cookies is a modern, .NET 8+ library for easy and reliable browser c
 ### Installation
 Install the following package in your Blazor Server and/or Blazor Client project:
 ```
-dotnet add package MMIX.Blazor.Cookies.Server
+dotnet add package MMIX.Blazor.Cookies
 ```
 Add this line to your Server and/or Client project `program.cs`:
 
