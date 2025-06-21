@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.JSInterop;
 using System.Net;
-using MMIX.Blazor.Cookies.Interfaces;
 
 namespace MMIX.Blazor.Cookies.Client
 {

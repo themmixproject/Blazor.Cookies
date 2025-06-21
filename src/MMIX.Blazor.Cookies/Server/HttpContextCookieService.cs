@@ -1,5 +1,4 @@
-﻿using MMIX.Blazor.Cookies.Interfaces;
-using MMIX.Blazor.Cookies.Patches;
+﻿using MMIX.Blazor.Cookies.Patches;
 using Microsoft.AspNetCore.Http;
 using System.Net;
 
