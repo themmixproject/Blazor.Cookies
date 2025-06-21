@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using MMIX.Blazor.Cookies.Client;
 
-namespace MMIX.Blazor.Cookies.Server.Extensions;
+namespace MMIX.Blazor.Cookies.Server;
 public static class IServiceCollectionExtensions
 {
     public static IServiceCollection AddCookieService(this IServiceCollection services)
@@ -14,7 +14,7 @@ public static class IServiceCollectionExtensions
         {
             var httpContextAccessor = i.GetRequiredService<IHttpContextAccessor>();
             var httpContext = httpContextAccessor.HttpContext;
-            var isPrerendering = (httpContext != null && !httpContext.Response.HasStarted);
+            var isPrerendering = httpContext != null && !httpContext.Response.HasStarted;
 
             if (isPrerendering) { return i.GetRequiredService<HttpContextCookieService>(); }
             else { return i.GetRequiredService<JsInteropCookieService>(); }
