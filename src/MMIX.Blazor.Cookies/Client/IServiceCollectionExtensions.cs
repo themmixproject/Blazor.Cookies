@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace MMIX.Blazor.Cookies.Client.Extensions
+namespace MMIX.Blazor.Cookies.Client
 {
     public static class IServiceCollectionExtensions
     {
