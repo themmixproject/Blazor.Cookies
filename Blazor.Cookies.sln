@@ -21,9 +21,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github\workflows\Tests.yml = .github\workflows\Tests.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blazor.Cookies", "src\Blazor.Cookies\Blazor.Cookies.csproj", "{AABDA75E-BD9F-4F8F-8C20-D5AF837144A3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MMIX.Blazor.Cookies", "src\MMIX.Blazor.Cookies\MMIX.Blazor.Cookies.csproj", "{AABDA75E-BD9F-4F8F-8C20-D5AF837144A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blazor.Cookies.Tests", "tests\Blazor.Cookies.Tests\Blazor.Cookies.Tests.csproj", "{3333DDAE-E3CF-4369-85A2-1724985675C5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MMIX.Blazor.Cookies.Tests", "tests\MMIX.Blazor.Cookies.Tests\MMIX.Blazor.Cookies.Tests.csproj", "{3333DDAE-E3CF-4369-85A2-1724985675C5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	<Version>1.0.0-beta</Version>
+	<PackageLicenseFile>LICENSE</PackageLicenseFile>
+	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+	<RepositoryUrl>https://github.com/themmixproject/Blazor.Cookies</RepositoryUrl>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
+	<PackageProjectUrl>https://github.com/themmixproject/Blazor.Cookies</PackageProjectUrl>
+	<Title>MMIX.Blazor.Cookies</Title>
+	<PackageReleaseNotes>- edited README to better reflect project purpose and structure</PackageReleaseNotes>
+	<Authors>themmixproject</Authors>
+	<Description>A package that makes working with cokies in Blazor easier</Description>
+	<RepositoryType>git</RepositoryType>
+	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="3.1.32" />
+  </ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+		<PackageReference Include="Microsoft.JSInterop" Version="8.*" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+		<PackageReference Include="Microsoft.JSInterop" Version="9.*" />
+	</ItemGroup>
+  
+</Project>
