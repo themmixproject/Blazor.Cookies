@@ -1,7 +1,7 @@
-using MMIX.Blazor.Cookies.Server.Extensions;
-using MMIX.Blazor.Cookies.SampleApp.Components;
+using MMIX.Blazor.Cookies.Server;
+using Blazor.Cookies.SampleApp.Components;
 
-namespace MMIX.Blazor.Cookies.SampleApp
+namespace Blazor.Cookies.SampleApp
 {
     public class Program
     {

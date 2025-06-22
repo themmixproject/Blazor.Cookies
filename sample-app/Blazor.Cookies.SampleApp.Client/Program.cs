@@ -1,7 +1,7 @@
-using MMIX.Blazor.Cookies.Client.Extensions;
+using MMIX.Blazor.Cookies.Client;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
-namespace MMIX.Blazor.Cookies.SampleApp.Client
+namespace Blazor.Cookies.SampleApp.Client
 {
     internal class Program
     {
