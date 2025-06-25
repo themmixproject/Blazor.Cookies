@@ -1,11 +1,11 @@
 # MMIX.Blazor.Cookies
 
-Effortless, ASP.NET-compatible cookie management for Blazor United.
+ASP.NET-compatible cookie management for Blazor.
 
-MMIX.Blazor.Cookies is a modern, .NET 8+ library for easy and reliable browser cookie management across all Blazor United render modes. It is a highly modified fork of Bitzart's [Blazor.Cookies](https://github.com/BitzArt/Blazor.Cookies) project, optimized for seamless ASP.NET integration and full prerendering support.
+MMIX.Blazor.Cookies is a modern, .NET 8+ library for easy browser cookie management across all Blazor render modes. It is a highly modified fork of Bitzart's [Blazor.Cookies](https://github.com/BitzArt/Blazor.Cookies) project, optimized for better ASP.NET integration and full prerendering support.
 
 - Supports all Blazor United (.NET 8+) render modes: Static SSR, Interactive Server, Interactive WebAssembly, and Interactive Auto
-- Seamless integration with ASP.NET and Blazor Web App projects
+- Compatible with ASP.NET and Blazor Web App projects
 - Simple, dependency-injection-friendly API: inject `ICookieService` and manage cookies anywhere
 
 ### Installation
@@ -23,28 +23,27 @@ builder.Services.AddCookieService();
 
 Injecting the `ICookieService` in a class:
 ```csharp
-using MMIX.Blazor.Cookies.Interfaces
+using MMIX.Blazor.Cookies;
 
-public class Foo {
-
+public class Foo
+{
     private readonly ICookieService _cookieService;
 
     public Foo(ICookieService cookieService)
     {
-        _cookieService = cookieService
+        _cookieService = cookieService;
     }
 
     public async Task SetCookie()
     {
         await _cookieService.SetAsync("hello", "world");
     }
-
 }
 ```
 
 Injecting the `ICookieService` in a Blazor component:
 ```csharp
-@using MMIX.Blazor.Cookies.Interfaces
+@using MMIX.Blazor.Cookies
 
 @inject ICookieService CookieService
 

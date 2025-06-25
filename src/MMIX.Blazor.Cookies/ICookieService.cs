@@ -27,12 +27,12 @@ public interface ICookieService
     public Task RemoveAsync(string name, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Adds or updates a browser cookie. <br/> <br/>
-    /// <b>Note: </b>
-    /// When in Static SSR render mode, the new value will only be sent to
-    /// the client machine after the page has completed rendering, and thus
-    /// will not appear in the cookies collection until the next request.
+    /// Adds or updates a browser cookie.<br/><br/>
+    /// <b>Note:</b> By default, the <see cref="SameSiteMode"/> attribute is set to <see cref="SameSiteMode.Lax"/>.<br/>
+    /// <b>SSR:</b> In Static SSR mode, the cookie will only be available on the client after the next page load.
     /// </summary>
+    /// <param name="cookie">The cookie to set.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
     /// <param name="cookie"> The cookie to set. </param>
     /// <param name="cancellationToken"> Cancellation token. </param>
     public Task SetAsync(Cookie cookie, CancellationToken cancellationToken = default);
@@ -45,9 +45,7 @@ public interface ICookieService
     /// default behavior.
     /// </param>
     public Task SetAsync(Cookie cookie, SameSiteMode sameSiteMode, CancellationToken cancellationToken = default);
-    /// <summary>
-    /// Adds or updates a browser cookie.
-    /// </summary>
+    /// <inheritdoc cref="SetAsync(Cookie, CancellationToken)"/>
     /// <param name="name">The name of the cookie to set.</param>
     /// <param name="value">The value of the cookie to set.</param>
     /// <param name="cancellationToken"></param>

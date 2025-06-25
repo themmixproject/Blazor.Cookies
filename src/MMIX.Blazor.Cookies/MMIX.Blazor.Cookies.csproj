@@ -4,16 +4,18 @@
     <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	<Version>1.0.0-beta</Version>
+	<Version>2.0.0-beta</Version>
 	<PackageLicenseFile>LICENSE</PackageLicenseFile>
 	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 	<RepositoryUrl>https://github.com/themmixproject/Blazor.Cookies</RepositoryUrl>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
 	<PackageProjectUrl>https://github.com/themmixproject/Blazor.Cookies</PackageProjectUrl>
 	<Title>MMIX.Blazor.Cookies</Title>
-	<PackageReleaseNotes>- edited README to better reflect project purpose and structure</PackageReleaseNotes>
+	<PackageReleaseNotes>- simplified namespaces in project so the services and ICookieService interface is easier to find
+- Set default SameSiteMode to Lax if no SameSiteMode is given
+ - Made README header less sales-like</PackageReleaseNotes>
 	<Authors>themmixproject</Authors>
-	<Description>A package that makes working with cokies in Blazor easier</Description>
+	<Description>A package that makes working with cookies in Blazor easier</Description>
 	<RepositoryType>git</RepositoryType>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>

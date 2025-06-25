@@ -99,15 +99,14 @@ namespace MMIX.Blazor.Cookies.Client
 
         private async Task ExecuteSetCookieJavaScriptInteropAsync(
             Cookie cookie,
-            SameSiteMode? sameSite
+            SameSiteMode sameSite
         ) {
             string command =
                 $"document.cookie = '{cookie.Name}={cookie.Value}; " +
                 $"expires={cookie.Expires};" +
-                $"path=/";
-
-            if (sameSite != null) { command += $"; SameSite={sameSite.ToString()}"; }
-            command += "'";
+                $"path=/;" +
+                $"SameSite={sameSite.ToString()}" +
+                "'";
 
             await JSRuntime.InvokeVoidAsync("eval", command);
         }
@@ -117,7 +116,9 @@ namespace MMIX.Blazor.Cookies.Client
             string command =
                 $"document.cookie = '{cookie.Name}={cookie.Value}; " +
                 $"expires={cookie.Expires};" +
-                $"path=/";
+                $"path=/;" +
+                $"SameSite={SameSiteMode.Lax.ToString()}" +
+                $"'";
 
             await JSRuntime.InvokeVoidAsync("eval", command);
         }

@@ -40,7 +40,6 @@ public class HttpContextCookieService : ICookieService
         CancellationToken cancellationToken = default
     )
     {
-        ValidateCookie(cookie);
         RemoveCookieIfExistsFromHeader(cookie.Name);
         AppendCookieToHttpContext(cookie);
 
@@ -52,7 +51,6 @@ public class HttpContextCookieService : ICookieService
         CancellationToken cancellationToken = default
     )
     {
-        ValidateCookie(cookie);
         RemoveCookieIfExistsFromHeader(cookie.Name);
         AppendCookieToHttpContext(cookie, sameSiteMode);
 
@@ -82,7 +80,7 @@ public class HttpContextCookieService : ICookieService
             Value = value,
             Expires = expires
         };
-        ValidateCookie(cookie);
+
         RemoveCookieIfExistsFromHeader(cookie.Name);
         AppendCookieToHttpContext(cookie);
 
@@ -102,19 +100,11 @@ public class HttpContextCookieService : ICookieService
             Value = value,
             Expires = expires,
         };
-        ValidateCookie(cookie);
+
         RemoveCookieIfExistsFromHeader(cookie.Name);
         AppendCookieToHttpContext(cookie, sameSiteMode);
 
         return Task.CompletedTask;
-    }
-
-    private void ValidateCookie(Cookie cookie)
-    {
-        if (cookie.Secure && !cookie.HttpOnly)
-        {
-            throw new InvalidOperationException("Unable to set a cookie: Secure cookies must also be HttpOnly.");
-        }
     }
 
     private void AppendCookieToHttpContext(Cookie cookie)
@@ -128,7 +118,7 @@ public class HttpContextCookieService : ICookieService
                 Path = "/",
                 HttpOnly = cookie.HttpOnly,
                 Secure = cookie.Secure,
-                SameSite = SameSiteMode.Unspecified
+                SameSite = SameSiteMode.Lax
             }
         );
     }
@@ -150,14 +140,22 @@ public class HttpContextCookieService : ICookieService
     private void RemoveCookieIfExistsFromHeader(string name)
     {
         List<string?> responseCookies = ResponseHeaders[HeaderNames.SetCookie].ToList();
+        
+        bool isRemoved = false;
 
         for (int i = 0; i < responseCookies.Count; i++)
         {
-            var responseCookie = responseCookies[i];
-            if (string.IsNullOrWhiteSpace(responseCookie)) { continue; }
-            if (!responseCookie.StartsWith($"{name}=")) { continue; }
+            bool isMatchedCookie = responseCookies[i]!.StartsWith($"{name}=");
+            if (isMatchedCookie)
+            {
+                responseCookies.RemoveAt(i);
+                isRemoved = true;
+                break;
+            }
+        }
 
-            responseCookies.RemoveAt(i);
+        if (isRemoved)
+        {
             ResponseHeaders[HeaderNames.SetCookie] = responseCookies.ToArray();
         }
     }
