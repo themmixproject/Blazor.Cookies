@@ -3,7 +3,7 @@ using MMIX.Blazor.Cookies.Tests.Patches;
 using Microsoft.AspNetCore.Http;
 using System.Net;
 
-namespace MMIX.Blazor.Cookies.Tests.Server;
+namespace MMIX.Blazor.Cookies.Tests;
 public class HttpContextCookieServiceTests
 {
     // HttpContextCookieService.GetAsync method will not be tested due to

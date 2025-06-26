@@ -1,12 +1,11 @@
 ﻿using MMIX.Blazor.Cookies.Client;
-using MMIX.Blazor.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.JSInterop;
 using Microsoft.JSInterop.Infrastructure;
 using Moq;
 using System.Net;
 
-namespace MMIX.Blazor.Cookies.Tests.Client;
+namespace MMIX.Blazor.Cookies.Tests;
 public class JsInteropCookieServiceTests
 {
     private static string ToJsCookieString(IEnumerable<Cookie>? cookies)
