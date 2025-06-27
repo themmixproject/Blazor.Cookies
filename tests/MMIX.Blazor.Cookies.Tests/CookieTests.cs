@@ -28,5 +28,30 @@ namespace MMIX.Blazor.Cookies.Tests
                 Cookie cookie = new Cookie("", "value");
             });
         }
+
+        [Fact]
+        public void ConstructCookie_WithInvalidCharacterInName_ShouldThrowException()
+        {
+            Assert.Throws<CookieException>(() =>
+            {
+                Cookie cookie = new Cookie("name=", "value");
+            });
+        }
+
+        [Fact]
+        public void ConstructCookie_WithInvalidCharacterInNameAndEmptyValue_ShouldThrowException()
+        {
+            Assert.Throws<CookieException>(() =>
+            {
+                Cookie cookie = new Cookie("name=", "");
+            });
+        }
+
+        [Fact]
+        public void ConstructCookie_WithInvalidCharacterInValue_ShouldCreateCookie()
+        {
+            Cookie cookie = new Cookie("name", "value=");
+            Assert.IsType<Cookie>(cookie);
+        }
     }
 }
