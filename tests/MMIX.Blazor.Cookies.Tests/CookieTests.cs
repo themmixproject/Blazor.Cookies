@@ -17,7 +17,10 @@ namespace MMIX.Blazor.Cookies.Tests
         public void ConstructCookie_WithEmptyValue_ShouldCreateCookie()
         {
             var cookie = new Cookie("name", "");
+
             Assert.IsType<Cookie>(cookie);
+            Assert.Empty(cookie.Name);
+            Assert.NotEmpty(cookie.Value);
         }
 
         [Fact]
@@ -51,7 +54,10 @@ namespace MMIX.Blazor.Cookies.Tests
         public void ConstructCookie_WithInvalidCharacterInValue_ShouldCreateCookie()
         {
             Cookie cookie = new Cookie("name", "value=");
+
             Assert.IsType<Cookie>(cookie);
+            Assert.NotEmpty(cookie.Name);
+            Assert.NotEmpty(cookie.Value);
         }
     }
 }
