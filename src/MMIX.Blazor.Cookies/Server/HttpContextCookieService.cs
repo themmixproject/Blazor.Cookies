@@ -109,7 +109,8 @@ public class HttpContextCookieService : ICookieService
     public Task SetAsync(
         string name,
         string value,
-        CookieOptions cookieOptions
+        CookieOptions cookieOptions,
+        CancellationToken cancellationToken = default
     )
     {
         RemoveCookieIfExistsFromHeader(name);

@@ -89,7 +89,8 @@ namespace MMIX.Blazor.Cookies.Client
         public async Task SetAsync(
             string name,
             string value,
-            CookieOptions cookieOptions
+            CookieOptions cookieOptions,
+            CancellationToken cancellationToken = default
         )
         {
             Cookie cookie = new Cookie(name, value);
