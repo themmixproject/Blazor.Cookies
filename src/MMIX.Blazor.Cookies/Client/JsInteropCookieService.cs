@@ -86,6 +86,16 @@ namespace MMIX.Blazor.Cookies.Client
             ValidateCookie(cookie);
             await ExecuteSetCookieJavaScriptInteropAsync(cookie, sameSiteMode);
         }
+        public async Task SetAsync(
+            string name,
+            string value,
+            CookieOptions cookieOptions
+        )
+        {
+            Cookie cookie = new Cookie(name, value);
+            ValidateCookie(cookie);
+            await ExecuteSetCookieJavascriptInteropAsync(name, value, cookieOptions);
+        }
 
         private void ValidateCookie(Cookie cookie)
         {
@@ -119,6 +129,34 @@ namespace MMIX.Blazor.Cookies.Client
                 $"path=/;" +
                 $"SameSite={SameSiteMode.Lax.ToString()}" +
                 $"'";
+
+            await JSRuntime.InvokeVoidAsync("eval", command);
+        }
+
+        public async Task ExecuteSetCookieJavascriptInteropAsync(
+            string name,
+            string value,
+            CookieOptions cookieOptions
+        )
+        {
+            string command =
+                $"document.cookie = '{name}={value}; " +
+                $"expires={cookieOptions.Expires}; ";
+
+            command += "path=";
+            string path = string.IsNullOrEmpty(cookieOptions.Path) ? "/" : cookieOptions.Path;
+            if (string.IsNullOrEmpty(cookieOptions.Path)) { command += "/; "; }
+            else { command += $"{cookieOptions.Path}; "; }
+
+            command += "SameSite=";
+            SameSiteMode sameSiteMode = cookieOptions.SameSite;
+            if (cookieOptions.SameSite == SameSiteMode.Unspecified)
+            {
+                command += $"{SameSiteMode.Lax.ToString()};";
+            }
+            else { command += $"{cookieOptions.SameSite.ToString()};"; }
+
+            command += "'";
 
             await JSRuntime.InvokeVoidAsync("eval", command);
         }
