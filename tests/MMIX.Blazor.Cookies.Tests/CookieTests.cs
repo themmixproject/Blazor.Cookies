@@ -19,8 +19,8 @@ namespace MMIX.Blazor.Cookies.Tests
             var cookie = new Cookie("name", "");
 
             Assert.IsType<Cookie>(cookie);
-            Assert.Empty(cookie.Name);
-            Assert.NotEmpty(cookie.Value);
+            Assert.NotEmpty(cookie.Name);
+            Assert.Empty(cookie.Value);
         }
 
         [Fact]
