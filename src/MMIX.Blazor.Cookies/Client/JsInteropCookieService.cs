@@ -94,7 +94,7 @@ namespace MMIX.Blazor.Cookies.Client
         {
             Cookie cookie = new Cookie(name, value);
             ValidateCookie(cookie);
-            await ExecuteSetCookieJavascriptInteropAsync(name, value, cookieOptions);
+            await ExecuteSetCookieJavaScriptInteropAsync(name, value, cookieOptions);
         }
 
         private void ValidateCookie(Cookie cookie)
@@ -126,14 +126,14 @@ namespace MMIX.Blazor.Cookies.Client
             string command =
                 $"document.cookie = '{cookie.Name}={cookie.Value}; " +
                 $"expires={cookie.Expires};" +
-                $"path=/;" +
+                $"path={cookie.Path};" +
                 $"SameSite={SameSiteMode.Lax.ToString()}" +
                 $"'";
 
             await JSRuntime.InvokeVoidAsync("eval", command);
         }
 
-        public async Task ExecuteSetCookieJavascriptInteropAsync(
+        public async Task ExecuteSetCookieJavaScriptInteropAsync(
             string name,
             string value,
             CookieOptions cookieOptions
@@ -141,22 +141,10 @@ namespace MMIX.Blazor.Cookies.Client
         {
             string command =
                 $"document.cookie = '{name}={value}; " +
-                $"expires={cookieOptions.Expires}; ";
-
-            command += "path=";
-            string path = string.IsNullOrEmpty(cookieOptions.Path) ? "/" : cookieOptions.Path;
-            if (string.IsNullOrEmpty(cookieOptions.Path)) { command += "/; "; }
-            else { command += $"{cookieOptions.Path}; "; }
-
-            command += "SameSite=";
-            SameSiteMode sameSiteMode = cookieOptions.SameSite;
-            if (cookieOptions.SameSite == SameSiteMode.Unspecified)
-            {
-                command += $"{SameSiteMode.Lax.ToString()};";
-            }
-            else { command += $"{cookieOptions.SameSite.ToString()};"; }
-
-            command += "'";
+                $"expires={cookieOptions.Expires};" +
+                $"path={cookieOptions.Path};" +
+                $"SameSite={cookieOptions.SameSite.ToString()}" +
+                "'";
 
             await JSRuntime.InvokeVoidAsync("eval", command);
         }
