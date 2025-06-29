@@ -106,6 +106,17 @@ public class HttpContextCookieService : ICookieService
 
         return Task.CompletedTask;
     }
+    public Task SetAsync(
+        string name,
+        string value,
+        CookieOptions cookieOptions
+    )
+    {
+        RemoveCookieIfExistsFromHeader(name);
+        _httpContext.Response.Cookies.Append(name, value, cookieOptions);
+
+        return Task.CompletedTask;
+    }
 
     private void AppendCookieToHttpContext(Cookie cookie)
     {
