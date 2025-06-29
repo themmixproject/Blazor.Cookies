@@ -115,7 +115,7 @@ namespace MMIX.Blazor.Cookies.Client
             string command =
                 $"document.cookie = '{cookie.Name}={cookie.Value}; " +
                 $"expires={cookie.Expires};" +
-                $"path=/;" +
+                $"path={(string.IsNullOrEmpty(cookie.Path) ? '/' : cookie.Path)};" +
                 $"SameSite={sameSite.ToString()}" +
                 "'";
 
@@ -127,7 +127,7 @@ namespace MMIX.Blazor.Cookies.Client
             string command =
                 $"document.cookie = '{cookie.Name}={cookie.Value}; " +
                 $"expires={cookie.Expires};" +
-                $"path={cookie.Path};" +
+                $"path={(string.IsNullOrEmpty(cookie.Path) ? '/' : cookie.Path)};" +
                 $"SameSite={SameSiteMode.Lax.ToString()}" +
                 $"'";
 
@@ -143,7 +143,7 @@ namespace MMIX.Blazor.Cookies.Client
             string command =
                 $"document.cookie = '{name}={value}; " +
                 $"expires={cookieOptions.Expires};" +
-                $"path={cookieOptions.Path};" +
+                $"path={(string.IsNullOrEmpty(cookieOptions.Path) ? '/' : cookieOptions.Path)};" +
                 $"SameSite={cookieOptions.SameSite.ToString()}" +
                 "'";
 

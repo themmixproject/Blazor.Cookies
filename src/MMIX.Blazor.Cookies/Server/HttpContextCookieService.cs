@@ -127,12 +127,12 @@ public class HttpContextCookieService : ICookieService
             new CookieOptions
             {
                 Expires = cookie.Expires,
-                Path = cookie.Path,
+                Path = (string.IsNullOrEmpty(cookie.Path) ? "/" : cookie.Path ),
                 HttpOnly = cookie.HttpOnly,
                 Secure = cookie.Secure,
                 SameSite = SameSiteMode.Lax
             }
-        );
+        ); 
     }
     private void AppendCookieToHttpContext(
         Cookie cookie,
@@ -142,7 +142,7 @@ public class HttpContextCookieService : ICookieService
         _httpContext.Response.Cookies.Append(cookie.Name, cookie.Value, new CookieOptions
         {
             Expires = cookie.Expires,
-            Path = "/",
+            Path = (string.IsNullOrEmpty(cookie.Path) ? "/" : cookie.Path),
             HttpOnly = cookie.HttpOnly,
             Secure = cookie.Secure,
             SameSite = sameSiteMode
