@@ -67,7 +67,4 @@ public interface ICookieService
     /// <inheritdoc cref="SetAsync(string, string, CancellationToken)"/>
     /// <param name="cookieOptions">Configuration options for the cookie</param>
     public Task SetAsync(string name, string value, CookieOptions cookieOptions, CancellationToken cancellationToken);
-    /// <inheritdoc cref="SetAsync(string, string, CookieOptions, CancellationToken)"/>
-    public Task SetAsync(Cookie cookie, CookieOptions cookieOptions, CancellationToken cancellationToken);
-
 }
