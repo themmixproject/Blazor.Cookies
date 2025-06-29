@@ -115,7 +115,7 @@ public class HttpContextCookieService : ICookieService
             new CookieOptions
             {
                 Expires = cookie.Expires,
-                Path = "/",
+                Path = cookie.Path,
                 HttpOnly = cookie.HttpOnly,
                 Secure = cookie.Secure,
                 SameSite = SameSiteMode.Lax
