@@ -64,4 +64,7 @@ public interface ICookieService
     /// default behavior.
     /// </param>
     public Task SetAsync(string name, string value, DateTime expires, SameSiteMode sameSiteMode, CancellationToken cancellationToken = default);
+    /// <inheritdoc cref="SetAsync(string, string, CancellationToken)"/>
+    /// <param name="cookieOptions">Configuration options for the cookie</param>
+    public Task SetAsync(string name, string value, CookieOptions cookieOptions, CancellationToken cancellationToken);
 }

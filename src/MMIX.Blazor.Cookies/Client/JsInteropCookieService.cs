@@ -86,6 +86,17 @@ namespace MMIX.Blazor.Cookies.Client
             ValidateCookie(cookie);
             await ExecuteSetCookieJavaScriptInteropAsync(cookie, sameSiteMode);
         }
+        public async Task SetAsync(
+            string name,
+            string value,
+            CookieOptions cookieOptions,
+            CancellationToken cancellationToken = default
+        )
+        {
+            Cookie cookie = new Cookie(name, value);
+            ValidateCookie(cookie);
+            await ExecuteSetCookieJavaScriptInteropAsync(name, value, cookieOptions);
+        }
 
         private void ValidateCookie(Cookie cookie)
         {
@@ -104,7 +115,7 @@ namespace MMIX.Blazor.Cookies.Client
             string command =
                 $"document.cookie = '{cookie.Name}={cookie.Value}; " +
                 $"expires={cookie.Expires};" +
-                $"path=/;" +
+                $"path={(string.IsNullOrEmpty(cookie.Path) ? '/' : cookie.Path)};" +
                 $"SameSite={sameSite.ToString()}" +
                 "'";
 
@@ -116,9 +127,25 @@ namespace MMIX.Blazor.Cookies.Client
             string command =
                 $"document.cookie = '{cookie.Name}={cookie.Value}; " +
                 $"expires={cookie.Expires};" +
-                $"path=/;" +
+                $"path={(string.IsNullOrEmpty(cookie.Path) ? '/' : cookie.Path)};" +
                 $"SameSite={SameSiteMode.Lax.ToString()}" +
                 $"'";
+
+            await JSRuntime.InvokeVoidAsync("eval", command);
+        }
+
+        public async Task ExecuteSetCookieJavaScriptInteropAsync(
+            string name,
+            string value,
+            CookieOptions cookieOptions
+        )
+        {
+            string command =
+                $"document.cookie = '{name}={value}; " +
+                $"expires={cookieOptions.Expires};" +
+                $"path={(string.IsNullOrEmpty(cookieOptions.Path) ? '/' : cookieOptions.Path)};" +
+                $"SameSite={cookieOptions.SameSite.ToString()}" +
+                "'";
 
             await JSRuntime.InvokeVoidAsync("eval", command);
         }
