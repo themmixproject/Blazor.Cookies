@@ -312,4 +312,24 @@ public class JsInteropCookieServiceTests
         Assert.NotNull(cookie);
         Assert.Equal(cookie, resultCookie);
     }
+    [Fact]
+    public async Task SetAsync_NameValueCookieOptionsOverload_ShouldReturnCookie()
+    {
+        DateTime cookieExpire = DateTime.UtcNow.AddDays( 1 );
+        Cookie cookie = new Cookie { Name = "sessionId", Value = "ei34jdh", Expires = cookieExpire };
+        CookieOptions options = new CookieOptions
+        {
+            Expires = cookie.Expires,
+            SameSite = SameSiteMode.Strict
+        };
+
+        JsInteropCookieService jsInteropCookieService = CreateMockSetAsyncCookieService(
+            new List<Cookie> { cookie }
+        );
+        await jsInteropCookieService.SetAsync( cookie.Name, cookie.Value, options );
+
+        var resultCookie = await jsInteropCookieService.GetAsync(cookie.Name);
+        Assert.NotNull(resultCookie);
+        Assert.Equal(cookie, resultCookie);
+    }
 }
