@@ -1,11 +1,14 @@
 ﻿using Microsoft.JSInterop;
+using Moq;
+using System.Net;
+using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
 
 namespace MMIX.Blazor.Cookies.Tests.Patches;
 
 internal class TestJSRuntime : IJSRuntime
 {
-    private Dictionary<string, string> _cookies = new Dictionary<string, string>();
+    private string _cookies = "";
 
     public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args)
     {
@@ -19,8 +22,17 @@ internal class TestJSRuntime : IJSRuntime
 
     private void ParseCommand(string command)
     {
-        if (Regex.Match(command, @"document\.cookie$").Success) { }
-        if (Regex.Match(command, @"document\.cookie\s=\s").Success) { }
+        if (Regex.IsMatch(command, @"document\.cookie$")) {
+            return _cookies;
+        }
+        if (Regex.IsMatch(command, @"document\.cookie\s*=\s*"))
+        {
+            var extractionMatch= Regex.Match(command, @"/document\.cookie\s*=\s*[\'](.*)[\']");
+            var cookieString = extractionMatch.Groups[1].Value;
+            var cookieNameValuePair = cookieString.Split(';')[0].Trim.Split("=");
+            _cookies += cookieNameValuePair[0] + "=" + cookieNameValuePair[1] + "; ";
+            return cookieString;
+        }
     }
 
     public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args)
