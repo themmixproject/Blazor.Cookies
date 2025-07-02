@@ -29,7 +29,7 @@ internal class TestJSRuntime : IJSRuntime
         {
             var extractionMatch= Regex.Match(command, @"/document\.cookie\s*=\s*[\'](.*)[\']");
             var cookieString = extractionMatch.Groups[1].Value;
-            var cookieNameValuePair = cookieString.Split(';')[0].Trim.Split("=");
+            var cookieNameValuePair = cookieString.Split(';')[0].Trim().Split("=");
             _cookies += cookieNameValuePair[0] + "=" + cookieNameValuePair[1] + "; ";
             return cookieString;
         }
