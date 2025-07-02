@@ -15,12 +15,25 @@ internal class TestJSRuntime : IJSRuntime
         if (Regex.Match(identifier, "eval$").Success && args is { Length: 1})
         {
             string command = args[0]?.ToString() ?? "";
-            ParseCommand(command);
+            var commandResult = ParseCommand(command);
+
+            if (commandResult is null)
+            {
+                return ValueTask.FromResult(default(TValue)!);
+            }
+
+            if (commandResult is TValue value)
+            {
+                return ValueTask.FromResult(value);
+            }
+
+            return ValueTask.FromResult(TryTypeConverstion<TValue>(commandResult));
         }
-        return ValueTask.FromResult((TValue) (object) null);
+
+        return ValueTask.FromResult(default(TValue)!);
     }
 
-    private void ParseCommand(string command)
+    private object? ParseCommand(string command)
     {
         if (Regex.IsMatch(command, @"document\.cookie$")) {
             return _cookies;
@@ -32,6 +45,20 @@ internal class TestJSRuntime : IJSRuntime
             var cookieNameValuePair = cookieString.Split(';')[0].Trim().Split("=");
             _cookies += cookieNameValuePair[0] + "=" + cookieNameValuePair[1] + "; ";
             return cookieString;
+        }
+
+        return null;
+    }
+
+    private TValue TryTypeConverstion <TValue>(object value)
+    {
+        try
+        {
+            return (TValue)Convert.ChangeType(value, typeof(TValue));
+        }
+        catch
+        {
+            throw new InvalidCastException($"Cannot cast result of type {value.GetType()} to {typeof(TValue)}");
         }
     }
 
