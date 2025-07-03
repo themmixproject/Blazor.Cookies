@@ -58,12 +58,15 @@ public class TestJSRuntimeTests
     {
         IJSRuntime jSRuntime = new TestJSRuntime();
 
-        string cookieString = "myCookie=myValue;";
+        string cookieName = "myCookie";
+        string cookieValue = "myValue";
+        string cookieString = $"{cookieName}={cookieValue};";
         string command = $"document.cookie = '{cookieString}'";
         string outputCookieString = await jSRuntime.InvokeAsync<string>("eval", command);
 
         Assert.Equal(cookieString, outputCookieString);
+
+        string cookies = await jSRuntime.InvokeAsync<string>("eval", "document.cookie");
+        Assert.Contains(cookies, $"{cookieName}={cookieValue};");
     }
-
-
 }
