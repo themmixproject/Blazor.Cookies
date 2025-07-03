@@ -53,5 +53,17 @@ public class TestJSRuntimeTests
         Assert.Equal(cookieString, outputCookieString);
     }
 
+    [Fact]
+    public async Task InvokeAsync_eval_documentcookie_SetCookieWithOnlyNameValueAttributesWithoutSemicolon_ShouldSetCookie()
+    {
+        IJSRuntime jSRuntime = new TestJSRuntime();
+
+        string cookieString = "myCookie=myValue;";
+        string command = $"document.cookie = '{cookieString}'";
+        string outputCookieString = await jSRuntime.InvokeAsync<string>("eval", command);
+
+        Assert.Equal(cookieString, outputCookieString);
+    }
+
 
 }
