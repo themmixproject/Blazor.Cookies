@@ -21,10 +21,11 @@ public class TestJSRuntimeTests
         IJSRuntime jsRuntime = new TestJSRuntime();
         DateTime date = DateTime.Today;
         string cookieExpires = date.ToUniversalTime().ToString("ddd, dd yyyy hh:mm:ss \'UTC\'zzz");
-        string command = $"myCookie=myValue; expires={cookieExpires}; samesite=lax;";
-        string cookieString = await jsRuntime.InvokeAsync<string>("eval", "document.cookie");
+        string cookieString = $"myCookie=myValue; expires={cookieExpires}; samesite=lax;";
+        string command = $"document.cookie = '{cookieString}'";
+        string ouputCookieString = await jsRuntime.InvokeAsync<string>("eval", command);
 
-        Assert.Equal(command, cookieString);
+        Assert.Equal(cookieString, ouputCookieString);
     }
 
 
