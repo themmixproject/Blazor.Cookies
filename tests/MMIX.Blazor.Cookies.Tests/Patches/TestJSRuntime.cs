@@ -12,7 +12,7 @@ internal class TestJSRuntime : IJSRuntime
 
     public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args)
     {
-        if (Regex.Match(identifier, "eval$").Success && args is { Length: 1})
+        if (Regex.IsMatch(identifier, "eval$") && args is { Length: 1})
         {
             string command = args[0]?.ToString() ?? "";
             var commandResult = ParseCommand(command);
