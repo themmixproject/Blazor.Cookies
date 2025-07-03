@@ -1,4 +1,5 @@
 using System;
+using System.Reflection.Metadata;
 using Microsoft.JSInterop;
 using MMIX.Blazor.Cookies.Tests.Patches;
 
@@ -26,6 +27,28 @@ public class TestJSRuntimeTests
         string ouputCookieString = await jsRuntime.InvokeAsync<string>("eval", command);
 
         Assert.Equal(cookieString, ouputCookieString);
+    }
+
+    public async Task InvokeAsync_eval_documentcookie_WithOnlyNameValueWithoutSemicolon_ShouldReturnCookieString()
+    {
+        IJSRuntime jSRuntime = new TestJSRuntime();
+
+        string cookieString = "myCookie=myValue";
+        string command = $"document.cookie = '{cookieString}'";
+        string outputCookieString = await jSRuntime.InvokeAsync<string>("eval", command);
+
+        Assert.Equal(cookieString, outputCookieString);
+    }
+
+    public async Task InvokeAsync_eval_documentcookie_WithOnlyNameValueWithSemicolon_ShouldReturnCookieString()
+    {
+        IJSRuntime jSRuntime = new TestJSRuntime();
+
+        string cookieString = "myCookie=myValue;";
+        string command = $"document.cookie = '{cookieString}'";
+        string outputCookieString = await jSRuntime.InvokeAsync<string>("eval", command);
+
+        Assert.Equal(cookieString, outputCookieString);
     }
 
 
