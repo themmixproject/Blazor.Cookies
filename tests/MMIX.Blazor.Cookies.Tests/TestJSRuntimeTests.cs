@@ -29,6 +29,7 @@ public class TestJSRuntimeTests
         Assert.Equal(cookieString, ouputCookieString);
     }
 
+    [Fact]
     public async Task InvokeAsync_eval_documentcookie_WithOnlyNameValueWithoutSemicolon_ShouldReturnCookieString()
     {
         IJSRuntime jSRuntime = new TestJSRuntime();
@@ -40,6 +41,7 @@ public class TestJSRuntimeTests
         Assert.Equal(cookieString, outputCookieString);
     }
 
+    [Fact]
     public async Task InvokeAsync_eval_documentcookie_WithOnlyNameValueWithSemicolon_ShouldReturnCookieString()
     {
         IJSRuntime jSRuntime = new TestJSRuntime();
