@@ -1,7 +1,4 @@
 ﻿using Microsoft.JSInterop;
-using Moq;
-using System.Net;
-using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
 
 namespace MMIX.Blazor.Cookies.Tests.Patches;
@@ -40,8 +37,7 @@ internal class TestJSRuntime : IJSRuntime
         }
         if (Regex.IsMatch(command, @"document\.cookie\s*=\s*"))
         {
-            var extractionMatch= Regex.Match(command, @"/document\.cookie\s*=\s*[\'](.*)[\']");
-            var cookieString = extractionMatch.Groups[1].Value;
+            var cookieString = ExtractCookieStringFromCommand(command);
             var cookieNameValuePair = cookieString.Split(';')[0].Trim().Split("=");
             _cookies += cookieNameValuePair[0] + "=" + cookieNameValuePair[1] + "; ";
             return cookieString;
@@ -50,7 +46,14 @@ internal class TestJSRuntime : IJSRuntime
         return null;
     }
 
-    private TValue TryTypeConverstion <TValue>(object value)
+    private string ExtractCookieStringFromCommand(string command)
+    {
+        Match ExtractionMatch = Regex.Match(command, @"document\.cookie\s*=\s*\'(.*)\'");
+        string cookieString = ExtractionMatch.Groups[1].Value;
+        return cookieString;
+    }
+    
+    private TValue TryTypeConverstion<TValue>(object value)
     {
         try
         {
