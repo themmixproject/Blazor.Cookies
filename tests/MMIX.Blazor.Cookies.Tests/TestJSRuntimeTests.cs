@@ -69,4 +69,22 @@ public class TestJSRuntimeTests
         string cookies = await jSRuntime.InvokeAsync<string>("eval", "document.cookie");
         Assert.Contains(cookies, $"{cookieName}={cookieValue};");
     }
+
+    [Fact]
+    public async Task InvokeAsync_eval_documentcookie_SetCookieWithOtherProperties_ShouldSetCookie()
+    {
+        IJSRuntime jSRuntime = new TestJSRuntime();
+        string cookieName = "myCookie";
+        string cookieValue = "myValue";
+        DateTime date = DateTime.Today;
+        string cookieExpires = date.ToUniversalTime().ToString("ddd, dd yyyy hh:mm:ss \'UTC\'zzz");
+        string cookieString = $"{cookieName}={cookieValue}; expires={cookieExpires}; samesite=lax;";
+        string command = $"document.cookie = '{cookieString}'";
+        string outputCookieString = await jSRuntime.InvokeAsync<string>("eval", command);
+        
+        Assert.Equal(cookieString, outputCookieString);
+        
+        string cookies = await jSRuntime.InvokeAsync<string>("eval", "document.cookie");
+        Assert.Contains(cookies, $"{cookieName}={cookieValue};");
+    }
 }
