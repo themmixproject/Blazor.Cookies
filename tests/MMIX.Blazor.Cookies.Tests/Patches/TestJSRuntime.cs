@@ -40,6 +40,8 @@ internal class TestJSRuntime : IJSRuntime
         {
             var cookieString = ExtractCookieStringFromCommand(command);
             var cookieNameValuePair = ExtractNameValuePairFromCommand(cookieString);
+            AddKeyValueToCookies(cookieNameValuePair);
+
             return cookieString;
         }
 
@@ -61,12 +63,41 @@ internal class TestJSRuntime : IJSRuntime
             string[] cookiePartSplit = cookiePart.Split("=", 2);
             string key = cookiePartSplit[0].Trim();
             string value = cookiePartSplit[1].Trim();
+
+            if (isCustomKey(key))
+            {
+                return $"{key}={value}";
+            }
         }
 
         return "";
     }
 
-    private string
+    private bool isCustomKey(string key)
+    {
+        string lowerCaseKey = key.ToLower();
+        string[] validKeys = {
+            "domain",
+            "expires",
+            "max-age",
+            "partitioned",
+            "path",
+            "samesite"
+        };
+
+        return validKeys.Contains(lowerCaseKey);
+    }
+
+    private void AddKeyValueToCookies(string keyValuePair)
+    {
+        bool cookiesAreSet = !string.IsNullOrEmpty(_cookies);
+        if (cookiesAreSet)
+        {
+            _cookies += "; ";
+        }
+
+        _cookies += keyValuePair;
+    }
     
     private TValue TryTypeConverstion<TValue>(object value)
     {
