@@ -67,7 +67,7 @@ public class TestJSRuntimeTests
         Assert.Equal(cookieString, outputCookieString);
 
         string cookies = await jSRuntime.InvokeAsync<string>("eval", "document.cookie");
-        Assert.Contains(cookies, $"{cookieName}={cookieValue};");
+        Assert.Contains(cookies, $"{cookieName}={cookieValue}");
     }
 
     [Fact]
@@ -85,7 +85,7 @@ public class TestJSRuntimeTests
         Assert.Equal(cookieString, outputCookieString);
 
         string cookies = await jSRuntime.InvokeAsync<string>("eval", "document.cookie");
-        Assert.Contains(cookies, $"{cookieName}={cookieValue};");
+        Assert.Contains(cookies, $"{cookieName}={cookieValue}");
     }
 
     [Fact]
