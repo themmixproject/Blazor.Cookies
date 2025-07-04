@@ -54,7 +54,7 @@ public class TestJSRuntimeTests
     }
 
     [Fact]
-    public async Task InvokeAsync_eval_documentcookie_SetCookieWithOnlyNameValueAttributesWithoutSemicolon_ShouldSetCookie()
+    public async Task InvokeAsync_eval_documentcookie_SetCookieWithOnlyNameValueAttributesWithoutSemicolon_ShouldSetCookieWithoutTrailingSemicolon()
     {
         IJSRuntime jSRuntime = new TestJSRuntime();
 
@@ -71,7 +71,7 @@ public class TestJSRuntimeTests
     }
 
     [Fact]
-    public async Task InvokeAsync_eval_documentcookie_SetCookieWithOtherProperties_ShouldSetCookie()
+    public async Task InvokeAsync_eval_documentcookie_SetCookieWithOtherProperties_ShouldSetCookieWithoutTrailingSemicolon()
     {
         IJSRuntime jSRuntime = new TestJSRuntime();
         string cookieName = "myCookie";
@@ -89,7 +89,7 @@ public class TestJSRuntimeTests
     }
 
     [Fact]
-    public async Task InvokeAsync_eval_documentcookie_SetCookieWithMixedOtherProperties_ShouldSetCookie()
+    public async Task InvokeAsync_eval_documentcookie_SetCookieWithMixedOtherProperties_ShouldSetCookieWithoutTrailingSemicolon()
     {
         IJSRuntime jSRuntime = new TestJSRuntime();
         string cookieName = "myCookie";
@@ -103,6 +103,6 @@ public class TestJSRuntimeTests
         Assert.Equal(cookieString, outputCookieString);
 
         string cookies = await jSRuntime.InvokeAsync<string>("eval", "document.cookie");
-        Assert.Contains(cookies, $"{cookieName}={cookieValue};");
+        Assert.Contains(cookies, $"{cookieName}={cookieValue}");
     }
 }
