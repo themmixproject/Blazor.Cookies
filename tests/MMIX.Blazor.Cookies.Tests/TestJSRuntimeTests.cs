@@ -98,4 +98,18 @@ public class TestJSRuntimeTests
         Assert.NotEmpty(cookies);
         Assert.Contains(cookies, $"{cookieNameValue}");
     }
+
+    [Fact]
+    public async Task SetCookieWithOnlyValue_ShouldSetCookieValue()
+    {
+        IJSRuntime jSRuntime = new TestJSRuntime();
+
+        string cookieValue = "myValue";
+        string command = $"document.cookie = '{cookieValue}'";
+        await jSRuntime.InvokeVoidAsync("eval", command);
+
+        string cookies = await jSRuntime.InvokeAsync<string>("eval", "document.cookie");
+        Assert.NotEmpty(cookies);
+        Assert.Contains(cookies, $"{cookieValue}");
+    }
 }
