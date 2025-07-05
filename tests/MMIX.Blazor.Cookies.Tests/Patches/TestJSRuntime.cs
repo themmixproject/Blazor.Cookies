@@ -66,7 +66,7 @@ internal class TestJSRuntime : IJSRuntime
             string key = cookiePartSplit[0].Trim();
             string value = cookiePartSplit[1].Trim();
 
-            if (isCustomKey(key))
+            if (IsCustomKey(key))
             {
                 return $"{key}={value}";
             }
@@ -75,7 +75,7 @@ internal class TestJSRuntime : IJSRuntime
         return "";
     }
 
-    private bool isCustomKey(string key)
+    private bool IsCustomKey(string key)
     {
         string lowerCaseKey = key.ToLower();
         string[] validKeys = {
@@ -87,7 +87,8 @@ internal class TestJSRuntime : IJSRuntime
             "samesite"
         };
 
-        return validKeys.Contains(lowerCaseKey);
+        bool isCustom = !validKeys.Contains(lowerCaseKey);
+        return isCustom;
     }
 
     private void AddKeyValueToCookies(string keyValuePair)
