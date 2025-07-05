@@ -7,6 +7,8 @@ namespace MMIX.Blazor.Cookies.Tests;
 
 public class TestJSRuntimeTests
 {
+    private const string cookieDateFormat = "ddd, dd yyyy hh:mm:ss \'UTC\'zzz";
+
     [Fact]
     public async Task InvokeAsync_eval_documentcookie_WithNoCookies_ShouldReturnEmptyString()
     {
@@ -47,7 +49,7 @@ public class TestJSRuntimeTests
         IJSRuntime jSRuntime = new TestJSRuntime();
 
         string cookieString = "myCookie=myValue;";
-        string command = $"document.cookie = '{cookieString}'";
+        string command = $"document.cookie = 'myCookie=myValue;'";
         string outputCookieString = await jSRuntime.InvokeAsync<string>("eval", command);
 
         Assert.Equal(cookieString, outputCookieString);
@@ -58,48 +60,42 @@ public class TestJSRuntimeTests
     {
         IJSRuntime jSRuntime = new TestJSRuntime();
 
-        string cookieName = "myCookie";
-        string cookieValue = "myValue";
-        string cookieString = $"{cookieName}={cookieValue};";
-        string command = $"document.cookie = '{cookieString}'";
-        string outputCookieString = await jSRuntime.InvokeAsync<string>("eval", command);
-
-        Assert.Equal(cookieString, outputCookieString);
+        string cookieNameValue = $"myCookie=myValue";
+        string command = $"document.cookie = '{cookieNameValue}'";
+        await jSRuntime.InvokeAsync<string>("eval", command);
 
         string cookies = await jSRuntime.InvokeAsync<string>("eval", "document.cookie");
         Assert.NotEmpty(cookies);
-        Assert.Contains(cookies, $"{cookieName}={cookieValue}");
+        Assert.Contains(cookies, $"{cookieNameValue}");
     }
 
     [Fact]
     public async Task InvokeAsync_eval_documentcookie_SetCookieWithOtherProperties_ShouldSetCookieWithoutTrailingSemicolon()
     {
         IJSRuntime jSRuntime = new TestJSRuntime();
-        string cookieName = "myCookie";
-        string cookieValue = "myValue";
-        string dateTimeFormat = "ddd, dd yyyy hh:mm:ss \'UTC\'zzz";
-        string cookieExpires = DateTime.Today.ToUniversalTime().ToString(dateTimeFormat);
-        string command = $"document.cookie = '{cookieName}={cookieValue}; expires={cookieExpires}; samesite=lax;'";
+
+        string cookieNameValue = "myCookie=myValue";
+        string cookieExpires = DateTime.Today.ToUniversalTime().ToString(cookieDateFormat);
+        string command = $"document.cookie = '{cookieNameValue}; expires={cookieExpires}; samesite=lax;'";
         await jSRuntime.InvokeAsync<string>("eval", command);
 
         string cookies = await jSRuntime.InvokeAsync<string>("eval", "document.cookie");
         Assert.NotEmpty(cookies);
-        Assert.Contains(cookies, $"{cookieName}={cookieValue}");
+        Assert.Contains(cookies, $"{cookieNameValue}");
     }
 
     [Fact]
     public async Task InvokeAsync_eval_documentcookie_SetCookieWithMixedOtherProperties_ShouldSetCookieWithoutTrailingSemicolon()
     {
         IJSRuntime jSRuntime = new TestJSRuntime();
-        string cookieName = "myCookie";
-        string cookieValue = "myValue";
-        string dateTimeFormat = "ddd, dd yyyy hh:mm:ss \'UTC\'zzz";
-        string cookieExpires = DateTime.Today.ToUniversalTime().ToString(dateTimeFormat);
-        string command = $"document.cookie = 'samesite=lax; path=/; expires={cookieExpires}; {cookieName}={cookieValue}'";
+
+        string cookieNameValue = "myCookie=myValue";
+        string cookieExpires = DateTime.Today.ToUniversalTime().ToString(cookieDateFormat);
+        string command = $"document.cookie = 'samesite=lax; path=/; expires={cookieExpires}; {cookieNameValue}'";
         await jSRuntime.InvokeAsync<string>("eval", command);
 
         string cookies = await jSRuntime.InvokeAsync<string>("eval", "document.cookie");
         Assert.NotEmpty(cookies);
-        Assert.Contains(cookies, $"{cookieName}={cookieValue}");
+        Assert.Contains(cookies, $"{cookieNameValue}");
     }
 }
