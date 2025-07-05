@@ -22,8 +22,8 @@ public class TestJSRuntimeTests
     public async Task InvokeAsync_eval_documentcookie_WithSetCookieCommand_ShouldReturnCookieString()
     {
         IJSRuntime jsRuntime = new TestJSRuntime();
-        DateTime date = DateTime.Today;
-        string cookieExpires = date.ToUniversalTime().ToString("ddd, dd yyyy hh:mm:ss \'UTC\'zzz");
+
+        string cookieExpires = DateTime.Today.ToUniversalTime().ToString(cookieDateFormat);
         string cookieString = $"myCookie=myValue; expires={cookieExpires}; samesite=lax;";
         string command = $"document.cookie = '{cookieString}'";
         string ouputCookieString = await jsRuntime.InvokeAsync<string>("eval", command);
@@ -62,7 +62,7 @@ public class TestJSRuntimeTests
 
         string cookieNameValue = $"myCookie=myValue";
         string command = $"document.cookie = '{cookieNameValue}'";
-        await jSRuntime.InvokeAsync<string>("eval", command);
+        await jSRuntime.InvokeVoidAsync("eval", command);
 
         string cookies = await jSRuntime.InvokeAsync<string>("eval", "document.cookie");
         Assert.NotEmpty(cookies);
@@ -77,7 +77,7 @@ public class TestJSRuntimeTests
         string cookieNameValue = "myCookie=myValue";
         string cookieExpires = DateTime.Today.ToUniversalTime().ToString(cookieDateFormat);
         string command = $"document.cookie = '{cookieNameValue}; expires={cookieExpires}; samesite=lax;'";
-        await jSRuntime.InvokeAsync<string>("eval", command);
+        await jSRuntime.InvokeVoidAsync("eval", command);
 
         string cookies = await jSRuntime.InvokeAsync<string>("eval", "document.cookie");
         Assert.NotEmpty(cookies);
