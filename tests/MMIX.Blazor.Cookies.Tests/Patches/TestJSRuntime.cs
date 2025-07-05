@@ -60,6 +60,8 @@ internal class TestJSRuntime : IJSRuntime
         string[] cookieParts = command.Split(";");
         foreach (string cookiePart in cookieParts)
         {
+            if (string.IsNullOrEmpty(cookiePart)) { continue; }
+
             string[] cookiePartSplit = cookiePart.Split("=", 2);
             string key = cookiePartSplit[0].Trim();
             string value = cookiePartSplit[1].Trim();
