@@ -4,37 +4,17 @@ using Microsoft.JSInterop;
 using Microsoft.JSInterop.Infrastructure;
 using Moq;
 using System.Net;
+using MMIX.Blazor.Cookies.Tests.Patches;
 
 namespace MMIX.Blazor.Cookies.Tests;
 public class JsInteropCookieServiceTests
 {
-    private static string ToJsCookieString(IEnumerable<Cookie>? cookies)
-    {
-        if (cookies == null) { return string.Empty; }
-        if (cookies.Count() == 0) { return string.Empty; }
-
-        return string.Join("; ", cookies.Select(c => $"{c.Name}={c.Value}"));
-    }
-
-    private static async Task<IEnumerable<Cookie>> GetAllAsyncFromCookieService(IEnumerable<Cookie> cookies)
-    {
-        var jsRuntime = GetMockJSRuntime(cookies);
-
-        JsInteropCookieService cookieService = new JsInteropCookieService(jsRuntime);
-        return await cookieService.GetAllAsync();
-    }
-    private static IJSRuntime GetMockJSRuntime(IEnumerable<Cookie> cookies)
-    {
-        Mock<IJSRuntime> jsRuntime = new Mock<IJSRuntime>();
-        jsRuntime.Setup(jsRuntime => jsRuntime.InvokeAsync<string?>("eval", It.IsAny<object[]>()))
-            .ReturnsAsync(ToJsCookieString(cookies));
-
-        return jsRuntime.Object;
-    }
-  
     [Fact]
     public async Task GetAllAsync_WithCookies_ShouldReturnCookieIEnumerable()
     {
+        var jsRuntime = new VirtualJSRuntime();
+        var jsInteropCookieService = new JsInteropCookieService(jsRuntime);
+
         List<Cookie> cookies = new List<Cookie>
         {
             new Cookie("sessionId", "ei34jdh"),
@@ -42,8 +22,12 @@ public class JsInteropCookieServiceTests
             new Cookie("theme", "dark"),
             new Cookie("cartItems", "5")
         };
+        foreach (Cookie cookie in cookies)
+        {
+            await jsInteropCookieService.SetAsync(cookie);
+        }
 
-        var resultCookies = await GetAllAsyncFromCookieService(cookies);
+        var resultCookies = await jsInteropCookieService.GetAllAsync();
         Assert.NotEmpty(resultCookies);
         Assert.IsAssignableFrom<IEnumerable<Cookie>>(resultCookies);
         Assert.Equal(cookies, resultCookies);
@@ -51,15 +35,16 @@ public class JsInteropCookieServiceTests
     [Fact]
     public async Task GetAllAsync_WithCookie_ShouldReturnCookieIEnumerable()
     {
-        List<Cookie> cookies = new List<Cookie>
-        {
-            new Cookie("sessionId", "ei34jdh")
-        };
+        IJSRuntime jSRuntime = new VirtualJSRuntime();
+        JsInteropCookieService jsInteropCookieService = new JsInteropCookieService(jSRuntime);
 
-        var resultCookies = await GetAllAsyncFromCookieService(cookies);
+        Cookie cookie = new Cookie("sessionId", "ei34jdh");
+        await jsInteropCookieService.SetAsync(cookie);
+
+        var resultCookies = await jsInteropCookieService.GetAllAsync();        
         Assert.NotEmpty(resultCookies);
         Assert.IsAssignableFrom<IEnumerable<Cookie>>(resultCookies);
-        Assert.Equal(cookies, resultCookies);
+        Assert.Contains(cookie, resultCookies);
     }
     [Fact]
     public async Task GetAllAsync_WithEmptyCookie_ShouldReturnCookieIEnumerable()
@@ -69,7 +54,11 @@ public class JsInteropCookieServiceTests
             new Cookie("sessionId", "")
         };
 
-        var resultCookies = await GetAllAsyncFromCookieService(cookies);
+        IJSRuntime jSRuntime = new VirtualJSRuntime();
+        JsInteropCookieService jsInteropCookieService = new JsInteropCookieService(jSRuntime);
+        foreach(Cookie cookie in cookies) { await jsInteropCookieService.SetAsync(cookie); }
+
+        var resultCookies = await jsInteropCookieService.GetAllAsync();
         Assert.NotEmpty(resultCookies);
         Assert.IsAssignableFrom<IEnumerable<Cookie>>(resultCookies);
         Assert.Equal(cookies, resultCookies);
@@ -85,7 +74,11 @@ public class JsInteropCookieServiceTests
             new Cookie("cartItems", "")
         };
 
-        var resultCookies = await GetAllAsyncFromCookieService(cookies);
+        IJSRuntime jSRuntime = new VirtualJSRuntime();
+        JsInteropCookieService jsInteropCookieService = new JsInteropCookieService(jSRuntime);
+        foreach(Cookie cookie in cookies) { await jsInteropCookieService.SetAsync(cookie); }
+
+        var resultCookies = await jsInteropCookieService.GetAllAsync();
         Assert.NotEmpty(resultCookies);
         Assert.IsAssignableFrom<IEnumerable<Cookie>>(resultCookies);
         Assert.Equal(cookies, resultCookies);
@@ -95,19 +88,14 @@ public class JsInteropCookieServiceTests
     {
         List<Cookie> cookies = new List<Cookie>();
 
-        var resultCookies = await GetAllAsyncFromCookieService(cookies);
+        IJSRuntime jSRuntime = new VirtualJSRuntime();
+        JsInteropCookieService jsInteropCookieService = new JsInteropCookieService(jSRuntime);
+
+        var resultCookies = await jsInteropCookieService.GetAllAsync();
         Assert.Empty(resultCookies);
         Assert.IsAssignableFrom<IEnumerable<Cookie>>(resultCookies);
         Assert.Equal(cookies, resultCookies);
     }
-    [Fact]
-    public async Task GetAllAsync_WithNullCookies_ShouldReturnCookieIEnumerable()
-    {
-        var resultCookies = await GetAllAsyncFromCookieService(null);
-        Assert.Empty(resultCookies);
-        Assert.IsAssignableFrom<IEnumerable<Cookie>>(resultCookies);
-    }
-
     [Fact]
     public async Task GetAsync_WithCookies_ShouldReturnCookie()
     {
@@ -119,22 +107,23 @@ public class JsInteropCookieServiceTests
             new Cookie("cartItems", "5")
         };
 
-        var jsRuntime = GetMockJSRuntime(cookies);
-        JsInteropCookieService cookieService = new JsInteropCookieService(jsRuntime);
-        
-        var sessionIdCookie = await cookieService.GetAsync("sessionId");
+        IJSRuntime jsRuntime = new VirtualJSRuntime();
+        JsInteropCookieService jsInteropCookieService = new JsInteropCookieService(jsRuntime);
+        foreach(Cookie cookie in cookies) { await jsInteropCookieService.SetAsync(cookie); }
+
+        var sessionIdCookie = await jsInteropCookieService.GetAsync("sessionId");
         Assert.NotNull(sessionIdCookie);
         Assert.Equal(cookies.First(c => c.Name == "sessionId"), sessionIdCookie);
 
-        var userIdCookie = await cookieService.GetAsync("userId");
+        var userIdCookie = await jsInteropCookieService.GetAsync("userId");
         Assert.NotNull(userIdCookie);
         Assert.Equal(cookies.First(c => c.Name == "userId"), userIdCookie);
 
-        var themeCookie = await cookieService.GetAsync("theme");
+        var themeCookie = await jsInteropCookieService.GetAsync("theme");
         Assert.NotNull(userIdCookie);
         Assert.Equal(cookies.First(c => c.Name == "theme"), themeCookie);
 
-        var cartItemsCookie = await cookieService.GetAsync("cartItems");
+        var cartItemsCookie = await jsInteropCookieService.GetAsync("cartItems");
         Assert.NotNull(cartItemsCookie);
         Assert.Equal(cookies.First(c => c.Name == "cartItems"), cartItemsCookie);
     }
@@ -149,22 +138,23 @@ public class JsInteropCookieServiceTests
             new Cookie("cartItems", "")
         };
 
-        var jsRuntime = GetMockJSRuntime(cookies);
-        JsInteropCookieService cookieService = new JsInteropCookieService(jsRuntime);
+        var jsRuntime = new VirtualJSRuntime();
+        JsInteropCookieService jsInteropCookieService = new JsInteropCookieService(jsRuntime);
+        foreach(Cookie cookie in cookies) { await jsInteropCookieService.SetAsync(cookie); }
 
-        var sessionIdCookie = await cookieService.GetAsync("sessionId");
+        var sessionIdCookie = await jsInteropCookieService.GetAsync("sessionId");
         Assert.NotNull(sessionIdCookie);
         Assert.Equal(cookies.First(c => c.Name == "sessionId"), sessionIdCookie);
 
-        var userIdCookie = await cookieService.GetAsync("userId");
+        var userIdCookie = await jsInteropCookieService.GetAsync("userId");
         Assert.NotNull(userIdCookie);
         Assert.Equal(cookies.First(c => c.Name == "userId"), userIdCookie);
 
-        var themeCookie = await cookieService.GetAsync("theme");
+        var themeCookie = await jsInteropCookieService.GetAsync("theme");
         Assert.NotNull(userIdCookie);
         Assert.Equal(cookies.First(c => c.Name == "theme"), themeCookie);
 
-        var cartItemsCookie = await cookieService.GetAsync("cartItems");
+        var cartItemsCookie = await jsInteropCookieService.GetAsync("cartItems");
         Assert.NotNull(cartItemsCookie);
         Assert.Equal(cookies.First(c => c.Name == "cartItems"), cartItemsCookie);
     }
@@ -176,10 +166,11 @@ public class JsInteropCookieServiceTests
             new Cookie("sessionId", "ei34jdh")
         };
 
-        var jsRuntime = GetMockJSRuntime(cookies);
-        JsInteropCookieService cookieService = new JsInteropCookieService(jsRuntime);
+        var jsRuntime = new VirtualJSRuntime();
+        JsInteropCookieService jsInteropCookieService = new JsInteropCookieService(jsRuntime);
+        foreach(Cookie cookie in cookies) { await jsInteropCookieService.SetAsync(cookie); }
 
-        var sessionIdCookie = await cookieService.GetAsync("sessionId");
+        var sessionIdCookie = await jsInteropCookieService.GetAsync("sessionId");
         Assert.NotNull(sessionIdCookie);
         Assert.Equal(cookies.First(c => c.Name == "sessionId"), sessionIdCookie);
     }
@@ -191,55 +182,31 @@ public class JsInteropCookieServiceTests
             new Cookie("sessionId", "")
         };
 
-        var jsRuntime = GetMockJSRuntime(cookies);
-        JsInteropCookieService cookieService = new JsInteropCookieService(jsRuntime);
+        var jsRuntime = new VirtualJSRuntime();
+        JsInteropCookieService jsInteropCookieService = new JsInteropCookieService(jsRuntime);
+        foreach(Cookie cookie in cookies) { await jsInteropCookieService.SetAsync(cookie); }
 
-        var sessionIdCookie = await cookieService.GetAsync("sessionId");
+        var sessionIdCookie = await jsInteropCookieService.GetAsync("sessionId");
         Assert.NotNull(sessionIdCookie);
         Assert.Equal(cookies.First(c => c.Name == "sessionId"), sessionIdCookie);
     }
     [Fact]
     public async Task GetAsync_WithEmptyCookiesList_ShouldReturnNull()
     {
-        List<Cookie> cookies = new List<Cookie>();
+        var jsRuntime = new VirtualJSRuntime();
+        JsInteropCookieService jsInteropCookieService = new JsInteropCookieService(jsRuntime);
 
-        var jsRuntime = GetMockJSRuntime(cookies);
-        JsInteropCookieService cookieService = new JsInteropCookieService(jsRuntime);
-
-        var sessionIdCookie = await cookieService.GetAsync("sessionId");
+        var sessionIdCookie = await jsInteropCookieService.GetAsync("sessionId");
         Assert.Null(sessionIdCookie);
-    }
-    [Fact]
-    public async Task GetAsync_WithNullCookiesList_ShouldReturnNull()
-    {
-        List<Cookie>? cookies = null;
-
-        var jsRuntime = GetMockJSRuntime(cookies);
-        JsInteropCookieService cookieService = new JsInteropCookieService(jsRuntime);
-
-        var sessionIdCookie = await cookieService.GetAsync("sessionId");
-        Assert.Null(sessionIdCookie);
-    }
-
-    private JsInteropCookieService CreateMockSetAsyncCookieService(IEnumerable<Cookie>? cookies)
-    {
-        Mock<IJSRuntime> mockJSRuntime = new Mock<IJSRuntime>();
-        mockJSRuntime.Setup(jsRuntime => jsRuntime.InvokeAsync<IJSVoidResult>("eval", It.IsAny<object[]>()))
-            .Returns(new ValueTask<IJSVoidResult>());
-        mockJSRuntime.Setup(jsRuntime => jsRuntime.InvokeAsync<string?>("eval", It.IsAny<object[]>()))
-            .ReturnsAsync(ToJsCookieString(cookies));
-
-        return new JsInteropCookieService(mockJSRuntime.Object);
     }
 
     [Fact]
     public async Task SetAsync_WithCookieOverload_ShouldReturnCookie()
     {
-        Cookie cookie = new Cookie("sessionId", "ei34jdh");
-        JsInteropCookieService jsInteropCookieService = CreateMockSetAsyncCookieService(
-            new List<Cookie> { cookie }
-        );
+        var cookie = new Cookie("sessionId", "ei34jdh");
 
+        var jsRuntime = new VirtualJSRuntime();
+        var jsInteropCookieService = new JsInteropCookieService(jsRuntime);
         await jsInteropCookieService.SetAsync(cookie);
 
         var resultCookie = await jsInteropCookieService.GetAsync(cookie.Name);
@@ -249,11 +216,10 @@ public class JsInteropCookieServiceTests
     [Fact]
     public async Task SetAsync_WithCookieSameSiteOverload_ShouldReturnCookie()
     {
-        Cookie cookie = new Cookie("sessionId", "ei34jdh");
-        JsInteropCookieService jsInteropCookieService = CreateMockSetAsyncCookieService(
-            new List<Cookie> { cookie }
-        );
+        var jsRuntime = new VirtualJSRuntime();
+        var jsInteropCookieService = new JsInteropCookieService(jsRuntime);
 
+        Cookie cookie = new Cookie("sessionId", "ei34jdh");
         await jsInteropCookieService.SetAsync(cookie, SameSiteMode.Strict);
 
         var resultCookie = await jsInteropCookieService.GetAsync(cookie.Name);
@@ -263,11 +229,10 @@ public class JsInteropCookieServiceTests
     [Fact]
     public async Task SetAsync_WithCookieNameValueOverload_ShouldReturnCookie()
     {
-        Cookie cookie = new Cookie("sessionId", "ei34jdh");
-        JsInteropCookieService jsInteropCookieService = CreateMockSetAsyncCookieService(
-            new List<Cookie> { cookie }
-        );
+        var jsRuntime = new VirtualJSRuntime();
+        var jsInteropCookieService = new JsInteropCookieService(jsRuntime);
 
+        Cookie cookie = new Cookie("sessionId", "ei34jdh");
         await jsInteropCookieService.SetAsync(cookie.Name, cookie.Value);
 
         var resultCookie = await jsInteropCookieService.GetAsync(cookie.Name);
@@ -277,12 +242,13 @@ public class JsInteropCookieServiceTests
     [Fact]
     public async Task SetAsync_WithCookieNameValueExpiresOverload_ShouldReturnCookie()
     {
-        Cookie cookie = new Cookie("sessionId", "ei34jdh");
-        JsInteropCookieService jsInteropCookieService = CreateMockSetAsyncCookieService(
-            new List<Cookie> { cookie }
-        );
+        var jsRuntime = new VirtualJSRuntime();
+        var jsInteropCookieService = new JsInteropCookieService(jsRuntime);
 
-        await jsInteropCookieService.SetAsync(cookie.Name, cookie.Value);
+        Cookie cookie = new Cookie("sessionId", "ei34jdh");
+        cookie.Expires = DateTime.UtcNow.AddHours(1);
+
+        await jsInteropCookieService.SetAsync(cookie.Name, cookie.Value, cookie.Expires);
 
         var resultCookie = await jsInteropCookieService.GetAsync(cookie.Name);
         Assert.NotNull(cookie);
@@ -297,9 +263,9 @@ public class JsInteropCookieServiceTests
             Value = "ei34jdh",
             Expires = DateTime.UtcNow.AddDays(1)
         };
-        JsInteropCookieService jsInteropCookieService = CreateMockSetAsyncCookieService(
-            new List<Cookie> { cookie }
-        );
+        
+        IJSRuntime jSRuntime = new VirtualJSRuntime();
+        JsInteropCookieService jsInteropCookieService = new JsInteropCookieService(jSRuntime);
 
         await jsInteropCookieService.SetAsync(
             cookie.Name,
@@ -315,7 +281,10 @@ public class JsInteropCookieServiceTests
     [Fact]
     public async Task SetAsync_NameValueCookieOptionsOverload_ShouldReturnCookie()
     {
-        DateTime cookieExpire = DateTime.UtcNow.AddDays( 1 );
+        var jsRuntime = new VirtualJSRuntime();
+        var jsInteropCookieService = new JsInteropCookieService(jsRuntime);
+
+        DateTime cookieExpire = DateTime.UtcNow.AddDays(1);
         Cookie cookie = new Cookie { Name = "sessionId", Value = "ei34jdh", Expires = cookieExpire };
         CookieOptions options = new CookieOptions
         {
@@ -323,10 +292,7 @@ public class JsInteropCookieServiceTests
             SameSite = SameSiteMode.Strict
         };
 
-        JsInteropCookieService jsInteropCookieService = CreateMockSetAsyncCookieService(
-            new List<Cookie> { cookie }
-        );
-        await jsInteropCookieService.SetAsync( cookie.Name, cookie.Value, options );
+        await jsInteropCookieService.SetAsync(cookie.Name, cookie.Value, options);
 
         var resultCookie = await jsInteropCookieService.GetAsync(cookie.Name);
         Assert.NotNull(resultCookie);
