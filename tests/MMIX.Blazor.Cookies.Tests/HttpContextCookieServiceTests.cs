@@ -77,7 +77,7 @@ public class HttpContextCookieServiceTests
     }
 
     [Fact]
-    public async Task SetAsync_WithCookieObject_ShouldSetReturnCookie()
+    public async Task SetAsync_WithCookieObject_ShoudSetResponseHeaderCookie()
     {
         (var httpContext, var cookieService) = CreateTestDependencies();
 
@@ -92,7 +92,7 @@ public class HttpContextCookieServiceTests
     }
 
     [Fact]
-    public async Task SetAsync_WithCookieSameSite_ShouldSetReturnCookie()
+    public async Task SetAsync_WithCookieSameSite_ShoudSetResponseHeaderCookie()
     {
         (var httpContext, var cookieService) = CreateTestDependencies();
 
@@ -107,7 +107,7 @@ public class HttpContextCookieServiceTests
     }
 
     [Fact]
-    public async Task SetAsync_WithNameValue_ShouldSetReturnCookie()
+    public async Task SetAsync_WithNameValue_ShoudSetReposnseHeaderCookie()
     {
         (var httpContext, var cookieService) = CreateTestDependencies();
 
@@ -122,7 +122,7 @@ public class HttpContextCookieServiceTests
     }
 
     [Fact]
-    public async Task SetAsync_WithNameValueExpires_ShouldSetReturnCookie()
+    public async Task SetAsync_WithNameValueExpires_ShoudSetResponseHeaderCookie()
     {
         (var httpContext, var cookieService) = CreateTestDependencies();
 
@@ -137,7 +137,7 @@ public class HttpContextCookieServiceTests
     }
 
     [Fact]
-    public async Task SetAsync_WithNameValueExpiresSameSite_ShouldSetReturnCookie()
+    public async Task SetAsync_WithNameValueExpiresSameSite_ShoudSetResponseHeaderCookie()
     {
         (var httpContext, var cookieService) = CreateTestDependencies();
         DateTime cookieExpire = DateTime.UtcNow.AddDays(1);
