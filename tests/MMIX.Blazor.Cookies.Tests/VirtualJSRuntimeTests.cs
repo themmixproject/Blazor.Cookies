@@ -1,5 +1,6 @@
 using System;
 using System.Data;
+using System.Globalization;
 using System.Reflection.Metadata;
 using Microsoft.JSInterop;
 using MMIX.Blazor.Cookies.Tests.Patches;
@@ -24,7 +25,7 @@ public class VirtualJSRuntimeTests
     {
         IJSRuntime jsRuntime = new VirtualJSRuntime();
 
-        string cookieExpires = DateTime.Today.ToUniversalTime().ToString(cookieDateFormat);
+        string cookieExpires = DateTime.Today.ToUniversalTime().ToString(cookieDateFormat, CultureInfo.InvariantCulture);
         string cookieString = $"myCookie=myValue; expires={cookieExpires}; samesite=lax;";
         string command = $"document.cookie = '{cookieString}'";
         string outputCookieString = await jsRuntime.InvokeAsync<string>("eval", command);
@@ -62,7 +63,7 @@ public class VirtualJSRuntimeTests
         IJSRuntime jSRuntime = new VirtualJSRuntime();
 
         string cookieNameValue = "myCookie=myValue";
-        string cookieExpires = DateTime.UtcNow.AddHours(1).ToString(cookieDateFormat);
+        string cookieExpires = DateTime.UtcNow.AddHours(1).ToString(cookieDateFormat, CultureInfo.InvariantCulture);
         string command = $"document.cookie = '{cookieNameValue}; expires={cookieExpires}; samesite=lax;'";
         await jSRuntime.InvokeVoidAsync("eval", command);
 
@@ -77,7 +78,7 @@ public class VirtualJSRuntimeTests
         IJSRuntime jSRuntime = new VirtualJSRuntime();
 
         string cookieNameValue = "myCookie=myValue";
-        string cookieExpires = DateTime.UtcNow.AddHours(1).ToString(cookieDateFormat);
+        string cookieExpires = DateTime.UtcNow.AddHours(1).ToString(cookieDateFormat, CultureInfo.InvariantCulture);
         string command = $"document.cookie = 'samesite=lax; path=/; expires={cookieExpires}; {cookieNameValue}'";
         await jSRuntime.InvokeVoidAsync("eval", command);
 
@@ -190,7 +191,7 @@ public class VirtualJSRuntimeTests
     {
         IJSRuntime jsRuntime = new VirtualJSRuntime();
 
-        string cookieExpires = DateTime.UtcNow.AddHours(1).ToString(cookieDateFormat);
+        string cookieExpires = DateTime.UtcNow.AddHours(1).ToString(cookieDateFormat, CultureInfo.InvariantCulture);
         await jsRuntime.InvokeVoidAsync("eval", $"document.cookie = 'test=value; EXPIRES={cookieExpires}; PATH=/; SECURE'");
 
         string cookies = await jsRuntime.InvokeAsync<string>("eval", "document.cookie");
@@ -242,24 +243,23 @@ public class VirtualJSRuntimeTests
         IJSRuntime jSRuntime = new VirtualJSRuntime();
 
         string cookieName = "myCookie";
-        string cookieExpires = DateTime.UtcNow.AddHours(1).ToString(cookieDateFormat);
+        string cookieExpires = DateTime.UtcNow.AddHours(1).ToString(cookieDateFormat, CultureInfo.InvariantCulture);
         await jSRuntime.InvokeVoidAsync("eval", $"document.cookie = '{cookieName} = myValue; expires={cookieExpires}'");
 
-        cookieExpires = DateTime.UtcNow.AddHours(-1).ToString(cookieDateFormat);
+        cookieExpires = DateTime.UtcNow.AddHours(-1).ToString(cookieDateFormat, CultureInfo.InvariantCulture);
         await jSRuntime.InvokeVoidAsync("eval", $"document.cookie = '{cookieName} = myValue; expires={cookieExpires}'");
 
         string cookies = await jSRuntime.InvokeAsync<string>("eval", "document.cookie");
         Assert.Empty(cookies);
     }
-
     [Fact]
     public async Task RemoveCookieWithKeyDuringTest_ShouldRemoveCookie()
     {
         IJSRuntime jsRuntime = new VirtualJSRuntime();
 
         string cookieName = "myCookie";
-        string cookieExpires = DateTime.UtcNow.AddSeconds(2).ToString(cookieDateFormat);
-        await jsRuntime.InvokeVoidAsync("eval", $"document.cookie = '{cookieName} = myvalue; expires={cookieExpires}'");
+        string cookieExpires = DateTime.UtcNow.AddSeconds(2).ToString(cookieDateFormat, CultureInfo.InvariantCulture);
+        await jsRuntime.InvokeVoidAsync("eval", $"document.cookie = '{  cookieName} = myvalue; expires={cookieExpires}'");
 
         Thread.Sleep(3000);
 
@@ -273,10 +273,10 @@ public class VirtualJSRuntimeTests
         IJSRuntime jSRuntime = new VirtualJSRuntime();
 
         string cookieName = "myCookie";
-        string cookieExpires = DateTime.UtcNow.AddHours(1).ToString(cookieDateFormat);
+        string cookieExpires = DateTime.UtcNow.AddHours(1).ToString(cookieDateFormat, CultureInfo.InvariantCulture);
         await jSRuntime.InvokeVoidAsync("eval", $"document.cookie = '{cookieName}; expires={cookieExpires}'");
 
-        cookieExpires = DateTime.UtcNow.AddHours(-1).ToString(cookieDateFormat);
+        cookieExpires = DateTime.UtcNow.AddHours(-1).ToString(cookieDateFormat, CultureInfo.InvariantCulture);
         await jSRuntime.InvokeVoidAsync("eval", $"document.cookie = '{cookieName}; expires={cookieExpires}'");
 
         string cookies = await jSRuntime.InvokeAsync<string>("eval", "document.cookie");
@@ -289,7 +289,7 @@ public class VirtualJSRuntimeTests
         IJSRuntime jSRuntime = new VirtualJSRuntime();
 
         string cookieName = "myCookie";
-        string cookieExpires = DateTime.UtcNow.AddSeconds(2).ToString(cookieDateFormat);
+        string cookieExpires = DateTime.UtcNow.AddSeconds(2).ToString(cookieDateFormat, CultureInfo.InvariantCulture);
         await jSRuntime.InvokeVoidAsync("eval", $"document.cookie = '{cookieName}; expires={cookieExpires}'");
 
         Thread.Sleep(3000);
@@ -303,12 +303,12 @@ public class VirtualJSRuntimeTests
     {
         IJSRuntime jsRuntime = new VirtualJSRuntime();
 
-        string cookieExpires = DateTime.UtcNow.AddHours(1).ToString(cookieDateFormat);
+        string cookieExpires = DateTime.UtcNow.AddHours(1).ToString(cookieDateFormat, CultureInfo.InvariantCulture);
         await jsRuntime.InvokeVoidAsync("eval", $"document.cookie = 'cookie1=value1; expires={cookieExpires}'");
         await jsRuntime.InvokeVoidAsync("eval", $"document.cookie = 'cookie2=value2; expires={cookieExpires}'");
         await jsRuntime.InvokeVoidAsync("eval", $"document.cookie = 'cookie3=value3; expires={cookieExpires}'");
 
-        string pastExpires = DateTime.UtcNow.AddHours(-1).ToString(cookieDateFormat);
+        string pastExpires = DateTime.UtcNow.AddHours(-1).ToString(cookieDateFormat, CultureInfo.InvariantCulture);
         await jsRuntime.InvokeVoidAsync("eval", $"document.cookie = 'cookie1=value1; expires={pastExpires}'");
         await jsRuntime.InvokeVoidAsync("eval", $"document.cookie = 'cookie2=value2; expires={pastExpires}'");
         await jsRuntime.InvokeVoidAsync("eval", $"document.cookie = 'cookie3=value3; expires={pastExpires}'");
@@ -322,13 +322,13 @@ public class VirtualJSRuntimeTests
     {
         IJSRuntime jsRuntime = new VirtualJSRuntime();
 
-        string cookieExpires = DateTime.UtcNow.AddHours(1).ToString(cookieDateFormat);
+        string cookieExpires = DateTime.UtcNow.AddHours(1).ToString(cookieDateFormat, CultureInfo.InvariantCulture);
         await jsRuntime.InvokeVoidAsync("eval", $"document.cookie = 'cookie1=value1; expires={cookieExpires}'");
         await jsRuntime.InvokeVoidAsync("eval", $"document.cookie = 'cookie2=value2; expires={cookieExpires}'");
         await jsRuntime.InvokeVoidAsync("eval", $"document.cookie = 'cookie3=value3; expires={cookieExpires}'");
         await jsRuntime.InvokeVoidAsync("eval", $"document.cookie = 'cookie4=value4; expires={cookieExpires}'");
 
-        string pastExpires = DateTime.UtcNow.AddHours(-1).ToString(cookieDateFormat);
+        string pastExpires = DateTime.UtcNow.AddHours(-1).ToString(cookieDateFormat, CultureInfo.InvariantCulture);
         await jsRuntime.InvokeVoidAsync("eval", $"document.cookie = 'cookie1=value1; expires={pastExpires}'");
         await jsRuntime.InvokeVoidAsync("eval", $"document.cookie = 'cookie3=value3; expires={pastExpires}'");
 
@@ -344,8 +344,8 @@ public class VirtualJSRuntimeTests
     {
         IJSRuntime jsRuntime = new VirtualJSRuntime();
 
-        string shortExpires = DateTime.UtcNow.AddSeconds(2).ToString(cookieDateFormat);
-        string longExpires = DateTime.UtcNow.AddHours(1).ToString(cookieDateFormat);
+        string shortExpires = DateTime.UtcNow.AddSeconds(2).ToString(cookieDateFormat, CultureInfo.InvariantCulture);
+        string longExpires = DateTime.UtcNow.AddHours(1).ToString(cookieDateFormat, CultureInfo.InvariantCulture);
 
         await jsRuntime.InvokeVoidAsync("eval", $"document.cookie = 'shortCookie1=value1; expires={shortExpires}'");
         await jsRuntime.InvokeVoidAsync("eval", $"document.cookie = 'shortCookie2=value2; expires={shortExpires}'");
@@ -366,14 +366,14 @@ public class VirtualJSRuntimeTests
         
         string cookieName = "testCookie";
         string cookieValue = "testValue";
-        string futureExpires = DateTime.UtcNow.AddHours(1).ToString(cookieDateFormat);
+        string futureExpires = DateTime.UtcNow.AddHours(1).ToString(cookieDateFormat, CultureInfo.InvariantCulture);
         
         await jsRuntime.InvokeVoidAsync("eval", $"document.cookie = '{cookieName}={cookieValue}; expires={futureExpires}'");
         
         string cookiesAfterCreation = await jsRuntime.InvokeAsync<string>("eval", "document.cookie");
         Assert.Contains($"{cookieName}={cookieValue}", cookiesAfterCreation);
         
-        string pastExpires = DateTime.UtcNow.AddHours(-1).ToString(cookieDateFormat);
+        string pastExpires = DateTime.UtcNow.AddHours(-1).ToString(cookieDateFormat, CultureInfo.InvariantCulture);
         await jsRuntime.InvokeVoidAsync("eval", $"document.cookie = '{cookieName}={cookieValue}; expires={pastExpires}'");
         
         string cookiesAfterRemoval = await jsRuntime.InvokeAsync<string>("eval", "document.cookie");
@@ -387,7 +387,7 @@ public class VirtualJSRuntimeTests
         
         string cookieName = "timeoutCookie";
         string cookieValue = "timeoutValue";
-        string shortExpires = DateTime.UtcNow.AddSeconds(2).ToString(cookieDateFormat);
+        string shortExpires = DateTime.UtcNow.AddSeconds(2).ToString(cookieDateFormat, CultureInfo.InvariantCulture);
         
         await jsRuntime.InvokeVoidAsync("eval", $"document.cookie = '{cookieName}={cookieValue}; expires={shortExpires}'");
         

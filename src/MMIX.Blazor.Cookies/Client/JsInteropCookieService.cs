@@ -126,7 +126,7 @@ public class JsInteropCookieService(IJSRuntime JSRuntime) : ICookieService
     {
         string command =
             $"document.cookie = '{cookie.Name}={cookie.Value}; " +
-            $"expires={cookie.Expires};" +
+            $"{(cookie.Expires == default ? "" : $"expires={cookie.Expires:R};")}" +
             $"path={(string.IsNullOrEmpty(cookie.Path) ? '/' : cookie.Path)};" +
             $"SameSite={SameSiteMode.Lax.ToString()}" +
             $"'";
