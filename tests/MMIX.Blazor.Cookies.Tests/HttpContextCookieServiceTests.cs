@@ -23,6 +23,8 @@ public class HttpContextCookieServiceTests
     [Fact]
     public async Task GetAllAsync_WithCookies_ShouldReturnCookieIEnumerable()
     {
+        (var httpContext, var cookieService) = CreateTestDependencies();
+
         DateTime cookieExpire = DateTime.UtcNow.AddDays(1);
         List<Cookie> cookies = new List<Cookie>
         {
@@ -31,8 +33,6 @@ public class HttpContextCookieServiceTests
             new Cookie { Name = "theme", Value = "dark", Expires = cookieExpire },
             new Cookie { Name = "cartItems", Value = "5", Expires = cookieExpire }
         };
-
-        (var httpContext, var cookieService) = CreateTestDependencies();
 
         foreach (Cookie cookie in cookies)
         {
@@ -47,9 +47,12 @@ public class HttpContextCookieServiceTests
             Assert.Contains($"{cookies[i].Name}={cookies[i].Value}", resultCookies);
         }
     }
+
     [Fact]
     public async Task GetAllAsync_WithEmptyValueCookies_ShouldReturnCookieIEnumerable()
     {
+        (var httpContext, var cookieService) = CreateTestDependencies();
+
         DateTime cookieExpire = DateTime.UtcNow.AddDays(1);
         List<Cookie> cookies = new List<Cookie>
         {
@@ -58,8 +61,6 @@ public class HttpContextCookieServiceTests
             new Cookie { Name = "theme", Value = "", Expires = cookieExpire },
             new Cookie { Name = "cartItems", Value = "", Expires = cookieExpire }
         };
-
-        (var httpContext, var cookieService) = CreateTestDependencies();
 
         foreach (Cookie cookie in cookies)
         {
@@ -103,6 +104,7 @@ public class HttpContextCookieServiceTests
             Assert.Contains(cookie, responseCookie);
         }
     }
+
     [Fact]
     public async Task SetAsync_WithEmptyCookies_ShouldReturnCookie()
     {
@@ -131,6 +133,7 @@ public class HttpContextCookieServiceTests
             Assert.Contains(cookie, responseCookie);
         }
     }
+
     [Fact]
     public async Task SetAsync_WithCookieOverload_ShouldReturnCookie()
     {
@@ -145,6 +148,7 @@ public class HttpContextCookieServiceTests
         Assert.NotEmpty(responseCookie);
         Assert.Contains(cookieString, responseCookie);
     }
+
     [Fact]
     public async Task SetAsync_WithCookieSameSiteOverload_ShouldReturnCookie()
     {
@@ -159,6 +163,7 @@ public class HttpContextCookieServiceTests
         Assert.NotEmpty(responseCookie);
         Assert.Contains(cookieString, responseCookie);
     }
+
     [Fact]
     public async Task SetAsync_WithNameValueOverload_ShouldReturnCookie()
     {
@@ -173,10 +178,12 @@ public class HttpContextCookieServiceTests
         Assert.NotEmpty(responseCookie);
         Assert.Contains(cookieString, responseCookie);
     }
+
     [Fact]
     public async Task SetAsync_NameValueExpiresOverload_ShouldReturnCookie()
     {
         (var httpContext, var cookieService) = CreateTestDependencies();
+
         DateTime cookieExpire = DateTime.UtcNow.AddDays(1);
         Cookie cookie = new Cookie { Name = "sessionId", Value = "ei34jdh", Expires = cookieExpire };
         await cookieService.SetAsync(cookie.Name, cookie.Value, cookie.Expires);
@@ -186,6 +193,7 @@ public class HttpContextCookieServiceTests
         Assert.NotEmpty(responseCookie);
         Assert.Contains(cookieString, responseCookie);
     }
+
     [Fact]
     public async Task SetAsync_NameValueExpiresSameSiteModeOverload_ShouldReturnCookie()
     {
@@ -201,6 +209,7 @@ public class HttpContextCookieServiceTests
         Assert.NotEmpty(responseCookie);
         Assert.Contains(cookieString, responseCookie);
     }
+    
     [Fact]
     public async Task SetAsync_NameValueCookieOptionsOverload_ShouldReturnCookie()
     {
@@ -216,12 +225,8 @@ public class HttpContextCookieServiceTests
         await cookieService.SetAsync( cookie.Name, cookie.Value, options );
 
         var responseCookie = httpContext.Response.Headers[HeaderNames.SetCookie][0]!;
-        var sameSiteStringValue = options.SameSite.ToString().ToLowerInvariant();
-        var cookieString = $"{cookie.Name}={cookie.Value}; expires={cookie.Expires:R}; path=/; samesite={sameSiteStringValue}";
-        
         Assert.NotEmpty(responseCookie);
         Assert.Contains($"{cookie.Name}={cookie.Value}", responseCookie);
-
         Assert.Contains( $"samesite={options.SameSite.ToString().ToLowerInvariant()}", responseCookie );
     }
 
