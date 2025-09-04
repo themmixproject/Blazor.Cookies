@@ -1,6 +1,7 @@
 ﻿using MMIX.Blazor.Cookies.Patches;
 using Microsoft.AspNetCore.Http;
 using System.Net;
+using System.Buffers;
 
 namespace MMIX.Blazor.Cookies.Server;
 public class HttpContextCookieService : ICookieService
@@ -8,6 +9,8 @@ public class HttpContextCookieService : ICookieService
     private readonly HttpContext _httpContext;
     private readonly Dictionary<string, Cookie> _requestCookies;
     private IHeaderDictionary ResponseHeaders { get; set; }
+    private static readonly SearchValues<char> reservedToNameChars = SearchValues.Create("\t\r\n=;,");
+    private const string net_cookie_attribute = @"The '{0}'='{1}' part of the cookie is invalid.";
 
     public HttpContextCookieService(IHttpContextAccessor httpContextAccessor)
     {
@@ -63,6 +66,7 @@ public class HttpContextCookieService : ICookieService
     )
     {
         RemoveCookieIfExistsFromHeader(name);
+        ValidateCookieName(name);
         _httpContext.Response.Cookies.Append(name, value);
 
         return Task.CompletedTask;
@@ -119,6 +123,21 @@ public class HttpContextCookieService : ICookieService
         return Task.CompletedTask;
     }
 
+    private void ValidateCookieName(string cookieName)
+    {
+        if (
+            string.IsNullOrEmpty(cookieName) ||
+            cookieName.StartsWith('$') ||
+            cookieName.StartsWith(' ') ||
+            cookieName.EndsWith(' ') ||
+            cookieName.AsSpan().ContainsAny(reservedToNameChars)
+        ) {
+            throw new CookieException(
+                string.Format(net_cookie_attribute, "Name", cookieName ?? "<null>")
+            );
+        }
+    }
+
     private void AppendCookieToHttpContext(Cookie cookie)
     {
         _httpContext.Response.Cookies.Append(
@@ -127,12 +146,12 @@ public class HttpContextCookieService : ICookieService
             new CookieOptions
             {
                 Expires = cookie.Expires,
-                Path = (string.IsNullOrEmpty(cookie.Path) ? "/" : cookie.Path ),
+                Path = string.IsNullOrEmpty(cookie.Path) ? "/" : cookie.Path,
                 HttpOnly = cookie.HttpOnly,
                 Secure = cookie.Secure,
                 SameSite = SameSiteMode.Lax
             }
-        ); 
+        );
     }
     private void AppendCookieToHttpContext(
         Cookie cookie,
