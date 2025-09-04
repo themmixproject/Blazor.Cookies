@@ -136,6 +136,19 @@ public class HttpContextCookieServiceTests
         Assert.Contains(cookieString, responseCookie);
     }
 
+    [Theory]
+    [InlineData(null)]
+    [InlineData("=;")]
+    [InlineData("")]
+    public async Task SetAsync__WithNameValue_WithInvalidName_ShoudThrowException(string invalidCookieName)
+    {
+        (var httpContext, var cookieService) = CreateTestDependencies();
+
+        await Assert.ThrowsAnyAsync<ArgumentNullException>(() =>
+            cookieService.SetAsync(invalidCookieName, "cookieValue")
+        );
+    }
+
     [Fact]
     public async Task SetAsync_WithNameValueExpiresSameSite_ShoudSetResponseHeaderCookie()
     {
