@@ -107,7 +107,7 @@ public class HttpContextCookieServiceTests
     }
 
     [Fact]
-    public async Task SetAsync_WithNameValue_ShoudSetReposnseHeaderCookie()
+    public async Task SetAsync_WithNameValue_ShouldSetResponseHeaderCookie()
     {
         (var httpContext, var cookieService) = CreateTestDependencies();
 
@@ -140,7 +140,7 @@ public class HttpContextCookieServiceTests
     [InlineData(null)]
     [InlineData("=;")]
     [InlineData("")]
-    public async Task SetAsync__WithNameValue_WithInvalidName_ShoudThrowException(string invalidCookieName)
+    public async Task SetAsync_WithNameValue_WithInvalidName_ShouldThrowException(string invalidCookieName)
     {
         (var httpContext, var cookieService) = CreateTestDependencies();
 
