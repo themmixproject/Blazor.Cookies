@@ -77,6 +77,16 @@ public class HttpContextCookieServiceTests
     }
 
     [Fact]
+    public async Task GetAllAsync_WithNoCookiesSet_ShouldReturnEmptyIEnumerable()
+    {
+        (var httpContext, var cookieService) = CreateTestDependencies();
+
+        var cookies = await cookieService.GetAllAsync();
+
+        Assert.Empty(cookies);
+    }
+
+    [Fact]
     public async Task SetAsync_WithCookieObject_ShoudSetResponseHeaderCookie()
     {
         (var httpContext, var cookieService) = CreateTestDependencies();
