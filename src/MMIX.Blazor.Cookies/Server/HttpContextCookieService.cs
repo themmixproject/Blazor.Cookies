@@ -143,7 +143,7 @@ public class HttpContextCookieService : ICookieService
         _httpContext.Response.Cookies.Append(cookie.Name, cookie.Value, new CookieOptions
         {
             Expires = cookie.Expires,
-            Path = (string.IsNullOrEmpty(cookie.Path) ? "/" : cookie.Path),
+            Path = string.IsNullOrEmpty(cookie.Path) ? "/" : cookie.Path,
             HttpOnly = cookie.HttpOnly,
             Secure = cookie.Secure,
             SameSite = sameSiteMode
