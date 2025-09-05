@@ -9,8 +9,6 @@ public class HttpContextCookieService : ICookieService
     private readonly HttpContext _httpContext;
     private readonly Dictionary<string, Cookie> _requestCookies;
     private IHeaderDictionary ResponseHeaders { get; set; }
-    private static readonly SearchValues<char> reservedToNameChars = SearchValues.Create("\t\r\n=;,");
-    private const string net_cookie_attribute = @"The '{0}'='{1}' part of the cookie is invalid.";
 
     public HttpContextCookieService(IHttpContextAccessor httpContextAccessor)
     {
@@ -66,8 +64,7 @@ public class HttpContextCookieService : ICookieService
     )
     {
         RemoveCookieIfExistsFromHeader(name);
-        ValidateCookieName(name);
-        _httpContext.Response.Cookies.Append(name, value);
+        AppendCookieToHttpContext(new Cookie(name, value));
 
         return Task.CompletedTask;
     }
@@ -121,21 +118,6 @@ public class HttpContextCookieService : ICookieService
         _httpContext.Response.Cookies.Append(name, value, cookieOptions);
 
         return Task.CompletedTask;
-    }
-
-    private void ValidateCookieName(string cookieName)
-    {
-        if (
-            string.IsNullOrEmpty(cookieName) ||
-            cookieName.StartsWith('$') ||
-            cookieName.StartsWith(' ') ||
-            cookieName.EndsWith(' ') ||
-            cookieName.AsSpan().ContainsAny(reservedToNameChars)
-        ) {
-            throw new CookieException(
-                string.Format(net_cookie_attribute, "Name", cookieName ?? "<null>")
-            );
-        }
     }
 
     private void AppendCookieToHttpContext(Cookie cookie)

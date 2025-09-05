@@ -144,7 +144,7 @@ public class HttpContextCookieServiceTests
     {
         (var httpContext, var cookieService) = CreateTestDependencies();
 
-        await Assert.ThrowsAnyAsync<ArgumentNullException>(() =>
+        await Assert.ThrowsAsync<CookieException>(() =>
             cookieService.SetAsync(invalidCookieName, "cookieValue")
         );
     }
