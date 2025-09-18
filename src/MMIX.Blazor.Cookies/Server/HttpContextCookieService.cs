@@ -1,13 +1,13 @@
 ﻿using MMIX.Blazor.Cookies.Patches;
 using Microsoft.AspNetCore.Http;
 using System.Net;
+using System.Buffers;
 
 namespace MMIX.Blazor.Cookies.Server;
 public class HttpContextCookieService : ICookieService
 {
     private readonly HttpContext _httpContext;
     private readonly Dictionary<string, Cookie> _requestCookies;
-    private IHeaderDictionary ResponseHeaders { get; set; }
 
     public HttpContextCookieService(IHttpContextAccessor httpContextAccessor)
     {
@@ -15,7 +15,6 @@ public class HttpContextCookieService : ICookieService
         _requestCookies = _httpContext.Request.Cookies
             .Select(x => new Cookie(x.Key, x.Value))
             .ToDictionary(cookie => cookie.Name);
-        ResponseHeaders = _httpContext.Response.Headers;
     }
 
     public Task<IEnumerable<Cookie>> GetAllAsync()
@@ -63,7 +62,7 @@ public class HttpContextCookieService : ICookieService
     )
     {
         RemoveCookieIfExistsFromHeader(name);
-        _httpContext.Response.Cookies.Append(name, value);
+        AppendCookieToHttpContext(new Cookie(name, value));
 
         return Task.CompletedTask;
     }
@@ -121,18 +120,19 @@ public class HttpContextCookieService : ICookieService
 
     private void AppendCookieToHttpContext(Cookie cookie)
     {
+        bool isSession = cookie.Expires.ToUniversalTime() == DateTimeOffset.MinValue;
         _httpContext.Response.Cookies.Append(
             cookie.Name,
             cookie.Value,
             new CookieOptions
             {
-                Expires = cookie.Expires,
-                Path = (string.IsNullOrEmpty(cookie.Path) ? "/" : cookie.Path ),
+                Expires = isSession ? null : cookie.Expires.ToUniversalTime(),
+                Path = string.IsNullOrEmpty(cookie.Path) ? "/" : cookie.Path,
                 HttpOnly = cookie.HttpOnly,
                 Secure = cookie.Secure,
                 SameSite = SameSiteMode.Lax
             }
-        ); 
+        );
     }
     private void AppendCookieToHttpContext(
         Cookie cookie,
@@ -142,7 +142,7 @@ public class HttpContextCookieService : ICookieService
         _httpContext.Response.Cookies.Append(cookie.Name, cookie.Value, new CookieOptions
         {
             Expires = cookie.Expires,
-            Path = (string.IsNullOrEmpty(cookie.Path) ? "/" : cookie.Path),
+            Path = string.IsNullOrEmpty(cookie.Path) ? "/" : cookie.Path,
             HttpOnly = cookie.HttpOnly,
             Secure = cookie.Secure,
             SameSite = sameSiteMode
@@ -151,35 +151,19 @@ public class HttpContextCookieService : ICookieService
 
     private void RemoveCookieIfExistsFromHeader(string name)
     {
-        List<string?> responseCookies = ResponseHeaders[HeaderNames.SetCookie].ToList();
-        
-        bool isRemoved = false;
+        var responseHeaders = _httpContext.Response.Headers;
+        List<string?> responseCookies = responseHeaders[HeaderNames.SetCookie].ToList();
 
-        for (int i = 0; i < responseCookies.Count; i++)
+        if (responseCookies.Remove(name))
         {
-            bool isMatchedCookie = responseCookies[i]!.StartsWith($"{name}=");
-            if (isMatchedCookie)
-            {
-                responseCookies.RemoveAt(i);
-                isRemoved = true;
-                break;
-            }
-        }
-
-        if (isRemoved)
-        {
-            ResponseHeaders[HeaderNames.SetCookie] = responseCookies.ToArray();
+            _httpContext.Response.Headers[HeaderNames.SetCookie] = responseCookies.ToArray();
         }
     }
 
     public Task RemoveAsync(string name, CancellationToken cancellationToken = default)
     {
-        // deletes cookie from response request
-        RemoveCookieIfExistsFromHeader(name);
-
         if (_requestCookies.Remove(name))
         {
-            // deletes cookie from client
             _httpContext.Response.Cookies.Delete(name);
         }
 

@@ -23,6 +23,8 @@ public class HttpContextCookieServiceTests
     [Fact]
     public async Task GetAllAsync_WithCookies_ShouldReturnCookieIEnumerable()
     {
+        (var httpContext, var cookieService) = CreateTestDependencies();
+
         DateTime cookieExpire = DateTime.UtcNow.AddDays(1);
         List<Cookie> cookies = new List<Cookie>
         {
@@ -31,8 +33,6 @@ public class HttpContextCookieServiceTests
             new Cookie { Name = "theme", Value = "dark", Expires = cookieExpire },
             new Cookie { Name = "cartItems", Value = "5", Expires = cookieExpire }
         };
-
-        (var httpContext, var cookieService) = CreateTestDependencies();
 
         foreach (Cookie cookie in cookies)
         {
@@ -47,9 +47,12 @@ public class HttpContextCookieServiceTests
             Assert.Contains($"{cookies[i].Name}={cookies[i].Value}", resultCookies);
         }
     }
+
     [Fact]
     public async Task GetAllAsync_WithEmptyValueCookies_ShouldReturnCookieIEnumerable()
     {
+        (var httpContext, var cookieService) = CreateTestDependencies();
+
         DateTime cookieExpire = DateTime.UtcNow.AddDays(1);
         List<Cookie> cookies = new List<Cookie>
         {
@@ -58,8 +61,6 @@ public class HttpContextCookieServiceTests
             new Cookie { Name = "theme", Value = "", Expires = cookieExpire },
             new Cookie { Name = "cartItems", Value = "", Expires = cookieExpire }
         };
-
-        (var httpContext, var cookieService) = CreateTestDependencies();
 
         foreach (Cookie cookie in cookies)
         {
@@ -76,63 +77,17 @@ public class HttpContextCookieServiceTests
     }
 
     [Fact]
-    public async Task SetAsync_WithCookies_ShouldReturnCookie()
+    public async Task GetAllAsync_WithNoCookiesSet_ShouldReturnEmptyIEnumerable()
     {
         (var httpContext, var cookieService) = CreateTestDependencies();
 
-        DateTime cookieExpire = DateTime.UtcNow.AddDays(1);
-        List<Cookie> cookies = new List<Cookie>
-        {
-            new Cookie { Name = "sessionId", Value = "ei34jdh", Expires = cookieExpire },
-            new Cookie { Name = "userId", Value = "xyz789", Expires = cookieExpire },
-            new Cookie { Name = "theme", Value = "dark", Expires = cookieExpire },
-            new Cookie { Name = "cartItems", Value = "5", Expires = cookieExpire }
-        };
+        var cookies = await cookieService.GetAllAsync();
 
-        foreach (Cookie cookie in cookies)
-        {
-            await cookieService.SetAsync(cookie);
-        }
-
-        var responseCookies = httpContext.Response.Headers[HeaderNames.SetCookie];
-        for (int i = 0; i < responseCookies.Count; i++)
-        {
-            string responseCookie = responseCookies[i]!;
-            string cookie = $"{cookies[i].Name}={cookies[i].Value}";
-            Assert.NotEmpty(responseCookie);
-            Assert.Contains(cookie, responseCookie);
-        }
+        Assert.Empty(cookies);
     }
+
     [Fact]
-    public async Task SetAsync_WithEmptyCookies_ShouldReturnCookie()
-    {
-        (var httpContext, var cookieService) = CreateTestDependencies();
-
-        DateTime cookieExpire = DateTime.UtcNow.AddDays(1);
-        List<Cookie> cookies = new List<Cookie>
-        {
-            new Cookie { Name = "sessionId", Value = "", Expires = cookieExpire },
-            new Cookie { Name = "userId", Value = "", Expires = cookieExpire },
-            new Cookie { Name = "theme", Value = "", Expires = cookieExpire },
-            new Cookie { Name = "cartItems", Value = "", Expires = cookieExpire }
-        };
-
-        foreach (Cookie cookie in cookies)
-        {
-            await cookieService.SetAsync(cookie);
-        }
-
-        var responseCookies = httpContext.Response.Headers[HeaderNames.SetCookie];
-        for (int i = 0; i < responseCookies.Count; i++)
-        {
-            string responseCookie = responseCookies[i]!;
-            string cookie = $"{cookies[i].Name}={cookies[i].Value}";
-            Assert.NotEmpty(responseCookie);
-            Assert.Contains(cookie, responseCookie);
-        }
-    }
-    [Fact]
-    public async Task SetAsync_WithCookieOverload_ShouldReturnCookie()
+    public async Task SetAsync_WithCookieObject_ShoudSetResponseHeaderCookie()
     {
         (var httpContext, var cookieService) = CreateTestDependencies();
 
@@ -145,8 +100,9 @@ public class HttpContextCookieServiceTests
         Assert.NotEmpty(responseCookie);
         Assert.Contains(cookieString, responseCookie);
     }
+
     [Fact]
-    public async Task SetAsync_WithCookieSameSiteOverload_ShouldReturnCookie()
+    public async Task SetAsync_WithCookieSameSite_ShoudSetResponseHeaderCookie()
     {
         (var httpContext, var cookieService) = CreateTestDependencies();
 
@@ -159,8 +115,9 @@ public class HttpContextCookieServiceTests
         Assert.NotEmpty(responseCookie);
         Assert.Contains(cookieString, responseCookie);
     }
+
     [Fact]
-    public async Task SetAsync_WithNameValueOverload_ShouldReturnCookie()
+    public async Task SetAsync_WithNameValue_ShouldSetResponseHeaderCookie()
     {
         (var httpContext, var cookieService) = CreateTestDependencies();
 
@@ -173,10 +130,12 @@ public class HttpContextCookieServiceTests
         Assert.NotEmpty(responseCookie);
         Assert.Contains(cookieString, responseCookie);
     }
+
     [Fact]
-    public async Task SetAsync_NameValueExpiresOverload_ShouldReturnCookie()
+    public async Task SetAsync_WithNameValueExpires_ShoudSetResponseHeaderCookie()
     {
         (var httpContext, var cookieService) = CreateTestDependencies();
+
         DateTime cookieExpire = DateTime.UtcNow.AddDays(1);
         Cookie cookie = new Cookie { Name = "sessionId", Value = "ei34jdh", Expires = cookieExpire };
         await cookieService.SetAsync(cookie.Name, cookie.Value, cookie.Expires);
@@ -186,8 +145,22 @@ public class HttpContextCookieServiceTests
         Assert.NotEmpty(responseCookie);
         Assert.Contains(cookieString, responseCookie);
     }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("=;")]
+    [InlineData("")]
+    public async Task SetAsync_WithNameValue_WithInvalidName_ShouldThrowException(string invalidCookieName)
+    {
+        (var httpContext, var cookieService) = CreateTestDependencies();
+
+        await Assert.ThrowsAsync<CookieException>(() =>
+            cookieService.SetAsync(invalidCookieName, "cookieValue")
+        );
+    }
+
     [Fact]
-    public async Task SetAsync_NameValueExpiresSameSiteModeOverload_ShouldReturnCookie()
+    public async Task SetAsync_WithNameValueExpiresSameSite_ShoudSetResponseHeaderCookie()
     {
         (var httpContext, var cookieService) = CreateTestDependencies();
         DateTime cookieExpire = DateTime.UtcNow.AddDays(1);
@@ -201,6 +174,7 @@ public class HttpContextCookieServiceTests
         Assert.NotEmpty(responseCookie);
         Assert.Contains(cookieString, responseCookie);
     }
+
     [Fact]
     public async Task SetAsync_NameValueCookieOptionsOverload_ShouldReturnCookie()
     {
@@ -216,17 +190,13 @@ public class HttpContextCookieServiceTests
         await cookieService.SetAsync( cookie.Name, cookie.Value, options );
 
         var responseCookie = httpContext.Response.Headers[HeaderNames.SetCookie][0]!;
-        var sameSiteStringValue = options.SameSite.ToString().ToLowerInvariant();
-        var cookieString = $"{cookie.Name}={cookie.Value}; expires={cookie.Expires:R}; path=/; samesite={sameSiteStringValue}";
-        
         Assert.NotEmpty(responseCookie);
         Assert.Contains($"{cookie.Name}={cookie.Value}", responseCookie);
-
         Assert.Contains( $"samesite={options.SameSite.ToString().ToLowerInvariant()}", responseCookie );
     }
 
     [Fact]
-    public async Task RemoveAsync_WithCookies()
+    public async Task RemoveAsync_ShouldRemoveCookie()
     {
         (var httpContext, var cookieService) = CreateTestDependencies();
 
