@@ -114,9 +114,9 @@ public class JsInteropCookieService(IJSRuntime JSRuntime) : ICookieService
     ) {
         string command =
             $"document.cookie = '{cookie.Name}={cookie.Value}; " +
-            $"expires={cookie.Expires};" +
+            $"{(cookie.Expires == default ? "" : $"expires={cookie.Expires:R};")}" +
             $"path={(string.IsNullOrEmpty(cookie.Path) ? '/' : cookie.Path)};" +
-            $"SameSite={sameSite.ToString()}" +
+            $"SameSite={sameSite}" +
             "'";
 
         await JSRuntime.InvokeVoidAsync("eval", command);
@@ -128,7 +128,7 @@ public class JsInteropCookieService(IJSRuntime JSRuntime) : ICookieService
             $"document.cookie = '{cookie.Name}={cookie.Value}; " +
             $"{(cookie.Expires == default ? "" : $"expires={cookie.Expires:R};")}" +
             $"path={(string.IsNullOrEmpty(cookie.Path) ? '/' : cookie.Path)};" +
-            $"SameSite={SameSiteMode.Lax.ToString()}" +
+            $"SameSite={SameSiteMode.Lax}" +
             $"'";
 
         await JSRuntime.InvokeVoidAsync("eval", command);
@@ -144,7 +144,7 @@ public class JsInteropCookieService(IJSRuntime JSRuntime) : ICookieService
             $"document.cookie = '{name}={value}; " +
             $"expires={cookieOptions.Expires};" +
             $"path={(string.IsNullOrEmpty(cookieOptions.Path) ? '/' : cookieOptions.Path)};" +
-            $"SameSite={cookieOptions.SameSite.ToString()}" +
+            $"SameSite={cookieOptions.SameSite}" +
             "'";
 
         await JSRuntime.InvokeVoidAsync("eval", command);
