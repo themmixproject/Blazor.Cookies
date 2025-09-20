@@ -234,7 +234,3 @@ public class HttpContextCookieServiceTests
         Assert.Equal(0, httpContext.Response.Headers[HeaderNames.SetCookie].Count);
     }
 }
-
-
-// insert updating of Setasync tests
-// insert test of updating and checking if cookie collection is still the same length
