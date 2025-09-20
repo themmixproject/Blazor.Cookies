@@ -79,6 +79,9 @@ Task SetAsync(string name, string value, DateTime expires, CancellationToken can
 // Sets a cookie with an expriation date and SameSite mode
 Task SetAsync(string name, string value, DateTime expires, SameSiteMode sameSiteMode, CancellationToken cancellationToken = default);
 
+// Sets a cookie with a CookieOptions object
+Task SetAsync(string name, string value, CookieOptions cookieOptions, CancellationToken cancellationToken = default);
+
 // Sets a cookie using a Cookie object
 Task SetAsync(Cookie cookie, CancellationToken cancellationToken = default);
 
