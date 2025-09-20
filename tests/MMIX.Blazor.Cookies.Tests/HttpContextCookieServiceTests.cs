@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using System.Net;
 
 namespace MMIX.Blazor.Cookies.Tests;
+
 public class HttpContextCookieServiceTests
 {
     // HttpContextCookieService.GetAsync method will not be tested due to
@@ -179,7 +180,7 @@ public class HttpContextCookieServiceTests
     public async Task SetAsync_NameValueCookieOptionsOverload_ShouldReturnCookie()
     {
         (var httpContext, var cookieService) = CreateTestDependencies();
-        DateTime cookieExpire = DateTime.UtcNow.AddDays( 1 );
+        DateTime cookieExpire = DateTime.UtcNow.AddDays(1);
         Cookie cookie = new Cookie { Name = "sessionId", Value = "ei34jdh", Expires = cookieExpire };
         CookieOptions options = new CookieOptions
         {
@@ -187,12 +188,12 @@ public class HttpContextCookieServiceTests
             SameSite = SameSiteMode.Strict
         };
 
-        await cookieService.SetAsync( cookie.Name, cookie.Value, options );
+        await cookieService.SetAsync(cookie.Name, cookie.Value, options);
 
         var responseCookie = httpContext.Response.Headers[HeaderNames.SetCookie][0]!;
         Assert.NotEmpty(responseCookie);
         Assert.Contains($"{cookie.Name}={cookie.Value}", responseCookie);
-        Assert.Contains( $"samesite={options.SameSite.ToString().ToLowerInvariant()}", responseCookie );
+        Assert.Contains($"samesite={options.SameSite.ToString().ToLowerInvariant()}", responseCookie);
     }
 
     [Fact]
@@ -226,4 +227,19 @@ public class HttpContextCookieServiceTests
 
         Assert.Equal(0, httpContext.Response.Headers[HeaderNames.SetCookie].Count);
     }
+
+    [Fact]
+    public async Task RemoveAsync_WhenCookieIsSet_ShouldRemoveCookieFromSetCookieHeader()
+    {
+        (var httpContext, var cookieService) = CreateTestDependencies();
+
+        await cookieService.SetAsync("sessionId", "ei34jdh");
+        await cookieService.RemoveAsync("sessionId");
+
+        Assert.Equal(0, httpContext.Response.Headers[HeaderNames.SetCookie].Count);
+    }
 }
+
+
+// insert updating of Setasync tests
+// insert test of updating and checking if cookie collection is still the same length
