@@ -151,17 +151,31 @@ public class HttpContextCookieService : ICookieService
 
     private void RemoveCookieIfExistsFromHeader(string name)
     {
-        var responseHeaders = _httpContext.Response.Headers;
+        IHeaderDictionary responseHeaders = _httpContext.Response.Headers;
         List<string?> responseCookies = responseHeaders[HeaderNames.SetCookie].ToList();
+        
+        bool isRemoved = false;
 
-        if (responseCookies.Remove(name))
+        for (int i = 0; i < responseCookies.Count; i++)
         {
-            _httpContext.Response.Headers[HeaderNames.SetCookie] = responseCookies.ToArray();
+            bool isMatchedCookie = responseCookies[i]!.StartsWith($"{name}=");
+            if (isMatchedCookie)
+            {
+                responseCookies.RemoveAt(i);
+                isRemoved = true;
+                break;
+            }
+        }
+
+        if (isRemoved)
+        {
+            responseHeaders[HeaderNames.SetCookie] = responseCookies.ToArray();
         }
     }
 
     public Task RemoveAsync(string name, CancellationToken cancellationToken = default)
     {
+        RemoveCookieIfExistsFromHeader(name);
         if (_requestCookies.Remove(name))
         {
             _httpContext.Response.Cookies.Delete(name);
