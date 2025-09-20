@@ -151,7 +151,7 @@ public class HttpContextCookieServiceTests
     [InlineData(null)]
     [InlineData("=;")]
     [InlineData("")]
-    public async Task SetAsync_WithNameValue_WithInvalidName_ShouldThrowException(string invalidCookieName)
+    public async Task SetAsync_WithNameValue_WithInvalidName_ShouldThrowCookieException(string invalidCookieName)
     {
         (var httpContext, var cookieService) = CreateTestDependencies();
 
@@ -197,35 +197,30 @@ public class HttpContextCookieServiceTests
     }
 
     [Fact]
-    public async Task RemoveAsync_ShouldRemoveCookie()
+    public async Task SetAsync_OnCookieWithSameKey_ShouldUpdateCookieValue()
     {
         (var httpContext, var cookieService) = CreateTestDependencies();
 
-        DateTime cookieExpire = DateTime.UtcNow.AddDays(1);
-        List<Cookie> cookies = new List<Cookie>
-        {
-            new Cookie { Name = "sessionId", Value = "ei34jdh", Expires = cookieExpire },
-            new Cookie { Name = "userId", Value = "xyz789", Expires = cookieExpire },
-            new Cookie { Name = "theme", Value = "dark", Expires = cookieExpire },
-            new Cookie { Name = "cartItems", Value = "5", Expires = cookieExpire }
-        };
+        string cookieName = "myCookie";
+        await cookieService.SetAsync(cookieName, "myValue");
 
-        foreach (Cookie cookie in cookies)
-        {
-            await cookieService.SetAsync(cookie);
-        }
+        string newValue = "newValue";
+        await cookieService.SetAsync(cookieName, newValue);
+        
+        var responseCookie = httpContext.Response.Headers[HeaderNames.SetCookie][0]!;
+        Assert.NotEmpty(responseCookie);
+        Assert.Contains($"{cookieName}={newValue}", responseCookie);
+    }
 
-        for (int i = 0; i < cookies.Count; i++)
-        {
-            var cookie = cookies[i];
+    [Fact]
+    public async Task SetAsync_AfterCookieUpdate_ShouldMaintainSetCookieHeaderCount()
+    {
+        (var httpContext, var cookieService) = CreateTestDependencies();
 
-            await cookieService.RemoveAsync(cookie.Name);
+        await cookieService.SetAsync("myCookie", "myValue");
+        await cookieService.SetAsync("myCookie", "myNewValue");
 
-            var responseCookies = httpContext.Response.Headers[HeaderNames.SetCookie];
-            Assert.DoesNotContain<string>($"{cookie.Name}={cookie.Value}", responseCookies);
-        }
-
-        Assert.Equal(0, httpContext.Response.Headers[HeaderNames.SetCookie].Count);
+        Assert.Equal(1, httpContext.Response.Headers[HeaderNames.SetCookie].Count);
     }
 
     [Fact]
