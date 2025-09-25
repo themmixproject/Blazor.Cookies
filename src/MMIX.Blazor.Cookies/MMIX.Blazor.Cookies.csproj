@@ -4,20 +4,21 @@
     <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	<Version>2.0.0-beta</Version>
+	<Version>1.0.0</Version>
 	<PackageLicenseFile>LICENSE</PackageLicenseFile>
 	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 	<RepositoryUrl>https://github.com/themmixproject/Blazor.Cookies</RepositoryUrl>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
 	<PackageProjectUrl>https://github.com/themmixproject/Blazor.Cookies</PackageProjectUrl>
 	<Title>MMIX.Blazor.Cookies</Title>
-	<PackageReleaseNotes>- simplified namespaces in project so the services and ICookieService interface is easier to find
-- Set default SameSiteMode to Lax if no SameSiteMode is given
- - Made README header less sales-like</PackageReleaseNotes>
+	<PackageReleaseNotes>- Initial stable release.
+- Fixed bugs in JsInteropCookieService and HttpContextCookieService.
+- Deleted SameSiteMode overloads for ICookieService.SetAsync methods as these mainly tackle edge-cases, as well as negate the simplistic nature of the library. Note: if the user wants to set the SameSite property of the cookie they can use the SetAsync(string, string, CookieOptions, CancellationToken) overload.</PackageReleaseNotes>
 	<Authors>themmixproject</Authors>
 	<Description>A package that makes working with cookies in Blazor easier</Description>
 	<RepositoryType>git</RepositoryType>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	<PackageTags>blazor; cookies; utility;</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
