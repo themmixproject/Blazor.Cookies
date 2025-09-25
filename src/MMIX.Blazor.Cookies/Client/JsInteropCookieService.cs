@@ -36,16 +36,9 @@ public class JsInteropCookieService(IJSRuntime JSRuntime) : ICookieService
         CancellationToken cancellationToken = default
     ) {
         ValidateCookie(cookie);
-        await ExecuteSetCookieJavaScriptInteropAsync(cookie);
+        await ExecuteSetCookieJavaScriptInteropAsync(cookie, cancellationToken);
     }
-    public async Task SetAsync(
-        Cookie cookie,
-        SameSiteMode sameSite,
-        CancellationToken cancellationToken = default
-    ) {
-        ValidateCookie(cookie);
-        await ExecuteSetCookieJavaScriptInteropAsync(cookie, sameSite);
-    }
+
     public async Task SetAsync(
         string name,
         string value, 
@@ -53,7 +46,7 @@ public class JsInteropCookieService(IJSRuntime JSRuntime) : ICookieService
     ) {
         Cookie cookie = new Cookie(name, value);
         ValidateCookie(cookie);
-        await ExecuteSetCookieJavaScriptInteropAsync(cookie);
+        await ExecuteSetCookieJavaScriptInteropAsync(cookie, cancellationToken);
     }
     public async Task SetAsync(
         string name,
@@ -68,24 +61,9 @@ public class JsInteropCookieService(IJSRuntime JSRuntime) : ICookieService
             Expires = expires,
         };
         ValidateCookie(cookie);
-        await ExecuteSetCookieJavaScriptInteropAsync(cookie);
+        await ExecuteSetCookieJavaScriptInteropAsync(cookie, cancellationToken);
     }
-    public async Task SetAsync(
-        string name,
-        string value,
-        DateTime expires,
-        SameSiteMode sameSiteMode,
-        CancellationToken cancellationToken = default
-    ) {
-        Cookie cookie = new Cookie
-        {
-            Name = name,
-            Value = value,
-            Expires = expires,
-        };
-        ValidateCookie(cookie);
-        await ExecuteSetCookieJavaScriptInteropAsync(cookie, sameSiteMode);
-    }
+
     public async Task SetAsync(
         string name,
         string value,
@@ -95,7 +73,7 @@ public class JsInteropCookieService(IJSRuntime JSRuntime) : ICookieService
     {
         Cookie cookie = new Cookie(name, value);
         ValidateCookie(cookie);
-        await ExecuteSetCookieJavaScriptInteropAsync(name, value, cookieOptions);
+        await ExecuteSetCookieJavaScriptInteropAsync(name, value, cookieOptions, cancellationToken);
     }
 
     private void ValidateCookie(Cookie cookie)
@@ -108,46 +86,32 @@ public class JsInteropCookieService(IJSRuntime JSRuntime) : ICookieService
         }
     }
 
-    private async Task ExecuteSetCookieJavaScriptInteropAsync(
-        Cookie cookie,
-        SameSiteMode sameSite
-    ) {
-        string command =
-            $"document.cookie = '{cookie.Name}={cookie.Value}; " +
-            $"expires={cookie.Expires};" +
-            $"path={(string.IsNullOrEmpty(cookie.Path) ? '/' : cookie.Path)};" +
-            $"SameSite={sameSite.ToString()}" +
-            "'";
-
-        await JSRuntime.InvokeVoidAsync("eval", command);
-    }
-
-    private async Task ExecuteSetCookieJavaScriptInteropAsync(Cookie cookie)
+    private async Task ExecuteSetCookieJavaScriptInteropAsync(Cookie cookie, CancellationToken cancellationToken)
     {
         string command =
             $"document.cookie = '{cookie.Name}={cookie.Value}; " +
-            $"{(cookie.Expires == default ? "" : $"expires={cookie.Expires:R};")}" +
-            $"path={(string.IsNullOrEmpty(cookie.Path) ? '/' : cookie.Path)};" +
-            $"SameSite={SameSiteMode.Lax.ToString()}" +
+            $"{(cookie.Expires == default ? "" : $"expires={cookie.Expires:R}; ")}" +
+            $"path={(string.IsNullOrEmpty(cookie.Path) ? '/' : cookie.Path)}" +
             $"'";
 
-        await JSRuntime.InvokeVoidAsync("eval", command);
+        await JSRuntime.InvokeVoidAsync("eval", cancellationToken, command);
     }
 
     public async Task ExecuteSetCookieJavaScriptInteropAsync(
         string name,
         string value,
-        CookieOptions cookieOptions
+        CookieOptions cookieOptions,
+        CancellationToken cancellationToken
     )
     {
         string command =
             $"document.cookie = '{name}={value}; " +
-            $"expires={cookieOptions.Expires};" +
-            $"path={(string.IsNullOrEmpty(cookieOptions.Path) ? '/' : cookieOptions.Path)};" +
-            $"SameSite={cookieOptions.SameSite.ToString()}" +
+            $"{(cookieOptions.Expires == default ? "" : $"expires={cookieOptions.Expires:R}; ")}" +
+            $"path={(string.IsNullOrEmpty(cookieOptions.Path) ? '/' : cookieOptions.Path)}; " +
+            $"SameSite={(cookieOptions.SameSite == default ? "" : $"Samesite={cookieOptions.SameSite}")}" +
             "'";
 
-        await JSRuntime.InvokeVoidAsync("eval", command);
+        await JSRuntime.InvokeVoidAsync("eval", cancellationToken, command);
     }
 
     public async Task RemoveAsync(

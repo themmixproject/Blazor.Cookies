@@ -86,20 +86,6 @@ public class JsInteropCookieServiceTests
         Assert.Equal(cookie, returnCookie);
     }
 
-    [Fact]
-    public async Task SetAsync_WithCookieSameSite_ShouldSetCookie()
-    {
-        var jsRuntime = new VirtualJSRuntime();
-        var jsInteropCookieService = new JsInteropCookieService(jsRuntime);
-
-        Cookie cookie = new Cookie("myCookie", "myValue");
-        SameSiteMode sameSiteMode = SameSiteMode.Strict;
-        await jsInteropCookieService.SetAsync(cookie, sameSiteMode);
-
-        Cookie? returnCookie = await jsInteropCookieService.GetAsync(cookie.Name);
-        Assert.Equal(cookie, returnCookie);
-    }
-
     [Theory]
     [InlineData("myCookie", "cookieValue")]
     [InlineData("myCookie", "")]
@@ -138,29 +124,6 @@ public class JsInteropCookieServiceTests
         string cookieValue = "myValue";
         DateTime cookieExpires = DateTime.UtcNow.AddHours(1);
         await jsInteropCookieService.SetAsync(cookieName, cookieValue, cookieExpires);
-
-        Cookie? returnCookie = await jsInteropCookieService.GetAsync(cookieName);
-        Assert.NotNull(returnCookie);
-        Assert.Equal(returnCookie.Name, cookieName);
-        Assert.Equal(returnCookie.Value, cookieValue);
-    }
-
-    [Fact]
-    public async Task SetAsync_WithNameValueExpiresSameSite_ShouldSetCookie()
-    {
-        var jsRuntime = new VirtualJSRuntime();
-        var jsInteropCookieService = new JsInteropCookieService(jsRuntime);
-
-        string cookieName = "myCookie";
-        string cookieValue = "myValue";
-        DateTime cookieExpires = DateTime.UtcNow.AddHours(1);
-        SameSiteMode sameSiteMode = SameSiteMode.Strict;
-        await jsInteropCookieService.SetAsync(
-            cookieName,
-            cookieValue,
-            cookieExpires,
-            sameSiteMode
-        );
 
         Cookie? returnCookie = await jsInteropCookieService.GetAsync(cookieName);
         Assert.NotNull(returnCookie);
