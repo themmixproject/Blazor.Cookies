@@ -13,7 +13,7 @@ public class HttpContextCookieService : ICookieService
     public HttpContextCookieService(IHttpContextAccessor httpContextAccessor)
     {
         _httpContext = httpContextAccessor.HttpContext!;
-     
+
         /// TODO: refactor initialization of _requestCookies so that
         ///       it's index-based instead of name-based
         _requestCookies = _httpContext.Request.Cookies
@@ -50,6 +50,20 @@ public class HttpContextCookieService : ICookieService
     }
 
     public Task SetAsync(
+        IEnumerable<Cookie> cookies,
+        CancellationToken cancellationToken = default
+    )
+    {
+        foreach (Cookie cookie in cookies)
+        {
+            RemoveCookieIfExistsFromHeader(cookie.Name);
+            AppendCookieToHttpContext(cookie);
+        }
+
+        return Task.CompletedTask;
+    }
+
+    public Task SetAsync(
         string name,
         string value,
         CancellationToken cancellationToken = default
@@ -60,6 +74,7 @@ public class HttpContextCookieService : ICookieService
 
         return Task.CompletedTask;
     }
+
     public Task SetAsync(
         string name,
         string value,
@@ -140,6 +155,17 @@ public class HttpContextCookieService : ICookieService
         if (_requestCookies.Remove(name))
         {
             _httpContext.Response.Cookies.Delete(name);
+        }
+
+        return Task.CompletedTask;
+    }
+
+    public Task RemoveAllAsync(CancellationToken cancellationToken = default)
+    {
+        foreach (var key in _requestCookies.Keys)
+        {
+            _requestCookies.Remove(key);
+            _httpContext.Response.Cookies.Delete(key);
         }
 
         return Task.CompletedTask;

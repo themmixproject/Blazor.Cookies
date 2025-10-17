@@ -2,6 +2,7 @@
 using MMIX.Blazor.Cookies.Tests.Patches;
 using Microsoft.AspNetCore.Http;
 using System.Net;
+using Jint;
 
 namespace MMIX.Blazor.Cookies.Tests;
 
@@ -225,4 +226,19 @@ public class JsInteropCookieServiceTests
         Assert.Null(resultCookie);
     }
 
+    [Fact]
+    public async Task RemoveAllCookies_ShouldRemoveAllCookies()
+    {
+        var jsRuntime = new VirtualJSRuntime();
+        var jsInteropCookieService = new JsInteropCookieService(jsRuntime);
+
+        await jsInteropCookieService.SetAsync("myCookie_1", "myValue_1");
+        await jsInteropCookieService.SetAsync("myCookie_2", "myValue_2");
+        await jsInteropCookieService.SetAsync("myCookie_3", "myValue_3");
+
+        await jsInteropCookieService.RemoveAllAsync();
+
+        var cookies = await jsInteropCookieService.GetAllAsync();
+        Assert.Empty(cookies);
+    }
 }

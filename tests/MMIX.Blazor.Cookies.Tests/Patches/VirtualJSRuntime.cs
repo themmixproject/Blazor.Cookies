@@ -6,6 +6,25 @@ namespace MMIX.Blazor.Cookies.Tests.Patches;
 
 internal class VirtualJSRuntime : IJSRuntime
 {
+    private readonly Jint.Engine _engine;
+    public VirtualJSRuntime()
+    {
+        _engine = new Jint.Engine();
+
+        ReadCookieJS();
+    }
+
+    private void ReadCookieJS()
+    {
+        FileStream fileStream = new FileStream("cookie.js", FileMode.Open, FileAccess.Read);
+        using (StreamReader reader = new StreamReader(fileStream))
+        {
+            string fileContents = reader.ReadToEnd();
+            _engine.Execute(fileContents);
+        }
+    }
+
+
     private const string cookieDateFormat = "ddd, dd MMM yyyy HH:mm:ss 'GMT'";
 
     private Dictionary<string, JSCookie> _cookiesDictionary = new Dictionary<string, JSCookie>();
@@ -22,9 +41,7 @@ internal class VirtualJSRuntime : IJSRuntime
     {
         if (Regex.IsMatch(identifier, "eval$") && args is { Length: 1 })
         {
-            string command = args[0]?.ToString() ?? "";
-            var commandResult = ParseEvalCommand(command);
-
+            var commandResult = _engine.Invoke(identifier, args).ToObject();
             if (commandResult is TValue value)
             {
                 return ValueTask.FromResult(value);

@@ -30,6 +30,15 @@ public interface ICookieService
         CancellationToken cancellationToken = default
     );
 
+    /// <summary>
+    /// Removes all cookies by marking them as expired.
+    /// </summary>
+    /// <param name="cancellationToken">
+    /// Token that can be used to cancel the operation.
+    /// </param>
+    /// <returns></returns>
+    public Task RemoveAllAsync(CancellationToken cancellationToken);
+
     /// <summary>Creates or updates a cookie.</summary>
     /// <remarks>
     /// In Static SSR mode, newly set cookies are only available on the client
@@ -41,6 +50,22 @@ public interface ICookieService
     /// </param>
     public Task SetAsync(
         Cookie cookie,
+        CancellationToken cancellationToken = default
+    );
+
+    /// <summary>
+    /// Creates or updates multiple cookies.
+    /// </summary>
+    /// <remarks>
+    /// In Static SSR mode, newly set cookies are only available on the client
+    /// after a page reload.
+    /// </remarks>
+    /// <param name="cookies">The cookies to set.</param>
+    /// <param name="cancellationToken">
+    /// Token that can be used to cancel the operation.
+    /// </param>
+    public Task SetAsync(
+        IEnumerable<Cookie> cookies,
         CancellationToken cancellationToken = default
     );
 

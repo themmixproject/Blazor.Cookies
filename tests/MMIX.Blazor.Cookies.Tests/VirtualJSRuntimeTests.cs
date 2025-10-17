@@ -384,18 +384,18 @@ public class VirtualJSRuntimeTests
     public async Task CreateAndRemoveSingleCookieByTimeout_ShouldCreateThenRemove()
     {
         IJSRuntime jsRuntime = new VirtualJSRuntime();
-        
+
         string cookieName = "timeoutCookie";
         string cookieValue = "timeoutValue";
         string shortExpires = DateTime.UtcNow.AddSeconds(2).ToString(cookieDateFormat, CultureInfo.InvariantCulture);
-        
+
         await jsRuntime.InvokeVoidAsync("eval", $"document.cookie = '{cookieName}={cookieValue}; expires={shortExpires}'");
-        
+
         string cookiesAfterCreation = await jsRuntime.InvokeAsync<string>("eval", "document.cookie");
         Assert.Contains($"{cookieName}={cookieValue}", cookiesAfterCreation);
 
         Thread.Sleep(3000);
-        
+
         string cookiesAfterTimeout = await jsRuntime.InvokeAsync<string>("eval", "document.cookie");
         Assert.Empty(cookiesAfterTimeout);
     }

@@ -30,20 +30,40 @@ public class JsInteropCookieService(IJSRuntime JSRuntime) : ICookieService
         var cookies = await GetAllAsync();
         return cookies.FirstOrDefault(c => c.Name == name);
     }
-    
+
     public async Task SetAsync(
         Cookie cookie,
         CancellationToken cancellationToken = default
-    ) {
+    )
+    {
         ValidateCookie(cookie);
-        await ExecuteSetCookieJavaScriptInteropAsync(cookie, cancellationToken);
+        await ExecuteSetCookieJavaScriptInteropAsync(
+            cookie,
+            cancellationToken
+        );
+    }
+
+    public async Task SetAsync(
+        IEnumerable<Cookie> cookies,
+        CancellationToken cancellationToken = default
+    )
+    {
+        foreach (Cookie cookie in cookies)
+        {
+            ValidateCookie(cookie);
+            await ExecuteSetCookieJavaScriptInteropAsync(
+                cookie,
+                cancellationToken
+            );
+        }
     }
 
     public async Task SetAsync(
         string name,
-        string value, 
+        string value,
         CancellationToken cancellationToken = default
-    ) {
+    )
+    {
         Cookie cookie = new Cookie(name, value);
         ValidateCookie(cookie);
         await ExecuteSetCookieJavaScriptInteropAsync(cookie, cancellationToken);
@@ -53,7 +73,8 @@ public class JsInteropCookieService(IJSRuntime JSRuntime) : ICookieService
         string value,
         DateTime expires,
         CancellationToken cancellationToken = default
-    ) {
+    )
+    {
         Cookie cookie = new Cookie
         {
             Name = name,
@@ -78,10 +99,12 @@ public class JsInteropCookieService(IJSRuntime JSRuntime) : ICookieService
 
     private void ValidateCookie(Cookie cookie)
     {
-        if (cookie.HttpOnly) {
+        if (cookie.HttpOnly)
+        {
             throw new InvalidOperationException(HttpOnlyFlagExceptionMessage);
         }
-        if (cookie.Secure) {
+        if (cookie.Secure)
+        {
             throw new InvalidOperationException(SecureFlagExceptionMessage);
         }
     }
@@ -117,10 +140,22 @@ public class JsInteropCookieService(IJSRuntime JSRuntime) : ICookieService
     public async Task RemoveAsync(
         string name,
         CancellationToken cancellationToken = default
-    ) {
+    )
+    {
         if (string.IsNullOrWhiteSpace(name)) { throw new Exception("Name is required when removing a cookie."); }
 
         string command = $"document.cookie = '{name}=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/'";
-        await JSRuntime.InvokeVoidAsync("eval", command);
+        await JSRuntime.InvokeVoidAsync("eval", cancellationToken, command);
+    }
+
+    public async Task RemoveAllAsync(CancellationToken cancellationToken = default)
+    {
+        string command = "document.cookie.split(';').forEach(cookie => {" +
+                         "let equalsPos = cookie.indexOf('=');" +
+                         "let name = equalsPos > -1 ? cookie.substring(0, equalsPos) : cookie;" +
+                         "document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT'" +
+                         "})";
+
+        await JSRuntime.InvokeVoidAsync("eval", cancellationToken, command);
     }
 }

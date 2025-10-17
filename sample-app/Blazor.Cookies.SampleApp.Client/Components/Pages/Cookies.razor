@@ -70,7 +70,7 @@
     {
         var expiration = DateTime.UtcNow.AddDays(1);
 
-        if (key is not null && value is not null) await CookieService.SetAsync(key, value, expiration, sameSiteMode);
+        if (key is not null && value is not null) await CookieService.SetAsync(key, value, expiration);
     
         await LoadCookiesAsync();
     }

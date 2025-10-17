@@ -175,7 +175,7 @@ public class HttpContextCookieServiceTests
 
         string newValue = "newValue";
         await cookieService.SetAsync(cookieName, newValue);
-        
+
         var responseCookie = httpContext.Response.Headers[HeaderNames.SetCookie][0]!;
         Assert.NotEmpty(responseCookie);
         Assert.Contains($"{cookieName}={newValue}", responseCookie);
@@ -201,5 +201,20 @@ public class HttpContextCookieServiceTests
         await cookieService.RemoveAsync("sessionId");
 
         Assert.Equal(0, httpContext.Response.Headers[HeaderNames.SetCookie].Count);
+    }
+
+    [Fact]
+    public async Task RemoveAllCookies_ShouldRemoveAllCookies()
+    {
+        (var httpContext, var cookieService) = CreateTestDependencies();
+
+        await cookieService.SetAsync("myCookie_1", "myValue_1");
+        await cookieService.SetAsync("myCookie_2", "myValue_2");
+        await cookieService.SetAsync("myCookie_3", "myValue_3");
+
+        await cookieService.RemoveAllAsync();
+
+        var cookies = await cookieService.GetAllAsync();
+        Assert.Empty(cookies);
     }
 }
