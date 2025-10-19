@@ -94,7 +94,12 @@ public class JsInteropCookieService(IJSRuntime JSRuntime) : ICookieService
     {
         Cookie cookie = new Cookie(name, value);
         ValidateCookie(cookie);
-        await ExecuteSetCookieJavaScriptInteropAsync(name, value, cookieOptions, cancellationToken);
+        await ExecuteSetCookieJavaScriptInteropAsync(
+            name,
+            value,
+            cookieOptions,
+            cancellationToken
+        );
     }
 
     private void ValidateCookie(Cookie cookie)
@@ -109,7 +114,10 @@ public class JsInteropCookieService(IJSRuntime JSRuntime) : ICookieService
         }
     }
 
-    private async Task ExecuteSetCookieJavaScriptInteropAsync(Cookie cookie, CancellationToken cancellationToken)
+    private async Task ExecuteSetCookieJavaScriptInteropAsync(
+        Cookie cookie,
+        CancellationToken cancellationToken
+    )
     {
         string command =
             $"document.cookie = '{cookie.Name}={cookie.Value}; " +
