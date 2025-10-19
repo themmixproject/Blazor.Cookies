@@ -14,8 +14,6 @@ public class HttpContextCookieService : ICookieService
     {
         _httpContext = httpContextAccessor.HttpContext!;
 
-        /// TODO: refactor initialization of _requestCookies so that
-        ///       it's index-based instead of name-based
         _requestCookies = _httpContext.Request.Cookies
             .Select(x => new Cookie(x.Key, x.Value))
             .ToDictionary(cookie => cookie.Name);
@@ -24,7 +22,7 @@ public class HttpContextCookieService : ICookieService
     public Task<IEnumerable<Cookie>> GetAllAsync()
     {
         return Task.FromResult(
-            _requestCookies.Select(c => c.Value).ToList().AsEnumerable()
+            _requestCookies.Values.AsEnumerable()
         );
     }
 
@@ -43,7 +41,7 @@ public class HttpContextCookieService : ICookieService
         CancellationToken cancellationToken = default
     )
     {
-        RemoveCookieIfExistsFromHeader(cookie.Name);
+        RemovePendingCookieFromSetCookieHeader(cookie.Name);
         AppendCookieToHttpContext(cookie);
 
         return Task.CompletedTask;
@@ -56,7 +54,7 @@ public class HttpContextCookieService : ICookieService
     {
         foreach (Cookie cookie in cookies)
         {
-            RemoveCookieIfExistsFromHeader(cookie.Name);
+            RemovePendingCookieFromSetCookieHeader(cookie.Name);
             AppendCookieToHttpContext(cookie);
         }
 
@@ -69,8 +67,15 @@ public class HttpContextCookieService : ICookieService
         CancellationToken cancellationToken = default
     )
     {
-        RemoveCookieIfExistsFromHeader(name);
-        AppendCookieToHttpContext(new Cookie(name, value));
+        RemovePendingCookieFromSetCookieHeader(name);
+        
+        AppendCookieToHttpContext(new Cookie{
+            Name = name,
+            Value = value,
+
+            // Setting expires to DateTime.MinValue will create a session cookie
+            Expires = DateTime.MinValue
+        });
 
         return Task.CompletedTask;
     }
@@ -89,7 +94,7 @@ public class HttpContextCookieService : ICookieService
             Expires = expires
         };
 
-        RemoveCookieIfExistsFromHeader(cookie.Name);
+        RemovePendingCookieFromSetCookieHeader(cookie.Name);
         AppendCookieToHttpContext(cookie);
 
         return Task.CompletedTask;
@@ -102,7 +107,7 @@ public class HttpContextCookieService : ICookieService
         CancellationToken cancellationToken = default
     )
     {
-        RemoveCookieIfExistsFromHeader(name);
+        RemovePendingCookieFromSetCookieHeader(name);
         _httpContext.Response.Cookies.Append(name, value, cookieOptions);
 
         return Task.CompletedTask;
@@ -110,48 +115,51 @@ public class HttpContextCookieService : ICookieService
 
     private void AppendCookieToHttpContext(Cookie cookie)
     {
-        bool isSession = cookie.Expires.ToUniversalTime() == DateTimeOffset.MinValue;
+        bool isSessionCookie = cookie.Expires == DateTime.MinValue;
         _httpContext.Response.Cookies.Append(
             cookie.Name,
             cookie.Value,
             new CookieOptions
             {
-                Expires = isSession ? null : cookie.Expires.ToUniversalTime(),
+                Expires = isSessionCookie ? null : cookie.Expires.ToUniversalTime(),
                 Path = string.IsNullOrEmpty(cookie.Path) ? "/" : cookie.Path,
                 HttpOnly = cookie.HttpOnly,
                 Secure = cookie.Secure,
-                SameSite = SameSiteMode.Lax
+                SameSite = SameSiteMode.Unspecified
             }
         );
     }
 
-    private void RemoveCookieIfExistsFromHeader(string name)
+    private void RemovePendingCookieFromSetCookieHeader(string name)
     {
         IHeaderDictionary responseHeaders = _httpContext.Response.Headers;
         List<string?> responseCookies = responseHeaders[HeaderNames.SetCookie].ToList();
 
-        bool isRemoved = false;
-
         for (int i = 0; i < responseCookies.Count; i++)
         {
-            bool isMatchedCookie = responseCookies[i]!.StartsWith($"{name}=");
+            bool isMatchedCookie = responseCookies[i]!.StartsWith(
+                $"{name}=",
+                StringComparison.Ordinal
+            );
             if (isMatchedCookie)
             {
                 responseCookies.RemoveAt(i);
-                isRemoved = true;
+                responseHeaders[HeaderNames.SetCookie] = responseCookies.ToArray();
                 break;
             }
         }
-
-        if (isRemoved)
-        {
-            responseHeaders[HeaderNames.SetCookie] = responseCookies.ToArray();
-        }
     }
 
-    public Task RemoveAsync(string name, CancellationToken cancellationToken = default)
+    public Task RemoveAsync(
+        string name,
+        CancellationToken cancellationToken = default
+    )
     {
-        RemoveCookieIfExistsFromHeader(name);
+        // Remove cookie from set-cookie header if cookie is added during
+        // request
+        RemovePendingCookieFromSetCookieHeader(name);
+
+        // If cookie is in request, add set-cookie header to expire cookie
         if (_requestCookies.Remove(name))
         {
             _httpContext.Response.Cookies.Delete(name);
@@ -162,11 +170,18 @@ public class HttpContextCookieService : ICookieService
 
     public Task RemoveAllAsync(CancellationToken cancellationToken = default)
     {
-        foreach (var key in _requestCookies.Keys)
+        var keys = _requestCookies.Keys.ToArray();
+        foreach (var key in keys)
         {
-            _requestCookies.Remove(key);
+            // Remove cookie from set-cookie header if cookie is added during
+            // request
+            RemovePendingCookieFromSetCookieHeader(key);
+
+            // Add set-cookie header to expire cookie
             _httpContext.Response.Cookies.Delete(key);
         }
+
+        _requestCookies.Clear();
 
         return Task.CompletedTask;
     }
