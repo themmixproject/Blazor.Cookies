@@ -112,6 +112,4 @@ public interface ICookieService
         CookieOptions cookieOptions,
         CancellationToken cancellationToken = default
     );
-
-    // TODO: Add SetAsync(IEnumerable, CancellationToken) overload
 }

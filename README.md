@@ -81,12 +81,18 @@ Task SetAsync(string name, string value, CookieOptions cookieOptions, Cancellati
 
 // Sets a cookie using a Cookie object
 Task SetAsync(Cookie cookie, CancellationToken cancellationToken = default);
+
+// Sets multiple cookies using a Cookie IEnumerable
+Task SetAsync(IEnumerable<Cookie> cookies, CancellationToken cancellationToken = default);
 ```
 
 #### Removing Cookies
 ```csharp
 // Removes a cookie by its name
 Task RemoveAsync(string name, CancellationToken cancellationToken = default);
+
+// Removes all cookies
+public Task RemoveAllAsync(CancellationToken cancellationToken);
 ```
 
 ## License
