@@ -43,5 +43,8 @@
 	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
 		<PackageReference Include="Microsoft.JSInterop" Version="9.*" />
 	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\..\patches\MMIX.Blazor.Cookies.Patches\MMIX.Blazor.Cookies.Patches.csproj" />
+	</ItemGroup>
   
 </Project>

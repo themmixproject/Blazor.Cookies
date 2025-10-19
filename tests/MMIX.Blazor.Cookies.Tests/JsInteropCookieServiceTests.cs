@@ -1,8 +1,7 @@
-﻿using MMIX.Blazor.Cookies.Client;
-using MMIX.Blazor.Cookies.Tests.Patches;
+﻿using System.Net;
 using Microsoft.AspNetCore.Http;
-using System.Net;
-using Jint;
+using MMIX.Blazor.Cookies.Client;
+using MMIX.Blazor.Cookies.Patches.JSInterop;
 
 namespace MMIX.Blazor.Cookies.Tests;
 

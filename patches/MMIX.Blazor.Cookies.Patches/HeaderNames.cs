@@ -8,7 +8,7 @@ namespace MMIX.Blazor.Cookies.Patches;
 /// </summary>
 // MODIFICATION POLICY: This list is not intended to be exhaustive, it primarily contains values used by the framework itself.
 // Please do not open PRs without first opening an issue to discuss a specific item.
-internal static class HeaderNames
+public static class HeaderNames
 {
     // Use readonly statics rather than constants so ReferenceEquals works
 

@@ -3,7 +3,7 @@ using System.Data;
 using System.Globalization;
 using System.Reflection.Metadata;
 using Microsoft.JSInterop;
-using MMIX.Blazor.Cookies.Tests.Patches;
+using MMIX.Blazor.Cookies.Patches.JSInterop;
 
 namespace MMIX.Blazor.Cookies.Tests;
 
