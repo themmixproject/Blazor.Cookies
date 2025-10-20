@@ -6,7 +6,7 @@ namespace MMIX.Blazor.Cookies.Client
     {
         public static IServiceCollection AddCookieService(this IServiceCollection services)
         {
-            services.AddScoped<ICookieService, JsInteropCookieService>();
+            services.AddScoped<ICookieService, JSInteropCookieService>();
             return services;
         }
 
@@ -15,7 +15,7 @@ namespace MMIX.Blazor.Cookies.Client
             services.Add(
                 new ServiceDescriptor(
                     typeof(ICookieService),
-                    typeof(JsInteropCookieService),
+                    typeof(JSInteropCookieService),
                     lifetime
                 )
             );

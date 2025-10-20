@@ -8,7 +8,7 @@ public static class IServiceCollectionExtensions
     public static IServiceCollection AddCookieService(this IServiceCollection services)
     {
         services.AddHttpContextAccessor();
-        services.AddScoped<JsInteropCookieService>();
+        services.AddScoped<JSInteropCookieService>();
         services.AddScoped<HttpContextCookieService>();
         services.AddScoped<ICookieService>(i =>
         {
@@ -17,7 +17,7 @@ public static class IServiceCollectionExtensions
             var isPrerendering = httpContext != null && !httpContext.Response.HasStarted;
 
             if (isPrerendering) { return i.GetRequiredService<HttpContextCookieService>(); }
-            else { return i.GetRequiredService<JsInteropCookieService>(); }
+            else { return i.GetRequiredService<JSInteropCookieService>(); }
         });
 
         return services;

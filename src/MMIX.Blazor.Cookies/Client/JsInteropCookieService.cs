@@ -4,7 +4,7 @@ using System.Net;
 
 namespace MMIX.Blazor.Cookies.Client;
 
-public class JsInteropCookieService(IJSRuntime JSRuntime) : ICookieService
+public class JSInteropCookieService(IJSRuntime JSRuntime) : ICookieService
 {
     private const string CookieFlagsExplainMessage = "Setting HttpOnly or Secure cookies is only possible when using Satic SSR render mode.";
     private const string NotSupportedSuffix = "are not supported in this rendering environment";
