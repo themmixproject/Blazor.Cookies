@@ -11,7 +11,7 @@ public class JsInteropCookieServiceTests
     public async Task GetAllAsync_WithCookiesSet_ShouldReturnCookies()
     {
         var jsRuntime = new VirtualJSRuntime();
-        var jsInteropCookieService = new JsInteropCookieService(jsRuntime);
+        var jsInteropCookieService = new JSInteropCookieService(jsRuntime);
 
         List<Cookie> cookies = new List<Cookie>
         {
@@ -39,7 +39,7 @@ public class JsInteropCookieServiceTests
     public async Task GetAllAsync_WithNoCookiesSet_ShouldReturnEmpty()
     {
         var jsRuntime = new VirtualJSRuntime();
-        var jsInteropCookieService = new JsInteropCookieService(jsRuntime);
+        var jsInteropCookieService = new JSInteropCookieService(jsRuntime);
 
         var returnCookies = await jsInteropCookieService.GetAllAsync();
 
@@ -50,7 +50,7 @@ public class JsInteropCookieServiceTests
     public async Task GetAsync_WithCookieSet_ShouldReturnCookie()
     {
         var jsRuntime = new VirtualJSRuntime();
-        var jsInteropCookieService = new JsInteropCookieService(jsRuntime);
+        var jsInteropCookieService = new JSInteropCookieService(jsRuntime);
 
         var cookie = new Cookie("myCookie", "myValue");
         await jsInteropCookieService.SetAsync(cookie);
@@ -67,7 +67,7 @@ public class JsInteropCookieServiceTests
     public async Task GetAsync_WithNonExistentCookie_ShouldReturnNull(string cookieName)
     {
         var jsRuntime = new VirtualJSRuntime();
-        var jsInteropCookieService = new JsInteropCookieService(jsRuntime);
+        var jsInteropCookieService = new JSInteropCookieService(jsRuntime);
 
         Cookie? cookie = await jsInteropCookieService.GetAsync(cookieName);
         Assert.Null(cookie);
@@ -77,7 +77,7 @@ public class JsInteropCookieServiceTests
     public async Task SetAsync_WithCookieObject_ShouldSetCookie()
     {
         var jsRuntime = new VirtualJSRuntime();
-        var jsInteropCookieService = new JsInteropCookieService(jsRuntime);
+        var jsInteropCookieService = new JSInteropCookieService(jsRuntime);
 
         Cookie cookie = new Cookie("myCookie", "myValue");
         await jsInteropCookieService.SetAsync(cookie);
@@ -92,7 +92,7 @@ public class JsInteropCookieServiceTests
     public async Task SetAsync_WithNameValue_ShouldSetCookie(string cookieName, string cookieValue)
     {
         var jsRuntime = new VirtualJSRuntime();
-        var jsInteropCookieService = new JsInteropCookieService(jsRuntime);
+        var jsInteropCookieService = new JSInteropCookieService(jsRuntime);
 
         Cookie cookie = new Cookie(cookieName, cookieValue);
         await jsInteropCookieService.SetAsync(cookie.Name, cookie.Value);
@@ -107,7 +107,7 @@ public class JsInteropCookieServiceTests
     public async Task SetAsync_WithInvalidName_ShouldThrowCookieException(string invalidCookieName)
     {
         var jsRuntime = new VirtualJSRuntime();
-        var jsInteropCookieService = new JsInteropCookieService(jsRuntime);
+        var jsInteropCookieService = new JSInteropCookieService(jsRuntime);
 
         await Assert.ThrowsAsync<CookieException>(() =>
             jsInteropCookieService.SetAsync(invalidCookieName, "cookieValue")
@@ -118,7 +118,7 @@ public class JsInteropCookieServiceTests
     public async Task SetAsync_WithNameValueExpires_ShouldSetCookie()
     {
         var jsRuntime = new VirtualJSRuntime();
-        var jsInteropCookieService = new JsInteropCookieService(jsRuntime);
+        var jsInteropCookieService = new JSInteropCookieService(jsRuntime);
 
         string cookieName = "myCookie";
         string cookieValue = "myValue";
@@ -135,7 +135,7 @@ public class JsInteropCookieServiceTests
     public async Task SetAsync_WithNameValueCookieOptions_ShouldSetCookie()
     {
         var jsRuntime = new VirtualJSRuntime();
-        var jsInteropCookieService = new JsInteropCookieService(jsRuntime);
+        var jsInteropCookieService = new JSInteropCookieService(jsRuntime);
 
         string cookieName = "myCookie";
         string cookieValue = "myValue";
@@ -157,7 +157,7 @@ public class JsInteropCookieServiceTests
     public async Task SetAsync_UpdateToPastExpires_ShouldRemoveCookie()
     {
         var jsRuntime = new VirtualJSRuntime();
-        var jsInteropCookieService = new JsInteropCookieService(jsRuntime);
+        var jsInteropCookieService = new JSInteropCookieService(jsRuntime);
 
         string cookieName = "myCookie";
         string cookieValue = "cookieValue";
@@ -186,7 +186,7 @@ public class JsInteropCookieServiceTests
     public async Task SetAsync_AfterCookieExpires_ShouldRemoveCookie()
     {
         var jsRuntime = new VirtualJSRuntime();
-        var jsInteropCookieService = new JsInteropCookieService(jsRuntime);
+        var jsInteropCookieService = new JSInteropCookieService(jsRuntime);
 
         string cookieName = "myCookie";
         string cookieValue = "cookieValue";
@@ -209,7 +209,7 @@ public class JsInteropCookieServiceTests
     public async Task RemoveCookie_ShouldRemoveCookie()
     {
         var jsRuntime = new VirtualJSRuntime();
-        var jsInteropCookieService = new JsInteropCookieService(jsRuntime);
+        var jsInteropCookieService = new JSInteropCookieService(jsRuntime);
 
         var cookie = new Cookie
         {
@@ -229,7 +229,7 @@ public class JsInteropCookieServiceTests
     public async Task RemoveAllCookies_ShouldRemoveAllCookies()
     {
         var jsRuntime = new VirtualJSRuntime();
-        var jsInteropCookieService = new JsInteropCookieService(jsRuntime);
+        var jsInteropCookieService = new JSInteropCookieService(jsRuntime);
 
         await jsInteropCookieService.SetAsync("myCookie_1", "myValue_1");
         await jsInteropCookieService.SetAsync("myCookie_2", "myValue_2");
