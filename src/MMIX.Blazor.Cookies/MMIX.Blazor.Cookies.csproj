@@ -4,16 +4,15 @@
     <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	<Version>1.0.1</Version>
+	<Version>1.0.2</Version>
 	<PackageLicenseFile>LICENSE</PackageLicenseFile>
 	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 	<RepositoryUrl>https://github.com/themmixproject/Blazor.Cookies</RepositoryUrl>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
 	<PackageProjectUrl>https://github.com/themmixproject/Blazor.Cookies</PackageProjectUrl>
 	<Title>MMIX.Blazor.Cookies</Title>
-	<PackageReleaseNotes>- Added RemoveAllAsync method
-- Added SetAsync with IEnumerable overload
-- Minor performance improvements in HttpContextCookieService</PackageReleaseNotes>
+	<PackageReleaseNotes>- Renamed JsInteropCookieService to JSInteropCookieService
+- Minor bug fix in JSInteropCookieService</PackageReleaseNotes>
 	<Authors>themmixproject</Authors>
 	<Description>A package that makes working with cookies in Blazor easier</Description>
 	<RepositoryType>git</RepositoryType>
