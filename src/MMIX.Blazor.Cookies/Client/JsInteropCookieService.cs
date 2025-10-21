@@ -21,7 +21,7 @@ public class JSInteropCookieService(IJSRuntime JSRuntime) : ICookieService
 
     private Cookie ToCookie(string raw)
     {
-        var parts = raw.Split("=");
+        var parts = raw.Split("=", 2);;
         return new Cookie { Name = parts[0], Value = parts[1] };
     }
 
