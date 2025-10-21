@@ -99,8 +99,6 @@ public Task RemoveAllAsync(CancellationToken cancellationToken);
 
 [![License](https://img.shields.io/badge/mit-%230072C6?style=for-the-badge)](https://github.com/themmixproject/MMIX.Blazor.Cookies/blob/main/LICENSE)
 
-<br /><br />
-
 ### Credits to the original developers
 - [Yui Durov](https://github.com/YuriyDurov "Yui Durov")
 - [Vladimir Seldemirov](https://github.com/ligowsky "Vladimir Seldemirov")
