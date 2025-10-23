@@ -10,7 +10,7 @@ export function deleteCookie(name) {
 export function deleteAllCookies() {
     document.cookie.split(';').forEach(c => {
         let eqPos = c.indexOf('=');
-        let name = eqPos > -1 ? c.substr(0, eqPos).trim() : c.trim();
+        let name = eqPos > -1 ? c.substring(0, eqPos).trim() : c.trim();
         document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
     });
 }
