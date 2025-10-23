@@ -11,7 +11,7 @@ public class JsInteropCookieServiceTests
     public async Task GetAllAsync_WithCookiesSet_ShouldReturnCookies()
     {
         var jsRuntime = new VirtualJSRuntime();
-        var jsInteropCookieService = new JSInteropCookieService(jsRuntime);
+        var jsInteropCookieService = await new JSInteropCookieService(jsRuntime).InitializeAsync();
 
         List<Cookie> cookies = new List<Cookie>
         {

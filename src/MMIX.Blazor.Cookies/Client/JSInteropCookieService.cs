@@ -11,18 +11,25 @@ public class JSInteropCookieService(IJSRuntime JSRuntime) : ICookieService
     private const string HttpOnlyFlagExceptionMessage = $"HttpOnly cookies {NotSupportedSuffix}. {CookieFlagsExplainMessage}";
     private const string SecureFlagExceptionMessage = $"Secure cookies {NotSupportedSuffix}. {CookieFlagsExplainMessage}";
 
-    public async Task InitializeAsync()
-    {
-        var source = @"export function getAllCookies(){return document.cookie}export function setCookie(o){document.cookie=o}export function deleteCookie(o){document.cookie=`${o}=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/`}export function deleteAllCookies(){document.cookie.split(";").forEach((o=>{const e=o.indexOf('='),t=e>-1?o.substring(0,e).trim():o.trim();document.cookie=`${t}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`}))}";
-    }
+    private IJSObjectReference _cookieJSModule;
 
-     var dataUri = "data:text/javascript;base64," + Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(jsSource));
-    _cookieJsModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", dataUri);
-}
+    public async Task<JSInteropCookieService> InitializeAsync()
+    {
+        var source =
+        @"export function getAllCookies(){return document.cookie}
+        export function setCookie(command){document.cookie=command}
+        export function deleteCookie(name){document.cookie=name+'=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/'}
+        export function deleteAllCookies(){document.cookie.split(';').forEach(c=>{let eqPos=c.indexOf('=');let name=eqPos>-1?c.substring(0,eqPos).trim():c.trim();document.cookie=name+'=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/'})}";
+
+        var dataUri = "data:text/javascript;" + System.Text.Encoding.UTF8.GetBytes(source);
+        _cookieJSModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", dataUri);
+
+        return this;
+    }
 
     public async Task<IEnumerable<Cookie>> GetAllAsync()
     {
-        var raw = await JSRuntime.InvokeAsync<string>("eval", "document.cookie");
+        var raw = await _cookieJSModule.InvokeAsync<string>("getAllCookies");
         if (string.IsNullOrWhiteSpace(raw)) { return []; }
 
         return raw.Split("; ").Select(ToCookie);
@@ -134,7 +141,7 @@ public class JSInteropCookieService(IJSRuntime JSRuntime) : ICookieService
             $"path={(string.IsNullOrEmpty(cookie.Path) ? '/' : cookie.Path)}" +
             $"'";
 
-        await JSRuntime.InvokeVoidAsync("eval", cancellationToken, command);
+        await _cookieJSModule.InvokeAsync<object>("setCookie", cancellationToken, command);
     }
 
     public async Task ExecuteSetCookieJavaScriptInteropAsync(
@@ -151,7 +158,7 @@ public class JSInteropCookieService(IJSRuntime JSRuntime) : ICookieService
             $"SameSite={(cookieOptions.SameSite == default ? "" : $"Samesite={cookieOptions.SameSite}")}" +
             "'";
 
-        await JSRuntime.InvokeVoidAsync("eval", cancellationToken, command);
+        await _cookieJSModule.InvokeAsync<object>("setCookie", cancellationToken, command);
     }
 
     public async Task RemoveAsync(
@@ -162,17 +169,11 @@ public class JSInteropCookieService(IJSRuntime JSRuntime) : ICookieService
         if (string.IsNullOrWhiteSpace(name)) { throw new Exception("Name is required when removing a cookie."); }
 
         string command = $"document.cookie = '{name}=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/'";
-        await JSRuntime.InvokeVoidAsync("eval", cancellationToken, command);
+        await _cookieJSModule.InvokeAsync<object>("deleteCookie", cancellationToken, name);
     }
 
     public async Task RemoveAllAsync(CancellationToken cancellationToken = default)
     {
-        string command = "document.cookie.split(';').forEach(cookie => {" +
-                         "let equalsPos = cookie.indexOf('=');" +
-                         "let name = equalsPos > -1 ? cookie.substring(0, equalsPos) : cookie;" +
-                         "document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT'" +
-                         "})";
-
-        await JSRuntime.InvokeVoidAsync("eval", cancellationToken, command);
+        await _cookieJSModule.InvokeAsync<object>("deleteAllCookies", cancellationToken);
     }
 }
