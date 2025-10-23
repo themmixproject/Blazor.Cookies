@@ -11,6 +11,15 @@ public class JSInteropCookieService(IJSRuntime JSRuntime) : ICookieService
     private const string HttpOnlyFlagExceptionMessage = $"HttpOnly cookies {NotSupportedSuffix}. {CookieFlagsExplainMessage}";
     private const string SecureFlagExceptionMessage = $"Secure cookies {NotSupportedSuffix}. {CookieFlagsExplainMessage}";
 
+    public async Task InitializeAsync()
+    {
+        var source = @"export function getAllCookies(){return document.cookie}export function setCookie(o){document.cookie=o}export function deleteCookie(o){document.cookie=`${o}=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/`}export function deleteAllCookies(){document.cookie.split(";").forEach((o=>{const e=o.indexOf('='),t=e>-1?o.substring(0,e).trim():o.trim();document.cookie=`${t}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`}))}";
+    }
+
+     var dataUri = "data:text/javascript;base64," + Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(jsSource));
+    _cookieJsModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", dataUri);
+}
+
     public async Task<IEnumerable<Cookie>> GetAllAsync()
     {
         var raw = await JSRuntime.InvokeAsync<string>("eval", "document.cookie");
